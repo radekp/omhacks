@@ -106,15 +106,19 @@ static int run_hook(int hook, const char* parm)
 {
 	char cmd[PATH_MAX + 30];
 	int res;
+	struct timeval pre, post;
 	if (!hooks[hook].active) return 0;
 
 	snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
 	printf("Running %s... ", cmd);
+	gettimeofday(&pre, NULL);
 	res = system(cmd);
+	gettimeofday(&post, NULL);
+	long int elapsed = (post.tv_sec - pre.tv_sec) * 1000000 + (post.tv_usec - pre.tv_usec);
 	if (!WIFEXITED(res))
 		return res;
 	res = WEXITSTATUS(res);
-	printf("result: %d\n", res);
+	printf("result: %d, elapsed: %8dusec\n", res, elapsed);
 	switch (res)
 	{
 		case 254: // not applicable
