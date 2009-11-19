@@ -1,0 +1,4 @@
+To disable the existing hooks:
+
+ - cd /usr/lib/pm-utils/sleep.d
+   for i in *; do touch /etc/pm/sleep.d/$i; done
