@@ -213,6 +213,9 @@ int main(int argc, const char* argv[])
 	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
 	setenv("PM_LOGFILE", logfile, 1);
 	setenv("STASHNAME", name, 1);
+	setenv("NA", "254", 1);
+	setenv("NX", "253", 1);
+	setenv("DX", "252", 1);
 
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
