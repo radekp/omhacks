@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #define MAX_HOOKS 1024
 
@@ -20,6 +21,7 @@ struct hook {
 
 static struct hook hooks[MAX_HOOKS];
 static int hooks_size = 0;
+static FILE* log = NULL;
 
 static int read_hooks(const char* dir, int priority)
 {
@@ -144,10 +146,38 @@ cleanup:
 	return res;
 }
 
+static int endswith(const char* str, int strsize, const char* test)
+{
+	size_t testsize = strlen(test);
+	if (strsize < testsize) return 0;
+	return strcmp(str + strsize - testsize, test) == 0;
+}
+
+static const char* getname(const char* argv0)
+{
+	size_t a0len = strlen(argv0);
+	if (endswith(argv0, a0len, "pm-suspend"))
+		return "pm-suspend";
+	if (endswith(argv0, a0len, "pm-suspend-light"))
+		return "pm-suspend";
+	if (endswith(argv0, a0len, "pm-suspend-lite"))
+		return "pm-suspend";
+	return NULL;
+}
+
 int main(int argc, const char* argv[])
 {
 	const char* forwards = "suspend"; // hibernate
 	const char* backwards = "resume"; // thaw
+	const char* logfile = "/var/log/pm-suspend.log";
+	const char* name = getname(argv[0]);
+	int logfd;
+
+	if (name == NULL)
+	{
+		fprintf(stderr, "You called me with an invalid name\n");
+		return 1;
+	}
 
 	if (getuid() != 0)
 	{
@@ -155,10 +185,34 @@ int main(int argc, const char* argv[])
 		return 1;
 	}
 
+	// Open logfile
+	logfd = open(logfile, O_WRONLY | O_APPEND | O_CREAT | O_TRUNC);
+	if (logfd < 0)
+	{
+		fprintf(stderr, "Cannot write to %s: %s\n", logfile, strerror(errno));
+		return 1;
+	}
+	log = fdopen(logfd, "a");
+	if (log == NULL)
+	{
+		fprintf(stderr, "Cannot fdopen %s: %s\n", logfile, strerror(errno));
+		return 1;
+	}
+	if (dup2(logfd, 1) < 0)
+	{
+		fprintf(stderr, "Sending stdout to %s: %s\n", logfile, strerror(errno));
+		return 1;
+	}
+	if (dup2(1, 2) < 0)
+	{
+		fprintf(stderr, "Sending stderr to %s: %s\n", logfile, strerror(errno));
+		return 1;
+	}
+
 	// Setup the environment
-	putenv("PM_FUNCTIONS=/usr/lib/pm-utils/pm-functions");
-	putenv("PM_LOGFILE=/var/log/pm-suspend.log");
-	putenv("STASHNAME=pm-suspend");
+	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
+	setenv("PM_LOGFILE", logfile, 1);
+	setenv("STASHNAME", name, 1);
 
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
