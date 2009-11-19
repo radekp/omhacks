@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/wait.h>
 
 #define MAX_HOOKS 1024
 
@@ -106,7 +107,12 @@ static int run_hook(int hook, const char* parm)
 	if (!hooks[hook].active) return 0;
 
 	snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
+	printf("Running %s... ", cmd);
 	res = system(cmd);
+	if (!WIFEXITED(res))
+		return res;
+	res = WEXITSTATUS(res);
+	printf("result: %d\n", res);
 	switch (res)
 	{
 		case 254: // not applicable
@@ -149,11 +155,16 @@ int main(int argc, const char* argv[])
 		return 1;
 	}
 
+	// Setup the environment
+	putenv("PM_FUNCTIONS=/usr/lib/pm-utils/pm-functions");
+	putenv("PM_LOGFILE=/var/log/pm-suspend.log");
+	putenv("STASHNAME=pm-suspend");
+
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
 	sort_hooks();
 	filter_hooks();
-	print_hooks();
+	// print_hooks();
 
 	int cur = 0;
 	do
