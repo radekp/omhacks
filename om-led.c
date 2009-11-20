@@ -32,8 +32,6 @@ static void usage_help(FILE* out)
 static void usage(FILE* out)
 {
 	usage_help(out);
-	usage_sysfs(out);
-	usage_backlight(out);
 	usage_led(out, NULL);
 	usage_options(out);
 }
@@ -46,6 +44,8 @@ static int do_help(int argc, char *const *argv)
 
 int main(int argc, char *const *argv)
 {
+	om_flags_led = OM_FLAGS_LED_STANDALONE;
+
 	if (parse_options(argc, argv) != 0)
 	{
 		usage(stderr);
@@ -67,10 +67,6 @@ int main(int argc, char *const *argv)
 	}
 	if (strcmp(argv[0], "help") == 0)
 		return do_help(argc, argv);
-	else if (strcmp(argv[0], "sysfs") == 0)
-		return do_sysfs(argc, argv);
-	else if (strcmp(argv[0], "backlight") == 0)
-		return do_backlight(argc, argv);
 	else if (strcmp(argv[0], "led") == 0)
 		return do_led(argc, argv);
 	else {
