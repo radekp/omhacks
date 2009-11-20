@@ -123,10 +123,10 @@ resume() {
 
 case "$1" in
 	hibernate|suspend)
-		suspend()
+		suspend
 	;;
-	thaw|resume) 
-		resume()
+	thaw|resume)
+		resume
 	;;
 	*) exit $NA
 	;;
