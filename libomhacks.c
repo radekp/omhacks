@@ -20,6 +20,9 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 struct om_sysfs_name
 {
@@ -60,7 +63,7 @@ static struct om_sysfs_name om_sysfs_names[] = {
 // TODO sys_vibrator=\"$(find /sys -name neo1973:vibrator)\"
 // TODO sys_wlan_driver=\"/sys/bus/platform/drivers/s3c2440-sdi\"
 };
-static const om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
+static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
 
 static struct om_sysfs_name* om_sysfs_find_name(const char* name)
 {
@@ -83,10 +86,57 @@ static struct om_sysfs_name* om_sysfs_find_name(const char* name)
 		return &om_sysfs_names[begin];
 }
 
-const char* om_get_sysfs(const char* name)
+const char* om_sysfs_path(const char* name)
 {
 	struct om_sysfs_name* n = om_sysfs_find_name(name);
 	if (n->cached_value == NULL)
 		n->cached_value = n->scanner();
 	return n->cached_value;
+}
+
+static const char* readsmallfile(const char* pathname)
+{
+	static char buf[1024];
+	const char* res = NULL;
+	ssize_t count;
+	int fd = -1;
+	fd = open(pathname, O_RDONLY);
+	if (fd < 0) return NULL;
+	count = read(fd, buf, 1023);
+	if (count < 0) goto cleanup;
+	buf[count] = 0;
+	res = buf;
+
+cleanup:
+	if (fd >= 0) close(fd);
+	return buf;
+}
+
+static int writetofile(const char* pathname, const char* str)
+{
+	int res = 0;
+	size_t ssize = strlen(str);
+	ssize_t count;
+	int fd = -1;
+	fd = open(pathname, O_WRONLY | O_CREAT);
+	if (fd < 0) return fd;
+	count = write(fd, str, ssize);
+	if (count != ssize)
+		res = count;
+//cleaup:
+	if (fd >= 0) close(fd);
+	return res;
+}
+
+const char* om_sysfs_get(const char* name)
+{
+	const char* path = om_sysfs_path(name);
+	if (path == NULL) return NULL;
+	return readsmallfile(path);
+}
+
+int om_sysfs_set(const char* name, const char* val)
+{
+	const char* path = om_sysfs_path(name);
+	return writetofile(path, val);
 }

@@ -39,7 +39,7 @@ int main(int argc, const char* argv[])
 		}
 		for (i = 2; i < argc; ++i)
 		{
-			const char* res = om_get_sysfs(argv[i]);
+			const char* res = om_sysfs_path(argv[i]);
 			if (res == NULL)
 			{
 				fprintf(stderr, "%s not found\n", argv[i]);
@@ -48,5 +48,31 @@ int main(int argc, const char* argv[])
 			puts(res);
 		}
 	}
+	if (strcmp(argv[1], "backlight") == 0)
+	{
+		if (argc == 2)
+		{
+			const char* res = om_sysfs_get("brightness");
+			if (res == NULL)
+			{
+				perror("getting brightness: ");
+				return 1;
+			}
+			fputs(res, stdout);
+		}
+		else
+		{
+			int res = om_sysfs_set("brightness", argv[2]);
+			if (res < 0)
+			{
+				perror("setting brightness: ");
+				return 1;
+			} else if (res > 0) {
+				fprintf(stderr, "partial write to /sys of %d bytes", res);
+				return 1;
+			}
+		}
+	}
+
 	return 0;
 }

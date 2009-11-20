@@ -22,6 +22,19 @@
  */
 
 /* Get the sysfs path of a useful file */
-const char* om_get_sysfs(const char* name);
+const char* om_sysfs_path(const char* name);
+
+/*
+ * Read the contents of a sysfs file
+ *
+ * Note: the result is returned in a static buffer that will be overwritten by
+ * following invocations.
+ */
+const char* om_sysfs_get(const char* name);
+
+/*
+ * Set a sysfs value
+ */
+int om_sysfs_set(const char* name, const char* val);
 
 #endif
