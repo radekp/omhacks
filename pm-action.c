@@ -237,6 +237,7 @@ int main(int argc, const char* argv[])
 	// Setup the environment
 	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
 	setenv("PM_LOGFILE", logfile, 1);
+	setenv("PM_UTILS_RUNDIR", "/var/run/pm-utils", 1);
 	setenv("STASHNAME", name, 1);
 	setenv("NA", "254", 1);
 	setenv("NX", "253", 1);
