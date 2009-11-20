@@ -51,8 +51,8 @@ int main(int argc, char *const *argv)
 		usage(stderr);
 		return 1;
 	}
-	argc -= optind;
-	argv += optind;
+	argc -= optind-1;
+	argv += optind-1;
 
 	if (opts.help)
 		return do_help(argc, argv);
