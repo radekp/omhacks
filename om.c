@@ -88,24 +88,26 @@ static int do_backlight(int argc, char *const *argv)
 	}
 	else
 	{
-		const char* res = om_sysfs_swap("brightness", argv[1]);
-		if (res == NULL)
+		if (opts.swap)
 		{
-			perror("getting/setting brightness: ");
-			return 1;
+			const char* res = om_sysfs_swap("brightness", argv[1]);
+			if (res == NULL)
+			{
+				perror("getting/setting brightness: ");
+				return 1;
+			}
+			fputs(res, stdout);
+		} else {
+			int res = om_sysfs_set("brightness", argv[1]);
+			if (res < 0)
+			{
+				perror("setting brightness: ");
+				return 1;
+			} else if (res > 0) {
+				fprintf(stderr, "partial write to /sys of %d bytes", res);
+				return 1;
+			}
 		}
-		fputs(res, stdout);
-		/*
-		int res = om_sysfs_set("brightness", argv[1]);
-		if (res < 0)
-		{
-			perror("setting brightness: ");
-			return 1;
-		} else if (res > 0) {
-			fprintf(stderr, "partial write to /sys of %d bytes", res);
-			return 1;
-		}
-		*/
 	}
 	return 0;
 }
@@ -118,17 +120,13 @@ static void usage_led(FILE* out, const char* ledname)
 	fprintf(out, "Usage: %s led %s <brightness> timer <ontime> <offtime>\n", argv0, ledname);
 }
 
-static void usage(FILE* out)
-{
-	usage_sysfs(out);
-	usage_backlight(out);
-	usage_led(out, NULL);
-}
-
 static int led_read_extra_args(struct om_led* led, int argc, char *const *argv)
 {
-	if (strcmp(argv[0], "timer") == 0 && argc == 3)
+	if (argc == 0)
 	{
+		strcpy(led->trigger, "none");
+		led->delay_on = led->delay_off = 0;
+	} else if (strcmp(argv[0], "timer") == 0 && argc == 3) {
 		strcpy(led->trigger, "timer");
 		led->delay_on = atoi(argv[1]);
 		led->delay_off = atoi(argv[2]);
@@ -140,6 +138,18 @@ static int led_read_extra_args(struct om_led* led, int argc, char *const *argv)
 		return 1;
 	}
 	return 0;
+}
+
+static void print_led(const struct om_led* led)
+{
+	if (strcmp(led->trigger, "none") == 0)
+	{
+		printf("%d\n", led->brightness);
+	} else if (strcmp(led->trigger, "timer") == 0) {
+		printf("%d timer %d %d\n", led->brightness, led->delay_on, led->delay_off);
+	} else {
+		printf("%d %s\n", led->brightness, led->trigger);
+	}
 }
 
 static int do_led(int argc, char *const *argv)
@@ -165,20 +175,22 @@ static int do_led(int argc, char *const *argv)
 			perror("getting led status: ");
 			return 1;
 		}
-		if (strcmp(led.trigger, "none") == 0)
-		{
-			printf("%d\n", led.brightness);
-		} else if (strcmp(led.trigger, "timer") == 0) {
-			printf("%d timer %d %d\n", led.brightness, led.delay_on, led.delay_off);
-		} else {
-			printf("%d %s\n", led.brightness, led.trigger);
-		}
+		print_led(&led);
 	} else {
+		if (opts.swap)
+		{
+			if (om_led_get(&led) != 0)
+			{
+				perror("getting led status: ");
+				return 1;
+			}
+			print_led(&led);
+		}
+
 		led.brightness = atoi(argv[2]);
 
-		if (argc > 3)
-			if (led_read_extra_args(&led, argc-3, argv+3) != 0)
-				return 1;
+		if (led_read_extra_args(&led, argc-3, argv+3) != 0)
+			return 1;
 
 		if (om_led_set(&led) != 0)
 		{
@@ -186,6 +198,29 @@ static int do_led(int argc, char *const *argv)
 			return 1;
 		}
 	}
+	return 0;
+}
+
+static void usage_help(FILE* out)
+{
+	fprintf(out, "Usage: %s help\n", argv0);
+}
+
+static void usage(FILE* out)
+{
+	usage_help(out);
+	usage_sysfs(out);
+	usage_backlight(out);
+	usage_led(out, NULL);
+
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "  --help: print this help message\n");
+	fprintf(stderr, "  --swap: set new value and print old value\n");
+}
+
+static int do_help(int argc, char *const *argv)
+{
+	usage(stdout);
 	return 0;
 }
 
@@ -235,19 +270,26 @@ int main(int argc, char *const *argv)
 	argc -= optind;
 	argv += optind;
 
+	if (opts.help)
+	{
+		usage(stdout);
+		return 0;
+	}
+
 	if (argc == 0)
 	{
 		usage(stderr);
 		return 1;
 	}
-	if (strcmp(argv[0], "sysfs") == 0)
-	{
+	if (strcmp(argv[0], "help") == 0)
+		return do_help(argc, argv);
+	else if (strcmp(argv[0], "sysfs") == 0)
 		return do_sysfs(argc, argv);
-	} else if (strcmp(argv[0], "backlight") == 0) {
+	else if (strcmp(argv[0], "backlight") == 0)
 		return do_backlight(argc, argv);
-	} else if (strcmp(argv[0], "led") == 0) {
+	else if (strcmp(argv[0], "led") == 0)
 		return do_led(argc, argv);
-	} else {
+	else {
 		fprintf(stderr, "Unknown argument: %s\n", argv[1]);
 		return 1;
 	}
