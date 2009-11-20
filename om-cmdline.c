@@ -115,7 +115,7 @@ int do_resume_reason(int argc, char *const *argv)
 		perror("getting resume reason: ");
 		return 1;
 	}
-	fputs(res, stdout);
+	puts(res);
 	return 0;
 }
 

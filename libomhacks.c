@@ -295,14 +295,15 @@ const char* om_resume_reason()
 		if (strlen(reason2) < 10) return NULL;
 		if (reason2[3] == '2')
 		{
-			strcat(buf, "button");
+			strcat(buf, ":button");
 		} else if (reason2[1] == '4') {
-			strcat(buf, "usb_connect");
+			strcat(buf, ":usb_connect");
 		} else if (reason2[0] == '4') {
-			strcat(buf, "rtc_alarm");
+			strcat(buf, ":rtc_alarm");
 		} else if (reason2[1] == '8') {
-			strcat(buf, "usb_disconnect");
+			strcat(buf, ":usb_disconnect");
 		} else {
+			strcat(buf, ":");
 			strcat(buf, reason2);
 			buf[strlen(buf)-1] = 0;
 		}
