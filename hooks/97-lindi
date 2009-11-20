@@ -88,8 +88,6 @@ resume() {
 # TODO     break
 # TODO done
 
-       om-led gta02-power:blue 0
-
 # TODO echo $temperature > /tmp/temperature-on-resume
 # TODO echo $consumption > /tmp/consumption-on-resume
 # TODO 

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH="$PATH:/root/omhacks"
+STORAGEDIR="$PM_UTILS_RUNDIR/$STASHNAME/storage"
+
+suspend() {
+	om-led gta02-power:blue 255
+}
+
+resume() {
+	om-led gta02-power:blue 0
+}
+
+case "$1" in
+	hibernate|suspend)
+		suspend
+	;;
+	thaw|resume)
+		resume
+	;;
+	*) exit $NA
+	;;
+esac
+
+exit 0
