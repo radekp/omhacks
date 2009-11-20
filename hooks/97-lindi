@@ -20,13 +20,15 @@ suspend() {
 # TODO     ip route | grep eth0 > /tmp/eth0-routes
 # TODO     device stop wifi
 # TODO fi
-# TODO 
+
 	om backlight --swap 0 > "$STORAGEDIR/saved-backlight"
+
 # TODO monitor="$(xset q | grep "^  Monitor is")"
 # TODO touch /tmp/frameworkd.pid
 # TODO dbus-send --type=method_call --system --dest=org.freesmartphone.ogsmd /org/freesmartphone/GSM/Device org.freesmartphone.Resource.Suspend
-# TODO amixer -q -d sset "Amp Spk" mute
-# TODO logger "suspending"
+
+	amixer -q -d sset "Amp Spk" mute
+
 # TODO sleep 3
 # TODO sync
 # TODO sync
@@ -104,8 +106,9 @@ resume() {
 	fi
 
 # TODO kill -9 "$lockpid"
-# TODO 
-# TODO amixer -q -d sset "Amp Spk" unmute
+
+	amixer -q -d sset "Amp Spk" unmute
+
 # TODO /etc/init.d/set-clock start
 # TODO touch /tmp/frameworkd.pid
 # TODO dbus-send --type=method_call --system --dest=org.freesmartphone.ogsmd /org/freesmartphone/GSM/Device org.freesmartphone.Resource.Resume
@@ -118,7 +121,7 @@ resume() {
 # TODO     iwconfig eth0 ap "$ap"
 # TODO     ifconfig eth0 "$ip"
 # TODO     cat /tmp/eth0-routes | while read route; do
-# TODO 	ip route replace $route
+# TODO         ip route replace $route
 # TODO     done
 # TODO fi
 }
