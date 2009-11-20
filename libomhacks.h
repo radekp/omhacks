@@ -37,4 +37,9 @@ const char* om_sysfs_get(const char* name);
  */
 int om_sysfs_set(const char* name, const char* val);
 
+/*
+ * Combination of set and set: return the old value and set a new one
+ */
+const char* om_sysfs_swap(const char* name, const char* val);
+
 #endif

@@ -62,6 +62,14 @@ int main(int argc, const char* argv[])
 		}
 		else
 		{
+			const char* res = om_sysfs_swap("brightness", argv[2]);
+			if (res == NULL)
+			{
+				perror("getting/setting brightness: ");
+				return 1;
+			}
+			fputs(res, stdout);
+			/*
 			int res = om_sysfs_set("brightness", argv[2]);
 			if (res < 0)
 			{
@@ -71,6 +79,7 @@ int main(int argc, const char* argv[])
 				fprintf(stderr, "partial write to /sys of %d bytes", res);
 				return 1;
 			}
+			*/
 		}
 	}
 

@@ -140,3 +140,14 @@ int om_sysfs_set(const char* name, const char* val)
 	const char* path = om_sysfs_path(name);
 	return writetofile(path, val);
 }
+
+const char* om_sysfs_swap(const char* name, const char* val)
+{
+	const char* path = om_sysfs_path(name);
+	const char* res = NULL;
+	if (path == NULL) return NULL;
+	res = readsmallfile(path);
+	if (writetofile(path, val) != 0) return NULL;
+	return res;
+}
+
