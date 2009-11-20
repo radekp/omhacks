@@ -163,7 +163,7 @@ int om_led_init(struct om_led* led, const char* name)
 		errno = EINVAL;
 		return -1;
 	}
-	strncpy(led->name, name, 29); led->name[29] = 0;
+	strncpy(led->name, name, 254); led->name[254] = 0;
 	led->dir = (char*)malloc(PATH_MAX);
 	if (led->dir == NULL) return -1;
 	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
@@ -191,7 +191,7 @@ static int led_read_current_trigger(struct om_led* led)
 	const char* trigger = led_get(led, "trigger");
 	int s, t, copy = 0;
 	if (trigger == NULL) return -1;
-	for (s = t = 0; trigger[s] != 0 && trigger[s] != '\n' && t < 19; ++s)
+	for (s = t = 0; trigger[s] != 0 && trigger[s] != '\n' && t < 254; ++s)
 	{
 		switch (trigger[s])
 		{

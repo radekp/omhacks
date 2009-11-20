@@ -126,8 +126,8 @@ static int led_read_extra_args(struct om_led* led, int argc, char *const *argv)
 		led->delay_on = atoi(argv[1]);
 		led->delay_off = atoi(argv[2]);
 	} else if (strcmp(argv[0], "timer") != 0) {
-		strncpy(led->trigger, argv[0], 19);
-		led->trigger[19] = 0;
+		strncpy(led->trigger, argv[0], 254);
+		led->trigger[254] = 0;
 	} else {
 		usage_led(stderr, led->name);
 		return 1;

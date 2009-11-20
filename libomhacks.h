@@ -45,11 +45,11 @@ const char* om_sysfs_swap(const char* name, const char* val);
 /* Led status information */
 struct om_led
 {
-	char name[30];		// Led name
+	char name[255];		// Led name
 	char* dir;		// Cached led dir name
 	int dir_len;		// Cached length of dir string
 	int brightness; 	// 0 if off
-	char trigger[20];	// Trigger name
+	char trigger[255];	// Trigger name
 	int delay_on;		// 0 if not blinking
 	int delay_off;		// 0 if not blinking
 };
