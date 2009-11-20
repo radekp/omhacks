@@ -21,7 +21,7 @@ suspend() {
 # TODO     device stop wifi
 # TODO fi
 # TODO 
-	om backlight 0 > "$STORAGEDIR/saved-backlight"
+	om backlight --swap 0 > "$STORAGEDIR/saved-backlight"
 # TODO monitor="$(xset q | grep "^  Monitor is")"
 # TODO touch /tmp/frameworkd.pid
 # TODO dbus-send --type=method_call --system --dest=org.freesmartphone.ogsmd /org/freesmartphone/GSM/Device org.freesmartphone.Resource.Suspend
@@ -96,9 +96,9 @@ resume() {
 
 	if read backlight < "$STORAGEDIR/saved-backlight"
 	then
-		om backlight $backlight > /dev/null
+		om backlight $backlight
 	else
-		om backlight 255 > /dev/null
+		om backlight 255
 	fi
 
 # TODO kill -9 "$lockpid"
