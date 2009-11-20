@@ -96,9 +96,9 @@ resume() {
 
 	if read backlight < "$STORAGEDIR/saved-backlight"
 	then
-		om backlight $backlight
+		om backlight $backlight > /dev/null
 	else
-		om backlight 255
+		om backlight 255 > /dev/null
 	fi
 
 # TODO kill -9 "$lockpid"
