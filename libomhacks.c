@@ -226,6 +226,10 @@ int om_led_get(struct om_led* led)
 	} else {
 		led->delay_on = led->delay_off = 0;
 	}
+
+	if (strcmp(led->trigger, "none") != 0 && led->brightness == 0)
+		led->brightness = 255;
+
 	return 0;
 }
 
