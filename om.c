@@ -20,10 +20,22 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "libomhacks.h"
+
+static const char* argv0;
+
+static void led_usage(FILE* out)
+{
+	fprintf(out, "Usage: %s led name\n", argv0);
+	fprintf(out, "       %s led name brightness\n", argv0);
+	fprintf(out, "       %s led name brightness ontime offtime\n", argv0);
+}
 
 int main(int argc, const char* argv[])
 {
+	argv0 = argv[0];
+
 	if (argc == 1)
 	{
 		fprintf(stderr, "Usage: %s action [params]\n", argv[0]);
@@ -47,9 +59,7 @@ int main(int argc, const char* argv[])
 			}
 			puts(res);
 		}
-	}
-	if (strcmp(argv[1], "backlight") == 0)
-	{
+	} else if (strcmp(argv[1], "backlight") == 0) {
 		if (argc == 2)
 		{
 			const char* res = om_sysfs_get("brightness");
@@ -81,6 +91,55 @@ int main(int argc, const char* argv[])
 			}
 			*/
 		}
+	} else if (strcmp(argv[1], "led") == 0) {
+		struct om_led led;
+		if (argc == 2)
+		{
+			led_usage(stderr);
+			return 1;
+		}
+
+		if (om_led_init(&led, argv[2]) != 0)
+		{
+			perror("validating led name: ");
+			return 1;
+		}
+
+		switch (argc)
+		{
+			case 3:
+				if (om_led_get(&led) != 0)
+				{
+					perror("getting led status: ");
+					return 1;
+				}
+				printf("%d %d %d\n", led.brightness, led.delay_on, led.delay_off);
+				break;
+			case 4:
+				led.brightness = atoi(argv[3]);
+				if (om_led_set(&led) != 0)
+				{
+					perror("setting led status: ");
+					return 1;
+				}
+				break;
+			case 6:
+				led.brightness = atoi(argv[3]);
+				led.delay_on = atoi(argv[4]);
+				led.delay_off = atoi(argv[5]);
+				if (om_led_set(&led) != 0)
+				{
+					perror("setting led status: ");
+					return 1;
+				}
+				break;
+			default:
+				led_usage(stderr);
+				return 1;
+		}
+	} else {
+		fprintf(stderr, "Unknown argument: %s\n", argv[1]);
+		return 1;
 	}
 
 	return 0;

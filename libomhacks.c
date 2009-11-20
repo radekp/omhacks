@@ -17,12 +17,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+#include "libomhacks.h"
 #include <string.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
 
 struct om_sysfs_name
 {
@@ -151,3 +155,73 @@ const char* om_sysfs_swap(const char* name, const char* val)
 	return res;
 }
 
+int om_led_init(struct om_led* led, const char* name)
+{
+	if (strchr(name, '/') != NULL)
+	{
+		errno = EINVAL;
+		return -1;
+	}
+	led->dir = (char*)malloc(PATH_MAX);
+	if (led->dir == NULL) return -1;
+	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
+	led->brightness = led->delay_on = led->delay_off = 0;
+	return 0;
+}
+
+static const char* led_get(struct om_led* led, const char* param)
+{
+	strncpy(led->dir + led->dir_len, param, PATH_MAX - led->dir_len);
+	led->dir[PATH_MAX-1] = 0;
+	return readsmallfile(led->dir);
+}
+
+static int led_set(struct om_led* led, const char* param, const char* val)
+{
+	strncpy(led->dir + led->dir_len, param, PATH_MAX - led->dir_len);
+	led->dir[PATH_MAX-1] = 0;
+	return writetofile(led->dir, val);
+}
+
+int om_led_get(struct om_led* led)
+{
+	const char* res;
+
+	if ((res = led_get(led, "brightness")) == NULL) return -1;
+	led->brightness = atoi(res);
+
+	if ((res = led_get(led, "trigger")) == NULL) return -1;
+	if (strncmp(res, "timer\n", 6) == 0)
+	{
+		if ((res = led_get(led, "delay_on")) == NULL) return -1;
+		led->delay_on = atoi(res);
+
+		if ((res = led_get(led, "delay_off")) == NULL) return -1;
+		led->delay_off = atoi(res);
+	} else {
+		led->delay_on = led->delay_off = 0;
+	}
+	return 0;
+}
+
+int om_led_set(struct om_led* led)
+{
+	char val[20];
+
+	snprintf(val, 20, "%d\n", led->brightness);
+	if (led_set(led, "brightness", val) != 0) return -1;
+
+	if (led->delay_on == 0 && led->delay_off == 0)
+	{
+		if (led_set(led, "trigger", "none\n") != 0) return -1;
+	} else {
+		if (led_set(led, "trigger", "timer\n") != 0) return -1;
+
+		snprintf(val, 20, "%d\n", led->delay_on);
+		if (led_set(led, "delay_on", val) != 0) return -1;
+
+		snprintf(val, 20, "%d\n", led->delay_off);
+		if (led_set(led, "delay_off", val) != 0) return -1;
+	}
+	return 0;
+}

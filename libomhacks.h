@@ -42,4 +42,23 @@ int om_sysfs_set(const char* name, const char* val);
  */
 const char* om_sysfs_swap(const char* name, const char* val);
 
+/* Led status information */
+struct om_led
+{
+	char* dir;	// Cached led dir name
+	int dir_len;	// Cached length of dir string
+	int brightness; // 0 if off
+	int delay_on;	// 0 if not blinking
+	int delay_off;	// 0 if not blinking
+};
+
+/* Initialise an om_led structure */
+int om_led_init(struct om_led* led, const char* name);
+
+/* Read led status */
+int om_led_get(struct om_led* led);
+
+/* Set led status */
+int om_led_set(struct om_led* led);
+
 #endif
