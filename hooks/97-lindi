@@ -36,11 +36,13 @@ suspend() {
 # TODO touchscreen-lock /dev/ts &
 # TODO lockpid="$!"
 # TODO rtcwake -m no -s 3600 > /dev/null
-# TODO     ledctrl --off gta02-power:blue
+
+	om-led gta02-power:blue 0
 }
 
 resume() {
-# TODO     ledctrl --on gta02-power:blue
+	om-led gta02-power:blue 255
+
 # TODO     resume_reason="$(resume_reason)"
 # TODO     temperature="$(temperature)"
 # TODO     consumption="$(consumption)"
@@ -85,7 +87,9 @@ resume() {
 # TODO     fi
 # TODO     break
 # TODO done
-# TODO ledctrl --off gta02-power:blue
+
+       om-led gta02-power:blue 0
+
 # TODO echo $temperature > /tmp/temperature-on-resume
 # TODO echo $consumption > /tmp/consumption-on-resume
 # TODO 
