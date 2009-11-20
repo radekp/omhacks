@@ -45,7 +45,7 @@ suspend() {
 resume() {
 	om-led gta02-power:blue 255
 
-# TODO     resume_reason="$(resume_reason)"
+	resume_reason="$(om resume-reason)"
 # TODO     temperature="$(temperature)"
 # TODO     consumption="$(consumption)"
 # TODO     energy="$(energy)"
@@ -54,41 +54,41 @@ resume() {
 # TODO 	logger "suspend failed with $ret"
 # TODO 	resume_reason="suspend_failed"
 # TODO     fi
-# TODO     if [ "$resume_reason" = "EINT09_PMU:rtc_alarm" ]; then
-# TODO 	if [ "$energy" -lt 3 ]; then
-# TODO 	    if [ ! -e /tmp/silent ]; then
-# TODO 		alsactl -f /tmp/saved.state store
-# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
-# TODO 		aplay --quiet $HOME/etc/akku-on-tyhja.wav
-# TODO 		alsactl -f /tmp/saved.state restore
-# TODO 	    fi
-# TODO 	    shutdown -h now
-# TODO 	    while true; do
-# TODO 		sleep 1
-# TODO 	    done
-# TODO 	fi
-# TODO 	if [ "$energy" -lt 20 ]; then
-# TODO 	    if [ ! -e /tmp/silent ]; then
-# TODO 		alsactl -f /tmp/saved.state store
-# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
-# TODO 		aplay --quiet $HOME/etc/akku-lahes-tyhja.wav
-# TODO 		alsactl -f /tmp/saved.state restore
-# TODO 	    fi
-# TODO 	fi
-# TODO 	rtcwake -m no -s 3600 > /dev/null
-# TODO 	continue
-# TODO     fi
-# TODO     if [ "$resume_reason" = "EINT09_PMU:usb_connect" ]; then
-# TODO         logger "waiting for usb charging"
-# TODO         sleep 6
-# TODO         logger "suspending"
-# TODO 	continue
-# TODO     fi
-# TODO     if [ "$resume_reason" = "EINT09_PMU:usb_disconnect" ]; then
-# TODO 	continue
-# TODO     fi
-# TODO     break
-# TODO done
+	if [ "$resume_reason" = "EINT09_PMU:rtc_alarm" ]
+	then
+	# TODO 	if [ "$energy" -lt 3 ]; then
+	# TODO 	    if [ ! -e /tmp/silent ]; then
+	# TODO 		alsactl -f /tmp/saved.state store
+	# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
+	# TODO 		aplay --quiet $HOME/etc/akku-on-tyhja.wav
+	# TODO 		alsactl -f /tmp/saved.state restore
+	# TODO 	    fi
+	# TODO 	    shutdown -h now
+	# TODO 	    while true; do
+	# TODO 		sleep 1
+	# TODO 	    done
+	# TODO 	fi
+	# TODO 	if [ "$energy" -lt 20 ]; then
+	# TODO 	    if [ ! -e /tmp/silent ]; then
+	# TODO 		alsactl -f /tmp/saved.state store
+	# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
+	# TODO 		aplay --quiet $HOME/etc/akku-lahes-tyhja.wav
+	# TODO 		alsactl -f /tmp/saved.state restore
+	# TODO 	    fi
+	# TODO 	fi
+	# TODO 	rtcwake -m no -s 3600 > /dev/null
+	# TODO 	continue (return 250 / CA)
+	fi
+	if [ "$resume_reason" = "EINT09_PMU:usb_connect" ]; then
+	# TODO         logger "waiting for usb charging"
+	# TODO         sleep 6
+	# TODO         logger "suspending"
+	# TODO 	continue (return 250 / CA)
+	fi
+	if [ "$resume_reason" = "EINT09_PMU:usb_disconnect" ]; then
+		echo "Resume on USB disconnect: canceling resume"
+		exit $CA
+	fi
 
 # TODO echo $temperature > /tmp/temperature-on-resume
 # TODO echo $consumption > /tmp/consumption-on-resume

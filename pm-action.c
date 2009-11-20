@@ -242,6 +242,7 @@ int main(int argc, const char* argv[])
 	setenv("NA", "254", 1);
 	setenv("NX", "253", 1);
 	setenv("DX", "252", 1);
+	setenv("CA", "250", 1);
 
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
