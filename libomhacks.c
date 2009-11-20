@@ -93,6 +93,7 @@ static struct om_sysfs_name* om_sysfs_find_name(const char* name)
 const char* om_sysfs_path(const char* name)
 {
 	struct om_sysfs_name* n = om_sysfs_find_name(name);
+	if (n == NULL) return NULL;
 	if (n->cached_value == NULL)
 		n->cached_value = n->scanner();
 	return n->cached_value;
@@ -162,6 +163,7 @@ int om_led_init(struct om_led* led, const char* name)
 		errno = EINVAL;
 		return -1;
 	}
+	strncpy(led->name, name, 29); led->name[29] = 0;
 	led->dir = (char*)malloc(PATH_MAX);
 	if (led->dir == NULL) return -1;
 	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
