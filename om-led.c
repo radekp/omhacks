@@ -55,24 +55,14 @@ int main(int argc, char *const *argv)
 	argv += optind;
 
 	if (opts.help)
-	{
-		usage(stdout);
-		return 0;
-	}
+		return do_help(argc, argv);
 
 	if (argc == 0)
 	{
 		usage(stderr);
 		return 1;
 	}
-	if (strcmp(argv[0], "help") == 0)
-		return do_help(argc, argv);
-	else if (strcmp(argv[0], "led") == 0)
-		return do_led(argc, argv);
-	else {
-		fprintf(stderr, "Unknown argument: %s\n", argv[1]);
-		return 1;
-	}
+	return do_led(argc, argv);
 
 	return 0;
 }

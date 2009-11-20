@@ -55,10 +55,7 @@ int main(int argc, char *const *argv)
 	argv += optind;
 
 	if (opts.help)
-	{
-		usage(stdout);
-		return 0;
-	}
+		return do_help(argc, argv);
 
 	if (argc == 0)
 	{
