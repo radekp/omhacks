@@ -184,20 +184,37 @@ static int led_set(struct om_led* led, const char* param, const char* val)
 	return writetofile(led->dir, val);
 }
 
+static int led_read_current_trigger(struct om_led* led)
+{
+	const char* trigger = led_get(led, "trigger");
+	int s, t, copy = 0;
+	if (trigger == NULL) return -1;
+	for (s = t = 0; trigger[s] != 0 && trigger[s] != '\n' && t < 19; ++s)
+	{
+		switch (trigger[s])
+		{
+			case '[': copy = 1; break;
+			case ']': copy = 0; break;
+			default: if (copy) led->trigger[t++] = trigger[s]; break;
+		}
+	}
+	if (t == 0)
+		strcpy(led->trigger, "none");
+	else
+		led->trigger[t] = 0;
+	return 0;
+}
+
 int om_led_get(struct om_led* led)
 {
 	const char* res;
-	int i;
 
 	if ((res = led_get(led, "brightness")) == NULL) return -1;
 	led->brightness = atoi(res);
 
-	if ((res = led_get(led, "trigger")) == NULL) return -1;
-	for (i = 0; i < 19 && res[i] && res[i] != '\n'; ++i)
-		led->trigger[i] = res[i];
-	led->trigger[i] = 0;
+	if (led_read_current_trigger(led) != 0) return -1;
 
-	if (strcmp(res, "timer") == 0)
+	if (strcmp(led->trigger, "timer") == 0)
 	{
 		if ((res = led_get(led, "delay_on")) == NULL) return -1;
 		led->delay_on = atoi(res);
