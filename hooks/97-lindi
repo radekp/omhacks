@@ -94,7 +94,7 @@ resume() {
 # TODO fi
 # TODO 
 
-	if READ backlight < "$STORAGEDIR/saved-backlight"
+	if read backlight < "$STORAGEDIR/saved-backlight"
 	then
 		om backlight $backlight
 	else
