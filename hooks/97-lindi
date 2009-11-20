@@ -56,6 +56,7 @@ resume() {
 # TODO     fi
 	if [ "$resume_reason" = "EINT09_PMU:rtc_alarm" ]
 	then
+		:
 	# TODO 	if [ "$energy" -lt 3 ]; then
 	# TODO 	    if [ ! -e /tmp/silent ]; then
 	# TODO 		alsactl -f /tmp/saved.state store
@@ -79,7 +80,9 @@ resume() {
 	# TODO 	rtcwake -m no -s 3600 > /dev/null
 	# TODO 	continue (return 250 / CA)
 	fi
-	if [ "$resume_reason" = "EINT09_PMU:usb_connect" ]; then
+	if [ "$resume_reason" = "EINT09_PMU:usb_connect" ]
+	then
+			:
 	# TODO         logger "waiting for usb charging"
 	# TODO         sleep 6
 	# TODO         logger "suspending"
