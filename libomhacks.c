@@ -283,6 +283,7 @@ const char* om_resume_reason()
 			int dst = 0, src = 2;
 			for ( ; buf[src] && buf[src] != '\n'; ++src, ++dst)
 				buf[dst] = buf[src];
+			buf[dst] = 0;
 			break;
 		}
 	}
