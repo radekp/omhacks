@@ -29,6 +29,7 @@ struct opt_t opts;
 
 int om_flags_sysfs = 0;
 int om_flags_backlight = 0;
+int om_flags_resume_reason = 0;
 int om_flags_led = 0;
 
 void usage_sysfs(FILE* out)
@@ -98,6 +99,23 @@ int do_backlight(int argc, char *const *argv)
 			}
 		}
 	}
+	return 0;
+}
+
+void usage_resume_reason(FILE* out)
+{
+	fprintf(out, "Usage: %s resume-reason\n", argv0);
+}
+
+int do_resume_reason(int argc, char *const *argv)
+{
+	const char* res = om_resume_reason();
+	if (res == NULL)
+	{
+		perror("getting resume reason: ");
+		return 1;
+	}
+	fputs(res, stdout);
 	return 0;
 }
 

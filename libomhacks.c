@@ -49,6 +49,20 @@ static const char* scan_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/brightness";
 	return NULL;
 }
+static const char* scan_resume_reason()
+{
+	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason";
+	return NULL;
+}
+static const char* scan_resume_reason2()
+{
+	// TODO return \"$(find /sys -wholename "*/0-0073/resume_reason")\"
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason";
+	return NULL;
+}
 
 static struct om_sysfs_name om_sysfs_names[] = {
 // TODO sys_auxled=\"$(find /sys -name "gta02-aux:red")\"
@@ -61,8 +75,8 @@ static struct om_sysfs_name om_sysfs_names[] = {
 // TODO sys_pm_gsm=\"$(find /sys -name neo1973-pm-gsm.0 -type d)\"
 // TODO sys_pm_gsm_power=\"$(find /sys -wholename "*pm-gsm*/power_on" -o -wholename "*pm-gsm*/pwron")\"
 // TODO sys_pm_wlan=\"$(find /sys -wholename "*gta02-pm-wlan/gta02-pm-wlan.0")\"
-// TODO sys_resume_reason2=\"$(find /sys -wholename "*/0-0073/resume_reason")\"
-// TODO sys_resume_reason=\"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
+	{ "resume_reason", scan_resume_reason, NULL },
+	{ "resume_reason2", scan_resume_reason2, NULL },
 // TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
 // TODO sys_vibrator=\"$(find /sys -name neo1973:vibrator)\"
 // TODO sys_wlan_driver=\"/sys/bus/platform/drivers/s3c2440-sdi\"
@@ -252,4 +266,45 @@ int om_led_set(struct om_led* led)
 		if (led_set(led, "delay_off", val) != 0) return -1;
 	}
 	return 0;
+}
+
+const char* om_resume_reason()
+{
+	static char buf[1024];
+	const char* fname = om_sysfs_path("resume_reason");
+	FILE* in;
+	if (fname == NULL) return NULL;
+	in = fopen(fname, "r");
+	if (in == NULL) return NULL;
+	while (fgets(buf, 1024, in))
+	{
+		if (buf[0] == '*' && buf[1] != 0)
+		{
+			int dst = 0, src = 2;
+			for ( ; buf[src] && buf[src] != '\n'; ++src, ++dst)
+				buf[dst] = buf[src];
+			break;
+		}
+	}
+	fclose(in);
+	if (strcmp(buf, "EINT09_PMU") == 0)
+	{
+		const char* reason2 = om_sysfs_get("resume_reason2");
+		if (reason2 == NULL) return NULL;
+		if (strlen(reason2) < 10) return NULL;
+		if (reason2[3] == '2')
+		{
+			strcat(buf, "button");
+		} else if (reason2[1] == '4') {
+			strcat(buf, "usb_connect");
+		} else if (reason2[0] == '4') {
+			strcat(buf, "rtc_alarm");
+		} else if (reason2[1] == '8') {
+			strcat(buf, "usb_disconnect");
+		} else {
+			strcat(buf, reason2);
+			buf[strlen(buf)-1] = 0;
+		}
+	}
+	return buf;
 }

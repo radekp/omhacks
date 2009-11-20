@@ -9,6 +9,8 @@ Currently not automatically done:
 
 TODO:
  - recreate lindi's suspend/resume scripts
+    - resume reason
+ - suspend/resume GPS
  - mkdir -p /var/run/pm-utils/pm-suspend/storage
  - package
  - zavai calls pm-suspend
