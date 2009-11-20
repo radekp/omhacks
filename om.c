@@ -126,11 +126,11 @@ int main(int argc, const char* argv[])
 
 			if (argc > 4)
 			{
-				if (strcmp(argv[4], "timer") == 0 && argc == 6)
+				if (strcmp(argv[4], "timer") == 0 && argc == 7)
 				{
 					strcpy(led.trigger, "timer");
-					led.delay_on = atoi(argv[4]);
-					led.delay_off = atoi(argv[5]);
+					led.delay_on = atoi(argv[5]);
+					led.delay_off = atoi(argv[6]);
 				} else if (strcmp(argv[4], "timer") != 0) {
 					strncpy(led.trigger, argv[4], 19);
 					led.trigger[19] = 0;
