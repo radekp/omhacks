@@ -4,11 +4,16 @@ PATH="$PATH:/root/omhacks"
 STORAGEDIR="$PM_UTILS_RUNDIR/$STASHNAME/storage"
 
 suspend() {
-	om-led gta02-power:blue 255
+	om-led --swap gta02-power:blue 255 > "$STORAGEDIR/saved-blueled"
 }
 
 resume() {
-	om-led gta02-power:blue 0
+	if read val < "$STORAGEDIR/saved-blueled"
+	then
+		om-led gta02-power:blue $val
+	else
+		om-led gta02-power:blue 0
+	fi
 }
 
 case "$1" in
