@@ -1,0 +1,135 @@
+#!/bin/sh
+
+PATH="$PATH:/root/omhacks"
+STORAGEDIR="$PM_UTILS_RUNDIR/$STASHNAME/storage"
+
+suspend() {
+# TODO if ip link | grep ppp0: | grep UP; then
+# TODO     # Shutdown GPRS connection gracefully, otherwise it will wake us
+# TODO     # up very soon.
+# TODO     gprs-stop
+# TODO :
+# TODO fi
+# TODO 
+# TODO wlan=0
+# TODO if ip link | grep eth0: | grep UP; then
+# TODO     wlan=1
+# TODO     essid="$(iwconfig eth0 | tr ' ' '\n' | grep ESSID | cut -d':' -f2|sed 's/^.//;s/.$//;')"
+# TODO     ap="$(iwconfig eth0 | grep 'Access Point'|cut -d':' -f4-|cut -d' ' -f2)"
+# TODO     ip="$(ip addr show eth0 | grep inet | awk '{print $2}'|cut -d'/' -f1)"
+# TODO     ip route | grep eth0 > /tmp/eth0-routes
+# TODO     device stop wifi
+# TODO fi
+# TODO 
+	om backlight 0 > "$STORAGEDIR/saved-backlight"
+# TODO monitor="$(xset q | grep "^  Monitor is")"
+# TODO touch /tmp/frameworkd.pid
+# TODO dbus-send --type=method_call --system --dest=org.freesmartphone.ogsmd /org/freesmartphone/GSM/Device org.freesmartphone.Resource.Suspend
+# TODO amixer -q -d sset "Amp Spk" mute
+# TODO logger "suspending"
+# TODO sleep 3
+# TODO sync
+# TODO sync
+# TODO sync
+# TODO sleep 1
+# TODO echo 0 > /proc/sysrq-trigger
+# TODO touchscreen-lock /dev/ts &
+# TODO lockpid="$!"
+# TODO rtcwake -m no -s 3600 > /dev/null
+# TODO     ledctrl --off gta02-power:blue
+}
+
+resume() {
+# TODO     ledctrl --on gta02-power:blue
+# TODO     resume_reason="$(resume_reason)"
+# TODO     temperature="$(temperature)"
+# TODO     consumption="$(consumption)"
+# TODO     energy="$(energy)"
+# TODO     logger "susp.real: resuming (reason $resume_reason) (temperature $temperature) (consumption $consumption) (energy $energy)"
+# TODO     if [ "$ret" != 0 ]; then
+# TODO 	logger "suspend failed with $ret"
+# TODO 	resume_reason="suspend_failed"
+# TODO     fi
+# TODO     if [ "$resume_reason" = "EINT09_PMU:rtc_alarm" ]; then
+# TODO 	if [ "$energy" -lt 3 ]; then
+# TODO 	    if [ ! -e /tmp/silent ]; then
+# TODO 		alsactl -f /tmp/saved.state store
+# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
+# TODO 		aplay --quiet $HOME/etc/akku-on-tyhja.wav
+# TODO 		alsactl -f /tmp/saved.state restore
+# TODO 	    fi
+# TODO 	    shutdown -h now
+# TODO 	    while true; do
+# TODO 		sleep 1
+# TODO 	    done
+# TODO 	fi
+# TODO 	if [ "$energy" -lt 20 ]; then
+# TODO 	    if [ ! -e /tmp/silent ]; then
+# TODO 		alsactl -f /tmp/saved.state store
+# TODO 		alsactl -f /etc/alsa-scenarios/stereoout-maxvolume.state restore
+# TODO 		aplay --quiet $HOME/etc/akku-lahes-tyhja.wav
+# TODO 		alsactl -f /tmp/saved.state restore
+# TODO 	    fi
+# TODO 	fi
+# TODO 	rtcwake -m no -s 3600 > /dev/null
+# TODO 	continue
+# TODO     fi
+# TODO     if [ "$resume_reason" = "EINT09_PMU:usb_connect" ]; then
+# TODO         logger "waiting for usb charging"
+# TODO         sleep 6
+# TODO         logger "suspending"
+# TODO 	continue
+# TODO     fi
+# TODO     if [ "$resume_reason" = "EINT09_PMU:usb_disconnect" ]; then
+# TODO 	continue
+# TODO     fi
+# TODO     break
+# TODO done
+# TODO ledctrl --off gta02-power:blue
+# TODO echo $temperature > /tmp/temperature-on-resume
+# TODO echo $consumption > /tmp/consumption-on-resume
+# TODO 
+# TODO if [ "$monitor" = "  Monitor is Off" ]; then
+# TODO     xset dpms force off
+# TODO fi
+# TODO 
+
+	if READ backlight < "$STORAGEDIR/saved-backlight"
+	then
+		om backlight $backlight
+	else
+		om backlight 255
+	fi
+
+# TODO kill -9 "$lockpid"
+# TODO 
+# TODO amixer -q -d sset "Amp Spk" unmute
+# TODO /etc/init.d/set-clock start
+# TODO touch /tmp/frameworkd.pid
+# TODO dbus-send --type=method_call --system --dest=org.freesmartphone.ogsmd /org/freesmartphone/GSM/Device org.freesmartphone.Resource.Resume
+# TODO echo 8 > /proc/sysrq-trigger
+# TODO 
+# TODO if [ "$wlan" = "1" ]; then
+# TODO     device start wifi
+# TODO     sleep 3
+# TODO     iwconfig eth0 essid "$essid"
+# TODO     iwconfig eth0 ap "$ap"
+# TODO     ifconfig eth0 "$ip"
+# TODO     cat /tmp/eth0-routes | while read route; do
+# TODO 	ip route replace $route
+# TODO     done
+# TODO fi
+}
+
+case "$1" in
+	hibernate|suspend)
+		suspend()
+	;;
+	thaw|resume) 
+		resume()
+	;;
+	*) exit $NA
+	;;
+esac
+
+exit 0
