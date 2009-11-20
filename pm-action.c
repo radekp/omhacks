@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 #include <errno.h>
 
 #define MAX_HOOKS 1024
@@ -138,7 +139,7 @@ static int run_hook(int hook, const char* parm)
 	if (!WIFEXITED(res))
 		return res;
 	res = WEXITSTATUS(res);
-	printf("result: %d, elapsed: %8dusec\n", res, elapsed);
+	printf("result: %d, elapsed: %8ldusec\n", res, elapsed);
 	switch (res)
 	{
 		case 254: // not applicable
