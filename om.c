@@ -105,37 +105,47 @@ int main(int argc, const char* argv[])
 			return 1;
 		}
 
-		switch (argc)
+		if (argc == 3)
 		{
-			case 3:
-				if (om_led_get(&led) != 0)
-				{
-					perror("getting led status: ");
-					return 1;
-				}
-				printf("%d %d %d\n", led.brightness, led.delay_on, led.delay_off);
-				break;
-			case 4:
-				led.brightness = atoi(argv[3]);
-				if (om_led_set(&led) != 0)
-				{
-					perror("setting led status: ");
-					return 1;
-				}
-				break;
-			case 6:
-				led.brightness = atoi(argv[3]);
-				led.delay_on = atoi(argv[4]);
-				led.delay_off = atoi(argv[5]);
-				if (om_led_set(&led) != 0)
-				{
-					perror("setting led status: ");
-					return 1;
-				}
-				break;
-			default:
-				led_usage(stderr);
+			// Get status
+			if (om_led_get(&led) != 0)
+			{
+				perror("getting led status: ");
 				return 1;
+			}
+			if (strcmp(led.trigger, "none") == 0)
+			{
+				printf("%d\n", led.brightness);
+			} else if (strcmp(led.trigger, "timer") == 0) {
+				printf("%d timer %d %d\n", led.brightness, led.delay_on, led.delay_off);
+			} else {
+				printf("%d %s\n", led.brightness, led.trigger);
+			}
+		} else {
+			led.brightness = atoi(argv[3]);
+
+			if (argc > 4)
+			{
+				if (strcmp(argv[4], "timer") == 0 && argc == 6)
+				{
+					strcpy(led.trigger, "timer");
+					led.delay_on = atoi(argv[4]);
+					led.delay_off = atoi(argv[5]);
+				} else if (strcmp(argv[4], "timer") != 0) {
+					strncpy(led.trigger, argv[4], 19);
+					led.trigger[19] = 0;
+				} else {
+					fprintf(stderr, "Usage: %s led %s timer <delay_on> <delay_off>\n", argv[0], argv[2]);
+					fprintf(stderr, "Usage: %s led %s <trigger>\n", argv[0], argv[2]);
+					return 1;
+				}
+			}
+
+			if (om_led_set(&led) != 0)
+			{
+				perror("setting led status: ");
+				return 1;
+			}
 		}
 	} else {
 		fprintf(stderr, "Unknown argument: %s\n", argv[1]);

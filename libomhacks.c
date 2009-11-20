@@ -165,6 +165,7 @@ int om_led_init(struct om_led* led, const char* name)
 	led->dir = (char*)malloc(PATH_MAX);
 	if (led->dir == NULL) return -1;
 	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
+	strcpy(led->trigger, "none");
 	led->brightness = led->delay_on = led->delay_off = 0;
 	return 0;
 }
@@ -186,12 +187,17 @@ static int led_set(struct om_led* led, const char* param, const char* val)
 int om_led_get(struct om_led* led)
 {
 	const char* res;
+	int i;
 
 	if ((res = led_get(led, "brightness")) == NULL) return -1;
 	led->brightness = atoi(res);
 
 	if ((res = led_get(led, "trigger")) == NULL) return -1;
-	if (strncmp(res, "timer\n", 6) == 0)
+	for (i = 0; i < 19 && res[i] && res[i] != '\n'; ++i)
+		led->trigger[i] = res[i];
+	led->trigger[i] = 0;
+
+	if (strcmp(res, "timer") == 0)
 	{
 		if ((res = led_get(led, "delay_on")) == NULL) return -1;
 		led->delay_on = atoi(res);
@@ -206,21 +212,20 @@ int om_led_get(struct om_led* led)
 
 int om_led_set(struct om_led* led)
 {
-	char val[20];
+	char val[30];
 
-	snprintf(val, 20, "%d\n", led->brightness);
+	snprintf(val, 30, "%d\n", led->brightness);
 	if (led_set(led, "brightness", val) != 0) return -1;
 
-	if (led->delay_on == 0 && led->delay_off == 0)
-	{
-		if (led_set(led, "trigger", "none\n") != 0) return -1;
-	} else {
-		if (led_set(led, "trigger", "timer\n") != 0) return -1;
+	snprintf(val, 30, "%s\n", led->trigger);
+	if (led_set(led, "trigger", val) != 0) return -1;
 
-		snprintf(val, 20, "%d\n", led->delay_on);
+	if (strcmp(led->trigger, "timer") == 0)
+	{
+		snprintf(val, 30, "%d\n", led->delay_on);
 		if (led_set(led, "delay_on", val) != 0) return -1;
 
-		snprintf(val, 20, "%d\n", led->delay_off);
+		snprintf(val, 30, "%d\n", led->delay_off);
 		if (led_set(led, "delay_off", val) != 0) return -1;
 	}
 	return 0;
