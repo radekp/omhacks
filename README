@@ -6,3 +6,12 @@ To disable the existing hooks:
 Currently not automatically done:
 
  - mkdir -p /var/run/pm-utils/pm-suspend/storage
+
+TODO:
+ - recreate lindi's suspend/resume scripts
+ - mkdir -p /var/run/pm-utils/pm-suspend/storage
+ - package
+ - zavai calls pm-suspend
+ - upload to pkg-fso
+ - zavai hooks (alarm, mostly)
+ - fork pm-utils-light of omhacks at a later stage
