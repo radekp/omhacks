@@ -152,7 +152,7 @@ void hooks_add_function(const char* name, hook_function func)
 
 	hooks[hooks_size].name = strdup(name);
 	if (hooks[hooks_size].name == NULL) goto error;
-	hooks[hooks_size].dirname = hooks_cur_dir;
+	hooks[hooks_size].dirname = strdup(hooks_cur_dir);
 	hooks[hooks_size].priority = hooks_cur_priority;
 	hooks[hooks_size].function = func;
 	hooks[hooks_size].active = 1;
