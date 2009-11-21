@@ -19,7 +19,6 @@ static int hook_status_led(const char* name, const char* param)
 	if (strcmp(name, "00-statusled") == 0)
 		if (strcmp(param, "suspend") == 0)
 		{
-			fprintf(stderr, "ON WITH THEIR LED!\n");
 			// Save blue led state and turn it on
 			om_led_get(&status_led_saved);
 			status_led.brightness = 255;
@@ -27,21 +26,18 @@ static int hook_status_led(const char* name, const char* param)
 		}
 		else
 		{
-			fprintf(stderr, "BACK WITH THEIR LED!\n");
 			// Restore blue led state
 			om_led_set(&status_led_saved);
 		}
 	else
 		if (strcmp(param, "suspend") == 0)
 		{
-			fprintf(stderr, "OFF WITH THEIR LED!\n");
 			// Turn off blue state before suspend
 			status_led.brightness = 0;
 			om_led_set(&status_led);
 		}
 		else
 		{
-			fprintf(stderr, "ON WITH THEIR LED!\n");
 			// Turn on blue led after resume
 			status_led.brightness = 255;
 			om_led_set(&status_led);
