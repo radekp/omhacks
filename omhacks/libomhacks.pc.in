@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libomhacks
+Description: Library of useful OpemMoko functions
+Version: @omhacks_version@
+Cflags: -I${includedir}
+Libs: -L${libdir} -lomhacks

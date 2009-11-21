@@ -41,6 +41,7 @@ provided separately so that it's possible to make "om-led" suid but not "om".
  - suspend/resume GPS
  - package
     - update-alternatives for pm-suspend
+      (or dpkg-divert)
     - tips for dpkg-statoverride on om-led
  - hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
