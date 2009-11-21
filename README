@@ -1,12 +1,48 @@
-To disable the existing hooks:
+*** README for "pm-utils light"
 
- - cd /usr/lib/pm-utils/sleep.d
+Like pm-utils as much as possible.
+
+Pros:
+ * It tries its best to run hooks in exactly the same way as pm-utils.
+ * It's faster
+ * It can load hooks from a .so file, which is much faster, avoids
+   context switches and allows to keep state conveniently in memory.
+ * .so files will be loaded also if they are not executable. Install a
+   non-executable .so file to have it loaded by pm-utils light but ignored by
+   pm-utils.
+ * It allows to cancel a resume, for example in order to go back to sleep in
+   case of a resume for usb disconnect.
+
+Cons:
+ * No support for quirks
+ * It does not ship the functions and pm-functions shell libraries, so plugins
+   cannot make use of them
+
+Tips:
+
+ * To disable the existing pm-utils hooks:
+   cd /usr/lib/pm-utils/sleep.d
    for i in *; do touch /etc/pm/sleep.d/$i; done
 
-TODO:
+
+*** README for omhacks
+
+It is a fast and simple library of common openmoko utility functions.
+
+There is a very simple command line front-end called "om", which exposes all
+the library functions. Just run om to get its command line help.
+
+The extra om-led executable is the same as running "om led", but is also
+provided separately so that it's possible to make "om-led" suid but not "om".
+
+
+*** TODO list
  - recreate lindi's suspend/resume scripts
  - suspend/resume GPS
  - package
+    - update-alternatives for pm-suspend
+    - tips for dpkg-statoverride on om-led
+ - hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
  - upload to pkg-fso
  - zavai hooks (alarm, mostly)
