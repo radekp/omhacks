@@ -54,6 +54,6 @@ void init()
 		hooks_add_function("99-statusled", hook_status_led);
 	}
 
-	hooks_add_function("50-test1", test_hook);
-	hooks_add_function("30-test2", test_hook);
+	//hooks_add_function("50-test1", test_hook);
+	//hooks_add_function("30-test2", test_hook);
 }
