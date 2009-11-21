@@ -150,7 +150,8 @@ static void print_hooks(FILE* out)
 	int i;
 	for (i = 0; i < hooks_size; ++i)
 	{
-		fprintf(out, "%3i: %s/%s\n", i+1, hooks[i].dirname, hooks[i].name);
+		fprintf(out, "%3i: %s/%s prio %d active %d\n",
+			i+1, hooks[i].dirname, hooks[i].name, hooks[i].priority, hooks[i].active);
 	}
 }
 
@@ -296,10 +297,16 @@ int main(int argc, const char* argv[])
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
 	sort_hooks();
+	if (argc == 2 && strcmp(argv[1], "print") == 0)
+	{
+		fprintf(stderr, "Before filtering:\n");
+		print_hooks(stderr);
+	}
 	filter_hooks();
 
 	if (argc == 2 && strcmp(argv[1], "print") == 0)
 	{
+		fprintf(stderr, "After filtering:\n");
 		print_hooks(stderr);
 		return 0;
 	}
