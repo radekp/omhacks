@@ -275,7 +275,7 @@ int main(int argc, const char* argv[])
 	{
 		int canceled = 0;
 		int inhibit = 0;
-		fprintf(stderr, "start run from %d\n", cur);
+		fprintf(stderr, "Start of run from %d\n", cur);
 		for ( ; cur < hooks_size && !canceled; ++cur)
 		{
 			int res = inhibit ? 0 : run_hook(cur, forwards);
@@ -305,7 +305,7 @@ int main(int argc, const char* argv[])
 			}
 		}
 		if (canceled) ++cur;
-		fprintf(stderr, "end run, canceled: %d, inhibit: %d, cur: %d\n", canceled, inhibit, cur);
+		fprintf(stderr, "End of run, canceled: %d, inhibit: %d, cur: %d\n", canceled, inhibit, cur);
 	} while (cur != 0);
 
 	return 0;
