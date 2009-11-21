@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#include "omhacks.h"
+#include "sysfs.h"
 #include <string.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -113,7 +113,7 @@ const char* om_sysfs_path(const char* name)
 	return n->cached_value;
 }
 
-static const char* readsmallfile(const char* pathname)
+const char* om_sysfs_readfile(const char* pathname)
 {
 	static char buf[1024];
 	const char* res = NULL;
@@ -131,7 +131,7 @@ cleanup:
 	return buf;
 }
 
-static int writetofile(const char* pathname, const char* str)
+int om_sysfs_writefile(const char* pathname, const char* str)
 {
 	int res = 0;
 	size_t ssize = strlen(str);
@@ -151,13 +151,13 @@ const char* om_sysfs_get(const char* name)
 {
 	const char* path = om_sysfs_path(name);
 	if (path == NULL) return NULL;
-	return readsmallfile(path);
+	return om_sysfs_readfile(path);
 }
 
 int om_sysfs_set(const char* name, const char* val)
 {
 	const char* path = om_sysfs_path(name);
-	return writetofile(path, val);
+	return om_sysfs_writefile(path, val);
 }
 
 const char* om_sysfs_swap(const char* name, const char* val)
@@ -165,148 +165,7 @@ const char* om_sysfs_swap(const char* name, const char* val)
 	const char* path = om_sysfs_path(name);
 	const char* res = NULL;
 	if (path == NULL) return NULL;
-	res = readsmallfile(path);
-	if (writetofile(path, val) != 0) return NULL;
+	res = om_sysfs_readfile(path);
+	if (om_sysfs_writefile(path, val) != 0) return NULL;
 	return res;
-}
-
-int om_led_init(struct om_led* led, const char* name)
-{
-	if (strchr(name, '/') != NULL)
-	{
-		errno = EINVAL;
-		return -1;
-	}
-	strncpy(led->name, name, 254); led->name[254] = 0;
-	led->dir = (char*)malloc(PATH_MAX);
-	if (led->dir == NULL) return -1;
-	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
-	strcpy(led->trigger, "none");
-	led->brightness = led->delay_on = led->delay_off = 0;
-	return 0;
-}
-
-static const char* led_get(struct om_led* led, const char* param)
-{
-	strncpy(led->dir + led->dir_len, param, PATH_MAX - led->dir_len);
-	led->dir[PATH_MAX-1] = 0;
-	return readsmallfile(led->dir);
-}
-
-static int led_set(struct om_led* led, const char* param, const char* val)
-{
-	strncpy(led->dir + led->dir_len, param, PATH_MAX - led->dir_len);
-	led->dir[PATH_MAX-1] = 0;
-	return writetofile(led->dir, val);
-}
-
-static int led_read_current_trigger(struct om_led* led)
-{
-	const char* trigger = led_get(led, "trigger");
-	int s, t, copy = 0;
-	if (trigger == NULL) return -1;
-	for (s = t = 0; trigger[s] != 0 && trigger[s] != '\n' && t < 254; ++s)
-	{
-		switch (trigger[s])
-		{
-			case '[': copy = 1; break;
-			case ']': copy = 0; break;
-			default: if (copy) led->trigger[t++] = trigger[s]; break;
-		}
-	}
-	if (t == 0)
-		strcpy(led->trigger, "none");
-	else
-		led->trigger[t] = 0;
-	return 0;
-}
-
-int om_led_get(struct om_led* led)
-{
-	const char* res;
-
-	if ((res = led_get(led, "brightness")) == NULL) return -1;
-	led->brightness = atoi(res);
-
-	if (led_read_current_trigger(led) != 0) return -1;
-
-	if (strcmp(led->trigger, "timer") == 0)
-	{
-		if ((res = led_get(led, "delay_on")) == NULL) return -1;
-		led->delay_on = atoi(res);
-
-		if ((res = led_get(led, "delay_off")) == NULL) return -1;
-		led->delay_off = atoi(res);
-	} else {
-		led->delay_on = led->delay_off = 0;
-	}
-
-	if (strcmp(led->trigger, "none") != 0 && led->brightness == 0)
-		led->brightness = 255;
-
-	return 0;
-}
-
-int om_led_set(struct om_led* led)
-{
-	char val[30];
-
-	snprintf(val, 30, "%d\n", led->brightness);
-	if (led_set(led, "brightness", val) != 0) return -1;
-
-	snprintf(val, 30, "%s\n", led->trigger);
-	if (led_set(led, "trigger", val) != 0) return -1;
-
-	if (strcmp(led->trigger, "timer") == 0)
-	{
-		snprintf(val, 30, "%d\n", led->delay_on);
-		if (led_set(led, "delay_on", val) != 0) return -1;
-
-		snprintf(val, 30, "%d\n", led->delay_off);
-		if (led_set(led, "delay_off", val) != 0) return -1;
-	}
-	return 0;
-}
-
-const char* om_resume_reason()
-{
-	static char buf[1024];
-	const char* fname = om_sysfs_path("resume_reason");
-	FILE* in;
-	if (fname == NULL) return NULL;
-	in = fopen(fname, "r");
-	if (in == NULL) return NULL;
-	while (fgets(buf, 1024, in))
-	{
-		if (buf[0] == '*' && buf[1] != 0)
-		{
-			int dst = 0, src = 2;
-			for ( ; buf[src] && buf[src] != '\n'; ++src, ++dst)
-				buf[dst] = buf[src];
-			buf[dst] = 0;
-			break;
-		}
-	}
-	fclose(in);
-	if (strcmp(buf, "EINT09_PMU") == 0)
-	{
-		const char* reason2 = om_sysfs_get("resume_reason2");
-		if (reason2 == NULL) return NULL;
-		if (strlen(reason2) < 10) return NULL;
-		if (reason2[3] == '2')
-		{
-			strcat(buf, ":button");
-		} else if (reason2[1] == '4') {
-			strcat(buf, ":usb_connect");
-		} else if (reason2[0] == '4') {
-			strcat(buf, ":rtc_alarm");
-		} else if (reason2[1] == '8') {
-			strcat(buf, ":usb_disconnect");
-		} else {
-			strcat(buf, ":");
-			strcat(buf, reason2);
-			buf[strlen(buf)-1] = 0;
-		}
-	}
-	return buf;
 }

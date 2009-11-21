@@ -1,5 +1,5 @@
-#ifndef OMHACKS_H
-#define OMHACKS_H
+#ifndef OMHACKS_LED_H
+#define OMHACKS_LED_H
 
 /*
  * omhacks - Various useful utility functions for the FreeRunner
@@ -20,27 +20,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-/* Get the sysfs path of a useful file */
-const char* om_sysfs_path(const char* name);
-
-/*
- * Read the contents of a sysfs file
- *
- * Note: the result is returned in a static buffer that will be overwritten by
- * following invocations.
- */
-const char* om_sysfs_get(const char* name);
-
-/*
- * Set a sysfs value
- */
-int om_sysfs_set(const char* name, const char* val);
-
-/*
- * Combination of set and set: return the old value and set a new one
- */
-const char* om_sysfs_swap(const char* name, const char* val);
 
 /* Led status information */
 struct om_led

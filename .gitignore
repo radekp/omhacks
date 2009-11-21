@@ -1,4 +1,5 @@
 *.o
-/om
-/om-led
-/pm-action
+/omhacks/libomhacks.so
+/src/om
+/src/om-led
+/src/pm-action
