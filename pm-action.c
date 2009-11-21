@@ -224,6 +224,7 @@ static int hook_run(int hook, const char* parm)
 	timing_start();
 	if (hooks[hook].function != NULL)
 	{
+		fprintf(stderr, "Running function %s:%s %s... ", hooks[hook].dirname, hooks[hook].name, parm);
 		res = hooks[hook].function(hooks[hook].name, parm);
 	} else {
 		snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
