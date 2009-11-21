@@ -277,12 +277,16 @@ int main(int argc, const char* argv[])
 		int inhibit = 0;
 		fprintf(stderr, "start run from %d\n", cur);
 		for ( ; cur < hooks_size && !canceled; ++cur)
-			switch (inhibit || run_hook(cur, forwards))
+		{
+			int res = inhibit ? 0 : run_hook(cur, forwards);
+			switch (res)
 			{
 				case 0: break;
 				case -1: canceled = 1; break; // Cancel
 				default: inhibit = 1; break;  // Inhibit
 			}
+		}
+		if (canceled) --cur;
 
 		if (cur == hooks_size)
 		{
@@ -293,7 +297,6 @@ int main(int argc, const char* argv[])
 		for ( ; cur > 0 && !canceled; --cur)
 		{
 			int res = inhibit ? 0 : run_hook(cur-1, backwards);
-			fprintf(stderr, "  res: %d inhibit: %d cur: %d\n", res, inhibit, cur);
 			switch (res)
 			{
 				case 0: break;
@@ -301,6 +304,7 @@ int main(int argc, const char* argv[])
 				default: inhibit = 1; break;  // Inhibit
 			}
 		}
+		if (canceled) ++cur;
 		fprintf(stderr, "end run, canceled: %d, inhibit: %d, cur: %d\n", canceled, inhibit, cur);
 	} while (cur != 0);
 
