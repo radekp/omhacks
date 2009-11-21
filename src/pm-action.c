@@ -169,18 +169,21 @@ static void hooks_sort()
 
 static int hooks_first_good(int start)
 {
-	// Look for the next active item
-	while (start < hooks_size && !hooks[start].active)
-		++start;
-		
-	// If we're the first item and active, we're good
-	if (start == 0) return start;
+	do {
+		// Look for the next active item
+		while (start < hooks_size && !hooks[start].active)
+			++start;
+			
+		// If we're the first item and active, we're good
+		if (start == 0) return start;
 
-	// Skip all items that have the same name as the previous one
-	int i = start;
-	while (i < hooks_size && strcmp(hooks[start-1].name, hooks[i].name) == 0)
-		++i;
-	return i;
+		// Skip all items that have the same name as the previous one
+		int i = start;
+		while (i < hooks_size && strcmp(hooks[start-1].name, hooks[i].name) == 0)
+			++i;
+		start = i;
+	} while (start < hooks_size && !hooks[start].active);
+	return start;
 }
 
 static void hooks_filter()
