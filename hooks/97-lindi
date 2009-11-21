@@ -33,8 +33,6 @@ suspend() {
 # TODO sync
 # TODO sleep 1
 # TODO echo 0 > /proc/sysrq-trigger
-# TODO touchscreen-lock /dev/ts &
-# TODO lockpid="$!"
 # TODO rtcwake -m no -s 3600 > /dev/null
 }
 
@@ -94,8 +92,6 @@ resume() {
 # TODO     xset dpms force off
 # TODO fi
 # TODO 
-
-# TODO kill -9 "$lockpid"
 
 	amixer -q -d sset "Amp Spk" unmute
 

@@ -16,6 +16,7 @@ static int touchscreen_fd = -1;
 static int hook_status_led(const char* name, const char* param)
 {
 	if (strcmp(name, "00-statusled") == 0)
+	{
 		if (strcmp(param, "suspend") == 0)
 		{
 			// Save blue led state and turn it on
@@ -23,24 +24,27 @@ static int hook_status_led(const char* name, const char* param)
 			status_led.brightness = 255;
 			om_led_set(&status_led);
 		}
-		else
+		else if (strcmp(param, "resume") == 0)
 		{
 			// Restore blue led state
 			om_led_set(&status_led_saved);
 		}
-	else
+	}
+	else if (strcmp(name, "99-statusled") == 0)
+	{
 		if (strcmp(param, "suspend") == 0)
 		{
 			// Turn off blue state before suspend
 			status_led.brightness = 0;
 			om_led_set(&status_led);
 		}
-		else
+		else if (strcmp(param, "resume") == 0)
 		{
 			// Turn on blue led after resume
 			status_led.brightness = 255;
 			om_led_set(&status_led);
 		}
+	}
 	return 0;
 }
 
@@ -61,7 +65,7 @@ static int hook_screen(const char* name, const char* param)
 		if (screen_brightness_saved < 0)
 			screen_brightness_saved = 255;
 	}
-	else
+	else if (strcmp(param, "resume") == 0)
 	{
 		// Restore saved backlight brightness
 		om_screen_brightness_set(screen_brightness_saved);
