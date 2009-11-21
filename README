@@ -38,6 +38,8 @@ provided separately so that it's possible to make "om-led" suid but not "om".
 
 *** TODO list
  - recreate lindi's suspend/resume scripts
+    - resume_reason in .so
+ - om led list
  - suspend/resume GPS
  - package
     - update-alternatives for pm-suspend

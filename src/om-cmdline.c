@@ -24,6 +24,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 const char* argv0;
 struct opt_t opts;
@@ -202,8 +204,31 @@ int do_led(int argc, char *const *argv)
 	struct om_led led;
 	if (argc == 1)
 	{
-		usage_led(stderr, NULL);
-		return 1;
+		// TODO: list all leds and their status instead
+		DIR* dir = opendir("/sys/class/leds/");
+		struct dirent* d;
+		if (dir == NULL)
+		{
+			perror("opening /sys/class/leds");
+			return 1;
+		}
+		while ((d = readdir(dir)) != NULL)
+		{
+			printf("%s ", d->d_name);
+			if (om_led_init(&led, d->d_name) != 0)
+			{
+				perror("accessing led");
+				return 1;
+			}
+			if (om_led_get(&led) != 0)
+			{
+				perror("getting led status");
+				return 1;
+			}
+			print_led(&led);
+		}
+		closedir(dir);
+		return 0;
 	}
 
 	if (om_led_init(&led, argv[1]) != 0)
