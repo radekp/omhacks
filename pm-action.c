@@ -31,6 +31,31 @@
 #include <sys/time.h>
 #include <errno.h>
 
+/* Timing subsystem */
+#define MAX_TIMING 5
+
+static struct timeval timing_pre[MAX_TIMING];
+static int timing_cur = 0;
+
+void timing_start()
+{
+	if (timing_cur < MAX_TIMING)
+		gettimeofday(&timing_pre[timing_cur], NULL);
+	timing_cur++;
+}
+
+long int timing_end()
+{
+	struct timeval post;
+	--timing_cur;
+	if (timing_cur >= MAX_TIMING) return 0;
+	gettimeofday(&post, NULL);
+	return (post.tv_sec - timing_pre[timing_cur].tv_sec) * 1000000
+             + (post.tv_usec - timing_pre[timing_cur].tv_usec);
+}
+
+/* Hooks subsystem */
+
 #define MAX_HOOKS 1024
 
 struct hook {
@@ -127,15 +152,13 @@ static int run_hook(int hook, const char* parm)
 {
 	char cmd[PATH_MAX + 30];
 	int res;
-	struct timeval pre, post;
 	if (!hooks[hook].active) return 0;
 
 	snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
 	fprintf(stderr, "Running %s... ", cmd);
-	gettimeofday(&pre, NULL);
+	timing_start();
 	res = system(cmd);
-	gettimeofday(&post, NULL);
-	long int elapsed = (post.tv_sec - pre.tv_sec) * 1000000 + (post.tv_usec - pre.tv_usec);
+	long int elapsed = timing_end();
 	if (!WIFEXITED(res))
 		return res;
 	res = WEXITSTATUS(res);
