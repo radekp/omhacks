@@ -130,6 +130,12 @@ static void filter_hooks()
 	int i;
 	for (i = 1; i < hooks_size; ++i)
 	{
+ 		if (!hooks[i].active)
+		{
+			while (i < hooks_size && strcmp(hooks[i].name, hooks[i+1].name) == 0)
+				++i;
+			continue;
+		}
 		if (strcmp(hooks[last].name, hooks[i].name) == 0)
 			continue;
 		if (last + 1 != i)
@@ -139,12 +145,12 @@ static void filter_hooks()
 	hooks_size = last;
 }
 
-static void print_hooks()
+static void print_hooks(FILE* out)
 {
 	int i;
 	for (i = 0; i < hooks_size; ++i)
 	{
-		printf("%3i: %s/%s\n", i+1, hooks[i].dirname, hooks[i].name);
+		fprintf(out, "%3i: %s/%s\n", i+1, hooks[i].dirname, hooks[i].name);
 	}
 }
 
@@ -291,7 +297,12 @@ int main(int argc, const char* argv[])
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
 	sort_hooks();
 	filter_hooks();
-	// print_hooks();
+
+	if (argc == 2 && strcmp(argv[1], "print") == 0)
+	{
+		print_hooks(stderr);
+		return 0;
+	}
 
 	int cur = 0;
 	do
