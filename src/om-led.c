@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
-#include <omhacks/omhacks.h>
+#include <omhacks/led.h>
 #include "om-cmdline.h"
 
 static void usage_help(FILE* out)
