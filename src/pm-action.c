@@ -213,7 +213,7 @@ static void hooks_print(FILE* out)
 	for (i = 0; i < hooks_size; ++i)
 	{
 		fprintf(out, "  %3i  %2i %3.3s    %3.3s %-30.30s %s\n",
-			i+1, hooks[i].priority, hooks[i].function == NULL ? "no" : "yes",
+			i, hooks[i].priority, hooks[i].function == NULL ? "no" : "yes",
 			hooks[i].active ? "yes" : "no", hooks[i].name, hooks[i].dirname);
 	}
 }
