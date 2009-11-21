@@ -291,13 +291,17 @@ int main(int argc, const char* argv[])
 
 		canceled = 0;
 		for ( ; cur > 0 && !canceled; --cur)
-			switch (inhibit || run_hook(cur-1, backwards))
+		{
+			int res = inhibit ? 0 : run_hook(cur-1, backwards);
+			fprintf(stderr, "  res: %d inhibit: %d cur: %d\n", res, inhibit, cur);
+			switch (res)
 			{
 				case 0: break;
 				case -1: canceled = 1; break; // Cancel
 				default: inhibit = 1; break;  // Inhibit
 			}
-		fprintf(stderr, "end run, canceled: %d, inhibit: %d\n", canceled, inhibit);
+		}
+		fprintf(stderr, "end run, canceled: %d, inhibit: %d, cur: %d\n", canceled, inhibit, cur);
 	} while (cur != 0);
 
 	return 0;
