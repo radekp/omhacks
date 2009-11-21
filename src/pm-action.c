@@ -75,6 +75,33 @@ static int hooks_size = 0;
 static const char *hooks_cur_dir = NULL;
 static int hooks_cur_priority = 0;
 
+void hooks_read_dynamic(const char* fname, int prio)
+{
+	hook_init_function* init = NULL;
+
+	hooks_cur_dir = fname;
+	hooks_cur_priority = prio;
+
+	void* dl = dlopen(fname, RTLD_LAZY);
+	if (dl == NULL) return;
+
+	//*(void **) (&init) = dlsym(dl, "init");
+	init = (hook_init_function*)dlsym(dl, "init");
+	if (init == NULL)
+	{
+		dlclose(dl);
+		return;
+	}
+	init();
+}
+
+static int hooks_is_dynamic(const char* fname)
+{
+	int len = strlen(fname);
+	if (len < 3) return 0;
+	return strcmp(fname + len - 3, ".so") == 0;
+}
+
 static int hooks_read_dir(const char* dir, int priority)
 {
 	DIR* fdir = opendir(dir);
@@ -95,43 +122,28 @@ static int hooks_read_dir(const char* dir, int priority)
 		// Skip directories
 		if (S_ISDIR(st.st_mode)) continue;
 
-		hooks[hooks_size].name = strdup(d->d_name);
-		if (hooks[hooks_size].name == NULL)
+		if (hooks_is_dynamic(d->d_name))
 		{
-			res = -1;
-			break;
+			hooks_read_dynamic(fullname, priority+1);
+		} else {
+			hooks[hooks_size].name = strdup(d->d_name);
+			if (hooks[hooks_size].name == NULL)
+			{
+				res = -1;
+				break;
+			}
+			hooks[hooks_size].dirname = dir;
+			hooks[hooks_size].priority = priority;
+			// If a file is executable, do not run it, but take note as it
+			// can override an executable file elsewhere
+			hooks[hooks_size].active = ((st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0);
+			hooks[hooks_size].function = NULL;
 		}
-		hooks[hooks_size].dirname = dir;
-		hooks[hooks_size].priority = priority;
-		// If a file is executable, do not run it, but take note as it
-		// can override an executable file elsewhere
-		hooks[hooks_size].active = ((st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0);
-		hooks[hooks_size].function = NULL;
 		++hooks_size;
 	}
 
 	if (fdir != NULL) closedir(fdir);
 	return res;
-}
-
-void hooks_read_dynamic(const char* fname, int prio)
-{
-	hook_init_function* init = NULL;
-
-	hooks_cur_dir = fname;
-	hooks_cur_priority = prio;
-
-	void* dl = dlopen(fname, RTLD_LAZY);
-	if (dl == NULL) return;
-
-	//*(void **) (&init) = dlsym(dl, "init");
-	init = (hook_init_function*)dlsym(dl, "init");
-	if (init == NULL)
-	{
-		dlclose(dl);
-		return;
-	}
-	init();
 }
 
 void hooks_add_function(const char* name, hook_function func)
@@ -223,10 +235,6 @@ static void hooks_read_all()
 	timing_start();
 	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
 	fprintf(stderr, "Scanned /usr/lib/pm-utils/sleep.d in %ldusec\n", timing_end());
-
-	timing_start();
-	hooks_read_dynamic("./testhook.so", 5);
-	fprintf(stderr, "Scanned ./testhook.so in %ldusec\n", timing_end());
 }
 
 static int hook_run(int hook, const char* parm)
