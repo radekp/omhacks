@@ -167,25 +167,40 @@ static void hooks_sort()
 	qsort(hooks, hooks_size, sizeof(struct hook), hook_compare);
 }
 
+static int hooks_first_good(int start)
+{
+	// Look for the next active item
+	while (start < hooks_size && !hooks[start].active)
+		++start;
+		
+	// If we're the first item and active, we're good
+	if (start == 0) return start;
+
+	// Skip all items that have the same name as the previous one
+	int i = start;
+	while (i < hooks_size && strcmp(hooks[start-1].name, hooks[i].name) == 0)
+		++i;
+	return i;
+}
+
 static void hooks_filter()
 {
-	int last = 0;
-	int i;
-	for (i = 1; i < hooks_size; ++i)
+	int src = 0;
+	int dst = 0;
+	fprintf(stderr, "S0 %d\n", hooks_size);
+	while (src < hooks_size)
 	{
- 		if (!hooks[i].active)
-		{
-			while (i < hooks_size && strcmp(hooks[i].name, hooks[i+1].name) == 0)
-				++i;
-			continue;
-		}
-		if (strcmp(hooks[last].name, hooks[i].name) == 0)
-			continue;
-		if (last + 1 != i)
-			memcpy(&hooks[last+1], &hooks[i], sizeof(struct hook));
-		++last;
+		fprintf(stderr, "SR dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
+		src = hooks_first_good(src);
+		fprintf(stderr, "FG dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
+		if (src >= hooks_size) break;
+		if (src != dst) memcpy(&hooks[dst], &hooks[src], sizeof(struct hook));
+		fprintf(stderr, "CP dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
+		++dst;
+		++src;
 	}
-	hooks_size = last;
+	hooks_size = dst;
+	fprintf(stderr, "SZ %d\n", hooks_size);
 }
 
 static void hooks_print(FILE* out)
@@ -202,13 +217,13 @@ static void hooks_print(FILE* out)
 
 static void hooks_read_all()
 {
-	timing_start();
-	hooks_read_dir("/etc/pm/sleep.d", 10);
-	fprintf(stderr, "Scanned /etc/pm/sleep.d in %ldusec\n", timing_end());
-
-	timing_start();
-	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
-	fprintf(stderr, "Scanned /usr/lib/pm-utils/sleep.d in %ldusec\n", timing_end());
+//	timing_start();
+//	hooks_read_dir("/etc/pm/sleep.d", 10);
+//	fprintf(stderr, "Scanned /etc/pm/sleep.d in %ldusec\n", timing_end());
+//
+//	timing_start();
+//	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
+//	fprintf(stderr, "Scanned /usr/lib/pm-utils/sleep.d in %ldusec\n", timing_end());
 
 	timing_start();
 	hooks_read_dynamic("./testhook.so", 5);
@@ -402,7 +417,7 @@ int main(int argc, const char* argv[])
 
 		if (cur == hooks_size)
 		{
-			do_suspend();
+//			do_suspend();
 		}
 
 		canceled = 0;

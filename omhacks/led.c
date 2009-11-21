@@ -40,6 +40,11 @@ int om_led_init(struct om_led* led, const char* name)
 	led->dir = (char*)malloc(PATH_MAX);
 	if (led->dir == NULL) return -1;
 	led->dir_len = snprintf(led->dir, PATH_MAX, "/sys/class/leds/%s/", name);
+	if (access(led->dir, F_OK) != 0)
+	{
+		free(led->dir);
+		return -1;
+	}
 	strcpy(led->trigger, "none");
 	led->brightness = led->delay_on = led->delay_off = 0;
 	return 0;

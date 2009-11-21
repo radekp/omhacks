@@ -10,7 +10,7 @@ static struct om_led status_led_saved;
 
 static int test_hook(const char* name, const char* param)
 {
-	fprintf(stderr, "test_hook action %s %s\n", name, param);
+	fprintf(stderr, "TH(%s,%s) ", name, param);
 	return 0;
 }
 
@@ -48,13 +48,15 @@ static int hook_status_led(const char* name, const char* param)
 
 void init()
 {
-	if (om_led_init(&status_led, "gta02-power:blue") == 0
-	 && om_led_init_copy(&status_led_saved, &status_led) == 0)
+	int res1, res2;
+	if ((res1=om_led_init(&status_led, "gta02-power:blue")) == 0
+	 && (res2=om_led_init_copy(&status_led_saved, &status_led)) == 0)
 	{
+		fprintf(stderr, "ZAZA %d %d\n", res1, res2);
 		hooks_add_function("00-statusled", hook_status_led);
 		hooks_add_function("99-statusled", hook_status_led);
 	}
 
-	//hooks_add_function("50-test1", test_hook);
-	//hooks_add_function("30-test2", test_hook);
+	hooks_add_function("50-test1", test_hook);
+	hooks_add_function("30-test2", test_hook);
 }
