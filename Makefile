@@ -9,9 +9,9 @@ all: omhacks/libomhacks.so omhacks/libomhacks.a src/pm-action src/om src/om-led 
 
 src/pm-action: src/pm-action.c
 
-src/om: src/om.c src/om-cmdline.o omhacks/libomhacks.so
+src/om: src/om.c src/om-cmdline.o omhacks/libomhacks.a
 
-src/om-led: src/om-led.c src/om-cmdline.o omhacks/libomhacks.so
+src/om-led: src/om-led.c src/om-cmdline.o omhacks/libomhacks.a
 
 omhacks/libomhacks.so: $(libomhacks_SRC)
 	gcc --shared -fPIC $(CFLAGS) -o $@ $^
@@ -23,4 +23,4 @@ testhook.so: testhook.c
 	gcc --shared -fPIC $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f omhacks/*.o src/*.o src/ src/{pm-action,om,om-led} omhacks/libomhacks.so
+	rm -f omhacks/*.o src/*.o src/pm-action src/om src/om-led omhacks/libomhacks.so
