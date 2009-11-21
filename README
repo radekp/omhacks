@@ -3,16 +3,11 @@ To disable the existing hooks:
  - cd /usr/lib/pm-utils/sleep.d
    for i in *; do touch /etc/pm/sleep.d/$i; done
 
-Currently not automatically done:
-
- - mkdir -p /var/run/pm-utils/pm-suspend/storage
-
 TODO:
  - recreate lindi's suspend/resume scripts
     - resume reason
     - fix resume cancelation
  - suspend/resume GPS
- - mkdir -p /var/run/pm-utils/pm-suspend/storage
  - package
  - zavai calls pm-suspend
  - upload to pkg-fso

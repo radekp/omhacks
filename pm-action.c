@@ -190,6 +190,21 @@ static const char* getname(const char* argv0)
 	return NULL;
 }
 
+static int makedirs(const char* stashname)
+{
+	char buf[PATH_MAX];
+	int res;
+	res = mkdir("/var/run/pm-utils", 0755);
+	if (res < 0 && errno != EEXIST) return res;
+	snprintf(buf, PATH_MAX, "/var/run/pm-utils/%s", stashname);
+	res = mkdir(buf, 0755);
+	if (res < 0 && errno != EEXIST) return res;
+	snprintf(buf, PATH_MAX, "/var/run/pm-utils/%s/storage", stashname);
+	res = mkdir(buf, 0755);
+	if (res < 0 && errno != EEXIST) return res;
+	return 0;
+}
+
 int main(int argc, const char* argv[])
 {
 	const char* forwards = "suspend"; // hibernate
@@ -235,6 +250,11 @@ int main(int argc, const char* argv[])
 	}
 
 	// Setup the environment
+	if (makedirs(name) < 0)
+	{
+		perror("Creating state dir: ");
+		return 1;
+	}
 	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
 	setenv("PM_LOGFILE", logfile, 1);
 	setenv("PM_UTILS_RUNDIR", "/var/run/pm-utils", 1);
