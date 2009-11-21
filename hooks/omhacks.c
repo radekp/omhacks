@@ -3,13 +3,15 @@
 #include <omhacks/led.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef int hook_function(const char* name, const char* param);
 extern void hooks_add_function(const char* name, hook_function func);
 
 static struct om_led status_led;
 static struct om_led status_led_saved;
-static int screen_brightness_saved;
+static int screen_brightness_saved = 255;
+static int touchscreen_fd = -1;
 
 static int hook_status_led(const char* name, const char* param)
 {
@@ -46,6 +48,14 @@ static int hook_screen(const char* name, const char* param)
 {
 	if (strcmp(param, "suspend") == 0)
 	{
+		// Lock touchscreen
+		touchscreen_fd = om_touchscreen_open();
+		if (touchscreen_fd < 0)
+			perror("opening touchscreen");
+		else
+			if (om_touchscreen_lock(touchscreen_fd) < 0)
+				perror("locking touchscreen");
+
 		// Save current backlight brightness and turn it off
 		screen_brightness_saved = om_screen_brightness_swap(0);
 		if (screen_brightness_saved < 0)
@@ -55,6 +65,14 @@ static int hook_screen(const char* name, const char* param)
 	{
 		// Restore saved backlight brightness
 		om_screen_brightness_set(screen_brightness_saved);
+
+		// Unlock touchscreen
+		if (touchscreen_fd >= 0)
+		{
+			if (close(touchscreen_fd) < 0)
+				perror("closing touchscreen");
+			touchscreen_fd = -1;
+		}
 	}
 	return 0;
 }
