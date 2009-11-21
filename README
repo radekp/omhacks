@@ -10,6 +10,7 @@ Currently not automatically done:
 TODO:
  - recreate lindi's suspend/resume scripts
     - resume reason
+    - fix resume cancelation
  - suspend/resume GPS
  - mkdir -p /var/run/pm-utils/pm-suspend/storage
  - package
@@ -17,3 +18,19 @@ TODO:
  - upload to pkg-fso
  - zavai hooks (alarm, mostly)
  - fork pm-utils-light of omhacks at a later stage
+
+16:18 #openmoko-debian < enrico> lindi-: a few questions:
+16:18 #openmoko-debian < enrico> lindi-: 1. why do you lock the touch screen? my phone doesn't wake up if the 
+                                 touchscreen is not locked
+16:18 #openmoko-debian < enrico> lindi-: 2. what's the fiddling with sysrq-trigger?
+16:19 #openmoko-debian < enrico> lindi-: 3. why touch /tmp/frameworkd.pid ?
+-------------------------------------------------------------------------------------------------------------------
+16:40 #openmoko-debian < lindi-> enrico: 1. to make sure that i don't accidentally type "rm -fr /" when the phone 
+                                 is in my pocket and wakes up with rtc
+16:40 #openmoko-debian < lindi-> enrico: 2. sysrq trigger just makes sure kernel does not log anything on resume 
+                                 to display, this used to slow things down a lot with debugging information
+16:40 #openmoko-debian < lindi-> enrico: 3. gsm-watchdog looks at the freshness of /tmp/frameworkd.pid
+16:41 #openmoko-debian < lindi-> enrico: 3. (Right after resume ogsmd won't respond to dbus. touching pid file 
+                                 makes sure the watchdog does not immediately kill ogsmd in this case but waits 
+                                 for a while)
+
