@@ -16,6 +16,7 @@ static int test_hook(const char* name, const char* param)
 
 static int hook_status_led(const char* name, const char* param)
 {
+	fprintf(stderr, "HSL(%s,%s)", name, param);
 	if (strcmp(name, "00-statusled") == 0)
 		if (strcmp(name, "suspend") == 0)
 		{
@@ -54,6 +55,6 @@ void init()
 		hooks_add_function("99-statusled", hook_status_led);
 	}
 
-	hooks_add_function("50-test1", test_hook);
-	hooks_add_function("30-test2", test_hook);
+	//hooks_add_function("50-test1", test_hook);
+	//hooks_add_function("30-test2", test_hook);
 }
