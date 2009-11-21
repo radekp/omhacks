@@ -30,6 +30,7 @@
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <dlfcn.h>
 
 /* Timing subsystem */
 #define MAX_TIMING 5
@@ -58,14 +59,15 @@ long int timing_end()
 
 #define MAX_HOOKS 1024
 
-typedef int hook_function(int action);
+typedef int hook_function(const char* name, const char* param);
+typedef void hook_init_function(void);
 
 struct hook {
 	char* name;
 	const char* dirname;
 	int priority;
 	int active;
-	hook_function function;
+	hook_function* function;
 };
 
 static struct hook hooks[MAX_HOOKS];
@@ -112,11 +114,31 @@ static int hooks_read_dir(const char* dir, int priority)
 	return res;
 }
 
+void hooks_read_dynamic(const char* fname, int prio)
+{
+	hook_init_function* init = NULL;
+
+	hooks_cur_dir = fname;
+	hooks_cur_priority = prio;
+
+	void* dl = dlopen(fname, RTLD_LAZY);
+	if (dl == NULL) return;
+
+	//*(void **) (&init) = dlsym(dl, "init");
+	init = (hook_init_function*)dlsym(dl, "init");
+	if (init == NULL)
+	{
+		dlclose(dl);
+		return;
+	}
+	init();
+}
+
 void hooks_add_function(const char* name, hook_function func)
 {
 	if (hooks_size >= MAX_HOOKS) return;
 
-	hooks[hooks_size].name = strdup(d_name);
+	hooks[hooks_size].name = strdup(name);
 	if (hooks[hooks_size].name == NULL) goto error;
 	hooks[hooks_size].dirname = hooks_cur_dir;
 	hooks[hooks_size].priority = hooks_cur_priority;
@@ -124,7 +146,7 @@ void hooks_add_function(const char* name, hook_function func)
 	hooks[hooks_size].active = 1;
 
 	++hooks_size;
-	return
+	return;
 error:
 	if (hooks[hooks_size].name != NULL) free(hooks[hooks_size].name);
 }
@@ -169,13 +191,20 @@ static void hooks_filter()
 static void hooks_print(FILE* out)
 {
 	int i;
-	fprintf(out, "Order pri active name                           dir\n");
+	fprintf(out, "Order pri fun active name                           dir\n");
 	for (i = 0; i < hooks_size; ++i)
 	{
-		fprintf(out, "  %3i  %2i    %3.3s %-30.30s %s\n",
-			i+1, hooks[i].priority, hooks[i].active ? "yes" : "no",
-			hooks[i].name, hooks[i].dirname);
+		fprintf(out, "  %3i  %2i %3.3s    %3.3s %-30.30s %s\n",
+			i+1, hooks[i].priority, hooks[i].function == NULL ? "no" : "yes",
+			hooks[i].active ? "yes" : "no", hooks[i].name, hooks[i].dirname);
 	}
+}
+
+static void hooks_read_all()
+{
+	hooks_read_dir("/etc/pm/sleep.d", 10);
+	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
+	hooks_read_dynamic("./testhook.so", 5);
 }
 
 static int hook_run(int hook, const char* parm)
@@ -184,14 +213,19 @@ static int hook_run(int hook, const char* parm)
 	int res;
 	if (!hooks[hook].active) return 0;
 
-	snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
-	fprintf(stderr, "Running %s... ", cmd);
 	timing_start();
-	res = system(cmd);
+	if (hooks[hook].function != NULL)
+	{
+		res = hooks[hook].function(hooks[hook].name, parm);
+	} else {
+		snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
+		fprintf(stderr, "Running %s... ", cmd);
+		res = system(cmd);
+		if (!WIFEXITED(res))
+			return res;
+		res = WEXITSTATUS(res);
+	}
 	long int elapsed = timing_end();
-	if (!WIFEXITED(res))
-		return res;
-	res = WEXITSTATUS(res);
 	fprintf(stderr, "result: %d, elapsed: %8ldusec\n", res, elapsed);
 	switch (res)
 	{
@@ -280,8 +314,7 @@ int main(int argc, const char* argv[])
 
 	if (argc == 2 && strcmp(argv[1], "print") == 0)
 	{
-		hooks_read_dir("/etc/pm/sleep.d", 2);
-		hooks_read_dir("/usr/lib/pm-utils/sleep.d", 1);
+		hooks_read_all();
 		hooks_sort();
 		fprintf(stderr, "Before filtering:\n");
 		hooks_print(stderr);
@@ -336,8 +369,7 @@ int main(int argc, const char* argv[])
 	setenv("DX", "252", 1);
 	setenv("CA", "250", 1);
 
-	hooks_read_dir("/etc/pm/sleep.d", 2);
-	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 1);
+	hooks_read_all();
 	hooks_sort();
 	hooks_filter();
 
