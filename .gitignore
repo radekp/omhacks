@@ -1,5 +1,7 @@
 *.o
 /omhacks/libomhacks.so
+/omhacks/libomhacks.a
 /src/om
 /src/om-led
 /src/pm-action
+/hooks/omhacks.so

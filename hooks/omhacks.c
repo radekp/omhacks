@@ -8,12 +8,6 @@ extern void hooks_add_function(const char* name, hook_function func);
 static struct om_led status_led;
 static struct om_led status_led_saved;
 
-static int test_hook(const char* name, const char* param)
-{
-	fprintf(stderr, "TH(%s,%s) ", name, param);
-	return 0;
-}
-
 static int hook_status_led(const char* name, const char* param)
 {
 	if (strcmp(name, "00-statusled") == 0)
@@ -53,7 +47,4 @@ void init()
 		hooks_add_function("00-statusled", hook_status_led);
 		hooks_add_function("99-statusled", hook_status_led);
 	}
-
-	//hooks_add_function("50-test1", test_hook);
-	//hooks_add_function("30-test2", test_hook);
 }

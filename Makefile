@@ -5,7 +5,7 @@ libomhacks_SRC = omhacks/sysfs.h omhacks/sysfs.c \
 	         omhacks/resumereason.h omhacks/resumereason.c
 libomhacks_OBJ = omhacks/sysfs.o omhacks/led.o omhacks/resumereason.o
 
-all: omhacks/libomhacks.so omhacks/libomhacks.a src/pm-action src/om src/om-led testhook.so
+all: omhacks/libomhacks.so omhacks/libomhacks.a src/pm-action src/om src/om-led hooks/omhacks.so
 
 src/pm-action: src/pm-action.c
 
@@ -19,8 +19,10 @@ omhacks/libomhacks.so: $(libomhacks_SRC)
 omhacks/libomhacks.a: $(libomhacks_OBJ)
 	ar rcs $@ $^
 
-testhook.so: testhook.c omhacks/libomhacks.so
+hooks/omhacks.so: hooks/omhacks.c omhacks/libomhacks.so
 	gcc --shared -fPIC $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f omhacks/*.o src/*.o src/pm-action src/om src/om-led omhacks/libomhacks.so
+	rm -f omhacks/*.o omhacks/libomhacks.so omhacks/libomhacks.a
+	rm -f src/*.o src/pm-action src/om src/om-led
+	rm -f hooks/omhacks.so
