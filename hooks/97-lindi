@@ -80,10 +80,6 @@ resume() {
 	# TODO         logger "suspending"
 	# TODO 	continue (return 250 / CA)
 	fi
-	if [ "$resume_reason" = "EINT09_PMU:usb_disconnect" ]; then
-		echo "Resume on USB disconnect: canceling resume"
-		exit $CA
-	fi
 
 # TODO echo $temperature > /tmp/temperature-on-resume
 # TODO echo $consumption > /tmp/consumption-on-resume

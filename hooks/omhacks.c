@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <omhacks/screen.h>
 #include <omhacks/led.h>
+#include <omhacks/resumereason.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -81,6 +82,16 @@ static int hook_screen(const char* name, const char* param)
 	return 0;
 }
 
+static int hook_cancel_on_usb_disconnect(const char* name, const char* param)
+{
+	if (strcmp(param, "resume") == 0)
+	{
+		const char* resume_reason = om_resume_reason();
+		if (strcmp(resume_reason, "EINT09_PMU:usb_disconnect") == 0)
+			return 250;
+	}
+	return 0;
+}
 void init()
 {
 	if (om_led_init(&status_led, "gta02-power:blue") == 0
@@ -91,4 +102,5 @@ void init()
 	}
 
 	hooks_add_function("74-screen", hook_screen);
+	hooks_add_function("98-cancel-on-usb-disconnect", hook_cancel_on_usb_disconnect);
 }
