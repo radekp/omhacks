@@ -58,18 +58,22 @@ long int timing_end()
 
 #define MAX_HOOKS 1024
 
+typedef int hook_function(int action);
+
 struct hook {
 	char* name;
 	const char* dirname;
 	int priority;
 	int active;
+	hook_function function;
 };
 
 static struct hook hooks[MAX_HOOKS];
 static int hooks_size = 0;
-static FILE* log = NULL;
+static const char *hooks_cur_dir = NULL;
+static int hooks_cur_priority = 0;
 
-static int read_hooks(const char* dir, int priority)
+static int hooks_read_dir(const char* dir, int priority)
 {
 	DIR* fdir = opendir(dir);
 	char fullname[PATH_MAX];
@@ -82,6 +86,7 @@ static int read_hooks(const char* dir, int priority)
 
 	while ((d = readdir(fdir)) != NULL)
 	{
+		if (hooks_size >= MAX_HOOKS) break;
 		if (d->d_name[0] == '.') continue;
 		snprintf(fullname, PATH_MAX, "%s/%s", dir, d->d_name);
 		if (stat(fullname, &st) != 0) continue;
@@ -99,13 +104,29 @@ static int read_hooks(const char* dir, int priority)
 		// If a file is executable, do not run it, but take note as it
 		// can override an executable file elsewhere
 		hooks[hooks_size].active = ((st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0);
+		hooks[hooks_size].function = NULL;
 		++hooks_size;
-		if (hooks_size == MAX_HOOKS)
-			break;
 	}
 
 	if (fdir != NULL) closedir(fdir);
 	return res;
+}
+
+void hooks_add_function(const char* name, hook_function func)
+{
+	if (hooks_size >= MAX_HOOKS) return;
+
+	hooks[hooks_size].name = strdup(d_name);
+	if (hooks[hooks_size].name == NULL) goto error;
+	hooks[hooks_size].dirname = hooks_cur_dir;
+	hooks[hooks_size].priority = hooks_cur_priority;
+	hooks[hooks_size].function = func;
+	hooks[hooks_size].active = 1;
+
+	++hooks_size;
+	return
+error:
+	if (hooks[hooks_size].name != NULL) free(hooks[hooks_size].name);
 }
 
 static int hook_compare(const void *a, const void *b)
@@ -119,12 +140,12 @@ static int hook_compare(const void *a, const void *b)
 		return res;
 }
 
-static void sort_hooks()
+static void hooks_sort()
 {
 	qsort(hooks, hooks_size, sizeof(struct hook), hook_compare);
 }
 
-static void filter_hooks()
+static void hooks_filter()
 {
 	int last = 0;
 	int i;
@@ -145,7 +166,7 @@ static void filter_hooks()
 	hooks_size = last;
 }
 
-static void print_hooks(FILE* out)
+static void hooks_print(FILE* out)
 {
 	int i;
 	fprintf(out, "Order pri active name                           dir\n");
@@ -157,7 +178,7 @@ static void print_hooks(FILE* out)
 	}
 }
 
-static int run_hook(int hook, const char* parm)
+static int hook_run(int hook, const char* parm)
 {
 	char cmd[PATH_MAX + 30];
 	int res;
@@ -185,6 +206,12 @@ static int run_hook(int hook, const char* parm)
 			return res;
 	}
 }
+
+/* Logging subsystem */
+
+static FILE* log = NULL;
+
+
 
 static int do_suspend()
 {
@@ -253,14 +280,14 @@ int main(int argc, const char* argv[])
 
 	if (argc == 2 && strcmp(argv[1], "print") == 0)
 	{
-		read_hooks("/etc/pm/sleep.d", 2);
-		read_hooks("/usr/lib/pm-utils/sleep.d", 1);
-		sort_hooks();
+		hooks_read_dir("/etc/pm/sleep.d", 2);
+		hooks_read_dir("/usr/lib/pm-utils/sleep.d", 1);
+		hooks_sort();
 		fprintf(stderr, "Before filtering:\n");
-		print_hooks(stderr);
-		filter_hooks();
+		hooks_print(stderr);
+		hooks_filter();
 		fprintf(stderr, "After filtering:\n");
-		print_hooks(stderr);
+		hooks_print(stderr);
 		return 0;
 	}
 
@@ -309,10 +336,10 @@ int main(int argc, const char* argv[])
 	setenv("DX", "252", 1);
 	setenv("CA", "250", 1);
 
-	read_hooks("/etc/pm/sleep.d", 2);
-	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
-	sort_hooks();
-	filter_hooks();
+	hooks_read_dir("/etc/pm/sleep.d", 2);
+	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 1);
+	hooks_sort();
+	hooks_filter();
 
 	int cur = 0;
 	do
@@ -322,7 +349,7 @@ int main(int argc, const char* argv[])
 		fprintf(stderr, "Start of run from %d\n", cur);
 		for ( ; cur < hooks_size && !canceled; ++cur)
 		{
-			int res = inhibit ? 0 : run_hook(cur, forwards);
+			int res = inhibit ? 0 : hook_run(cur, forwards);
 			switch (res)
 			{
 				case 0: break;
@@ -340,7 +367,7 @@ int main(int argc, const char* argv[])
 		canceled = 0;
 		for ( ; cur > 0 && !canceled; --cur)
 		{
-			int res = inhibit ? 0 : run_hook(cur-1, backwards);
+			int res = inhibit ? 0 : hook_run(cur-1, backwards);
 			switch (res)
 			{
 				case 0: break;
