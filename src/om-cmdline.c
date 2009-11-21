@@ -214,6 +214,7 @@ int do_led(int argc, char *const *argv)
 		}
 		while ((d = readdir(dir)) != NULL)
 		{
+			if (d->d_name[0] == '.') continue;
 			printf("%s ", d->d_name);
 			if (om_led_init(&led, d->d_name) != 0)
 			{
