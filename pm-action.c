@@ -151,7 +151,7 @@ static void print_hooks(FILE* out)
 	fprintf(out, "Order pri active name                           dir\n");
 	for (i = 0; i < hooks_size; ++i)
 	{
-		fprintf(out, "  %3i  %2i    %.3s %-30.30s %s\n",
+		fprintf(out, "  %3i  %2i    %3.3s %-30.30s %s\n",
 			i+1, hooks[i].priority, hooks[i].active ? "yes" : "no",
 			hooks[i].name, hooks[i].dirname);
 	}
