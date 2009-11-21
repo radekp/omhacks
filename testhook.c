@@ -47,12 +47,12 @@ static int hook_status_led(const char* name, const char* param)
 
 void init()
 {
-	//if (om_led_init(&status_led, "gta02-power:blue") == 0
-	// && om_led_init_copy(&status_led_saved, &status_led) == 0)
-	//{
-	//	hooks_add_function("00-statusled", hook_status_led);
-	//	hooks_add_function("99-statusled", hook_status_led);
-	//}
+	if (om_led_init(&status_led, "gta02-power:blue") == 0
+	 && om_led_init_copy(&status_led_saved, &status_led) == 0)
+	{
+		hooks_add_function("00-statusled", hook_status_led);
+		hooks_add_function("99-statusled", hook_status_led);
+	}
 
 	hooks_add_function("50-test1", test_hook);
 	hooks_add_function("30-test2", test_hook);

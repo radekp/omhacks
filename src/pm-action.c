@@ -219,13 +219,13 @@ static void hooks_print(FILE* out)
 
 static void hooks_read_all()
 {
-//	timing_start();
-//	hooks_read_dir("/etc/pm/sleep.d", 10);
-//	fprintf(stderr, "Scanned /etc/pm/sleep.d in %ldusec\n", timing_end());
-//
-//	timing_start();
-//	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
-//	fprintf(stderr, "Scanned /usr/lib/pm-utils/sleep.d in %ldusec\n", timing_end());
+	timing_start();
+	hooks_read_dir("/etc/pm/sleep.d", 10);
+	fprintf(stderr, "Scanned /etc/pm/sleep.d in %ldusec\n", timing_end());
+
+	timing_start();
+	hooks_read_dir("/usr/lib/pm-utils/sleep.d", 0);
+	fprintf(stderr, "Scanned /usr/lib/pm-utils/sleep.d in %ldusec\n", timing_end());
 
 	timing_start();
 	hooks_read_dynamic("./testhook.so", 5);
@@ -419,7 +419,7 @@ int main(int argc, const char* argv[])
 
 		if (cur == hooks_size)
 		{
-//			do_suspend();
+			do_suspend();
 		}
 
 		canceled = 0;
