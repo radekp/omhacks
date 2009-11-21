@@ -131,7 +131,7 @@ static int run_hook(int hook, const char* parm)
 	if (!hooks[hook].active) return 0;
 
 	snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
-	printf("Running %s... ", cmd);
+	fprintf(stderr, "Running %s... ", cmd);
 	gettimeofday(&pre, NULL);
 	res = system(cmd);
 	gettimeofday(&post, NULL);
@@ -139,7 +139,7 @@ static int run_hook(int hook, const char* parm)
 	if (!WIFEXITED(res))
 		return res;
 	res = WEXITSTATUS(res);
-	printf("result: %d, elapsed: %8ldusec\n", res, elapsed);
+	fprintf(stderr, "result: %d, elapsed: %8ldusec\n", res, elapsed);
 	switch (res)
 	{
 		case 254: // not applicable
