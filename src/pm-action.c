@@ -194,8 +194,11 @@ static void hooks_filter()
 		src = hooks_first_good(src);
 		fprintf(stderr, "FG dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
 		if (src >= hooks_size) break;
-		if (src != dst) memcpy(&hooks[dst], &hooks[src], sizeof(struct hook));
-		fprintf(stderr, "CP dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
+		if (src != dst)
+		{
+			memcpy(&hooks[dst], &hooks[src], sizeof(struct hook));
+			fprintf(stderr, "CP dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
+		}
 		++dst;
 		++src;
 	}
