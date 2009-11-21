@@ -36,6 +36,9 @@ struct om_led
 /* Initialise an om_led structure */
 int om_led_init(struct om_led* led, const char* name);
 
+/* Initialise an om_led structure with the contents of another one */
+int om_led_init_copy(struct om_led* dstled, const struct om_led* srcled);
+
 /* Read led status */
 int om_led_get(struct om_led* led);
 

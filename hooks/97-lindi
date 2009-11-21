@@ -39,11 +39,11 @@ suspend() {
 # TODO lockpid="$!"
 # TODO rtcwake -m no -s 3600 > /dev/null
 
-	om-led gta02-power:blue 0
+	#om-led gta02-power:blue 0
 }
 
 resume() {
-	om-led gta02-power:blue 255
+	#om-led gta02-power:blue 255
 
 	resume_reason="$(om resume-reason)"
 # TODO     temperature="$(temperature)"

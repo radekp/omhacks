@@ -45,6 +45,19 @@ int om_led_init(struct om_led* led, const char* name)
 	return 0;
 }
 
+int om_led_init_copy(struct om_led* dstled, const struct om_led* srcled)
+{
+	dstled->dir = strdup(srcled->dir);
+	if (dstled->dir == NULL) return -1;
+	strncpy(dstled->name, srcled->name, 254); dstled->name[254] = 0;
+	dstled->dir_len = srcled->dir_len;
+	strcpy(dstled->trigger, srcled->trigger);
+	dstled->brightness = srcled->brightness;
+	dstled->delay_on = srcled->delay_on;
+	dstled->delay_off = srcled->delay_off;
+	return 0;
+}
+
 static const char* led_get(struct om_led* led, const char* param)
 {
 	strncpy(led->dir + led->dir_len, param, PATH_MAX - led->dir_len);
