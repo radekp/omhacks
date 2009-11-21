@@ -190,12 +190,9 @@ static void hooks_filter()
 {
 	int src = 0;
 	int dst = 0;
-	fprintf(stderr, "S0 %d\n", hooks_size);
 	while (src < hooks_size)
 	{
-		fprintf(stderr, "SR dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
 		src = hooks_first_good(src);
-		fprintf(stderr, "FG dst: %d:%s, src: %d:%s\n", dst, hooks[dst].name, src, hooks[src].name);
 		if (src >= hooks_size) break;
 		if (src != dst)
 		{
@@ -206,7 +203,6 @@ static void hooks_filter()
 		++src;
 	}
 	hooks_size = dst;
-	fprintf(stderr, "SZ %d\n", hooks_size);
 }
 
 static void hooks_print(FILE* out)
@@ -423,7 +419,7 @@ int main(int argc, const char* argv[])
 
 		if (cur == hooks_size)
 		{
-//			do_suspend();
+			do_suspend();
 		}
 
 		canceled = 0;
