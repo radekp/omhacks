@@ -148,10 +148,12 @@ static void filter_hooks()
 static void print_hooks(FILE* out)
 {
 	int i;
+	fprintf(out, "Order pri active name                           dir\n");
 	for (i = 0; i < hooks_size; ++i)
 	{
-		fprintf(out, "%3i: %s/%s prio %d active %d\n",
-			i+1, hooks[i].dirname, hooks[i].name, hooks[i].priority, hooks[i].active);
+		fprintf(out, "  %3i  %2i    %.3s %-30.30s %s\n",
+			i+1, hooks[i].priority, hooks[i].active ? "yes" : "no",
+			hooks[i].name, hooks[i].dirname);
 	}
 }
 
@@ -249,6 +251,19 @@ int main(int argc, const char* argv[])
 		return 1;
 	}
 
+	if (argc == 2 && strcmp(argv[1], "print") == 0)
+	{
+		read_hooks("/etc/pm/sleep.d", 2);
+		read_hooks("/usr/lib/pm-utils/sleep.d", 1);
+		sort_hooks();
+		fprintf(stderr, "Before filtering:\n");
+		print_hooks(stderr);
+		filter_hooks();
+		fprintf(stderr, "After filtering:\n");
+		print_hooks(stderr);
+		return 0;
+	}
+
 	if (getuid() != 0)
 	{
 		fprintf(stderr, "This utility may only be run by the root user.\n");
@@ -297,19 +312,7 @@ int main(int argc, const char* argv[])
 	read_hooks("/etc/pm/sleep.d", 2);
 	read_hooks("/usr/lib/pm-utils/sleep.d", 1);
 	sort_hooks();
-	if (argc == 2 && strcmp(argv[1], "print") == 0)
-	{
-		fprintf(stderr, "Before filtering:\n");
-		print_hooks(stderr);
-	}
 	filter_hooks();
-
-	if (argc == 2 && strcmp(argv[1], "print") == 0)
-	{
-		fprintf(stderr, "After filtering:\n");
-		print_hooks(stderr);
-		return 0;
-	}
 
 	int cur = 0;
 	do
