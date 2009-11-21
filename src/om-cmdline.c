@@ -23,12 +23,14 @@
 #include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 const char* argv0;
 struct opt_t opts;
 
 int om_flags_sysfs = 0;
 int om_flags_backlight = 0;
+int om_flags_touchscreen = 0;
 int om_flags_resume_reason = 0;
 int om_flags_led = 0;
 
@@ -71,7 +73,7 @@ int do_backlight(int argc, char *const *argv)
 		int val = om_screen_brightness_get();
 		if (val < 0)
 		{
-			perror("getting brightness: ");
+			perror("getting brightness");
 			return 1;
 		}
 		printf("%d\n", val);
@@ -83,7 +85,7 @@ int do_backlight(int argc, char *const *argv)
 			int old_val = om_screen_brightness_swap(atoi(argv[1]));
 			if (old_val < 0)
 			{
-				perror("getting/setting brightness: ");
+				perror("getting/setting brightness");
 				return 1;
 			}
 			printf("%d\n", old_val);
@@ -91,10 +93,42 @@ int do_backlight(int argc, char *const *argv)
 			int res = om_screen_brightness_set(atoi(argv[1]));
 			if (res < 0)
 			{
-				perror("setting brightness: ");
+				perror("setting brightness");
 				return 1;
 			}
 		}
+	}
+	return 0;
+}
+
+void usage_touchscreen(FILE* out)
+{
+	fprintf(out, "Usage: %s touchscreen lock\n", argv0);
+}
+
+int do_touchscreen(int argc, char *const *argv)
+{
+	if (argc == 1 || strcmp(argv[1], "lock") != 0)
+	{
+		usage_touchscreen(stderr);
+		return -1;
+	}
+	int ts = om_touchscreen_open();
+	if (ts < 0)
+	{
+		perror("opening touchscreen");
+		return 1;
+	}
+	if (om_touchscreen_lock(ts) < 0)
+	{
+		perror("locking touchscreen");
+		return 1;
+	}
+	pause();
+	if (close(ts) < 0)
+	{
+		perror("closing touchscreen");
+		return 1;
 	}
 	return 0;
 }
@@ -109,7 +143,7 @@ int do_resume_reason(int argc, char *const *argv)
 	const char* res = om_resume_reason();
 	if (res == NULL)
 	{
-		perror("getting resume reason: ");
+		perror("getting resume reason");
 		return 1;
 	}
 	puts(res);
@@ -174,7 +208,7 @@ int do_led(int argc, char *const *argv)
 
 	if (om_led_init(&led, argv[1]) != 0)
 	{
-		perror("validating led name: ");
+		perror("validating led name");
 		return 1;
 	}
 
@@ -183,7 +217,7 @@ int do_led(int argc, char *const *argv)
 		// Get status
 		if (om_led_get(&led) != 0)
 		{
-			perror("getting led status: ");
+			perror("getting led status");
 			return 1;
 		}
 		print_led(&led);
@@ -192,7 +226,7 @@ int do_led(int argc, char *const *argv)
 		{
 			if (om_led_get(&led) != 0)
 			{
-				perror("getting led status: ");
+				perror("getting led status");
 				return 1;
 			}
 			print_led(&led);
@@ -205,7 +239,7 @@ int do_led(int argc, char *const *argv)
 
 		if (om_led_set(&led) != 0)
 		{
-			perror("setting led status: ");
+			perror("setting led status");
 			return 1;
 		}
 	}

@@ -38,5 +38,21 @@ int om_screen_brightness_set(int val);
  */ 
 int om_screen_brightness_swap(int val);
 
+/*
+ * Open the touchscreen input device.
+ *
+ * The result is a file descriptor that can be closed with a normal close()
+ */
+int om_touchscreen_open();
+
+/*
+ * Lock the touchscreen input device
+ */
+int om_touchscreen_lock(int fd);
+
+/*
+ * Unlock the touchscreen input device
+ */
+int om_touchscreen_unlock(int fd);
 
 #endif

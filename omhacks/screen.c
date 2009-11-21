@@ -21,6 +21,14 @@
 #include "sysfs.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+
+#ifndef EVIOCGRAB
+#define EVIOCGRAB 0x40044590
+#endif
 
 int om_screen_brightness_get()
 {
@@ -43,4 +51,19 @@ int om_screen_brightness_swap(int val)
 	const char* res = om_sysfs_swap("brightness", sval);
 	if (res == NULL) return -1;
 	return atoi(res);
+}
+
+int om_touchscreen_open()
+{
+	return open("/dev/input/event1", O_RDONLY);
+}
+
+int om_touchscreen_lock(int fd)
+{
+	return ioctl(fd, EVIOCGRAB, 1);
+}
+
+int om_touchscreen_unlock(int fd)
+{
+	return ioctl(fd, EVIOCGRAB, 0);
 }

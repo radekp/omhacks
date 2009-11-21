@@ -69,5 +69,4 @@ void init()
 	}
 
 	hooks_add_function("74-screen", hook_screen);
-	hooks_add_function("74-screen", hook_screen);
 }

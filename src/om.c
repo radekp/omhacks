@@ -33,6 +33,7 @@ static void usage(FILE* out)
 	usage_help(out);
 	usage_sysfs(out);
 	usage_backlight(out);
+	usage_touchscreen(out);
 	usage_resume_reason(out);
 	usage_led(out, NULL);
 	usage_options(out);
@@ -68,12 +69,14 @@ int main(int argc, char *const *argv)
 		return do_sysfs(argc, argv);
 	else if (strcmp(argv[0], "backlight") == 0)
 		return do_backlight(argc, argv);
+	else if (strcmp(argv[0], "touchscreen") == 0)
+		return do_touchscreen(argc, argv);
 	else if (strcmp(argv[0], "resume-reason") == 0)
 		return do_resume_reason(argc, argv);
 	else if (strcmp(argv[0], "led") == 0)
 		return do_led(argc, argv);
 	else {
-		fprintf(stderr, "Unknown argument: %s\n", argv[1]);
+		fprintf(stderr, "Unknown argument: %s\n", argv[0]);
 		return 1;
 	}
 
