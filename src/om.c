@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
-#include "libomhacks.h"
+#include <omhacks/omhacks.h>
 #include "om-cmdline.h"
 
 static void usage_help(FILE* out)
@@ -32,6 +32,9 @@ static void usage_help(FILE* out)
 static void usage(FILE* out)
 {
 	usage_help(out);
+	usage_sysfs(out);
+	usage_backlight(out);
+	usage_resume_reason(out);
 	usage_led(out, NULL);
 	usage_options(out);
 }
@@ -44,15 +47,13 @@ static int do_help(int argc, char *const *argv)
 
 int main(int argc, char *const *argv)
 {
-	om_flags_led = OM_FLAGS_LED_STANDALONE;
-
 	if (parse_options(argc, argv) != 0)
 	{
 		usage(stderr);
 		return 1;
 	}
-	argc -= optind-1;
-	argv += optind-1;
+	argc -= optind;
+	argv += optind;
 
 	if (opts.help)
 		return do_help(argc, argv);
@@ -62,7 +63,20 @@ int main(int argc, char *const *argv)
 		usage(stderr);
 		return 1;
 	}
-	return do_led(argc, argv);
+	if (strcmp(argv[0], "help") == 0)
+		return do_help(argc, argv);
+	else if (strcmp(argv[0], "sysfs") == 0)
+		return do_sysfs(argc, argv);
+	else if (strcmp(argv[0], "backlight") == 0)
+		return do_backlight(argc, argv);
+	else if (strcmp(argv[0], "resume-reason") == 0)
+		return do_resume_reason(argc, argv);
+	else if (strcmp(argv[0], "led") == 0)
+		return do_led(argc, argv);
+	else {
+		fprintf(stderr, "Unknown argument: %s\n", argv[1]);
+		return 1;
+	}
 
 	return 0;
 }
