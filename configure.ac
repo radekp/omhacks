@@ -3,6 +3,8 @@ AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([foreign subdir-objects nostdinc])
 
+AC_CONFIG_MACRO_DIR([m4])
+
 # Checks for programs.
 AC_PROG_MAKE_SET
 AC_PROG_CC
