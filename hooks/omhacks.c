@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <omhacks/sysfs.h>
+#include <omhacks/screen.h>
 #include <omhacks/led.h>
 #include <string.h>
 #include <stdlib.h>
@@ -47,18 +47,14 @@ static int hook_screen(const char* name, const char* param)
 	if (strcmp(param, "suspend") == 0)
 	{
 		// Save current backlight brightness and turn it off
-		const char* val = om_sysfs_swap("brightness", "0");
-		if (val == NULL)
+		screen_brightness_saved = om_screen_brightness_swap(0);
+		if (screen_brightness_saved < 0)
 			screen_brightness_saved = 255;
-		else
-			screen_brightness_saved = atoi(val);
 	}
 	else
 	{
 		// Restore saved backlight brightness
-		char val[20];
-		snprintf(val, 20, "%d", screen_brightness_saved);
-		om_sysfs_set("brightness", val);
+		om_screen_brightness_set(screen_brightness_saved);
 	}
 	return 0;
 }

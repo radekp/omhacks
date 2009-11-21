@@ -2,8 +2,9 @@ CFLAGS=-O2 -Wall -g -I.
 LDFLAGS=-ldl -rdynamic
 libomhacks_SRC = omhacks/sysfs.h omhacks/sysfs.c \
 	         omhacks/led.h omhacks/led.c \
+	         omhacks/screen.h omhacks/screen.c \
 	         omhacks/resumereason.h omhacks/resumereason.c
-libomhacks_OBJ = omhacks/sysfs.o omhacks/led.o omhacks/resumereason.o
+libomhacks_OBJ = omhacks/sysfs.o omhacks/led.o omhacks/screen.o omhacks/resumereason.o
 
 all: omhacks/libomhacks.so omhacks/libomhacks.a src/pm-action src/om src/om-led hooks/omhacks.so
 

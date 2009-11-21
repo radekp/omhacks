@@ -68,33 +68,30 @@ int do_backlight(int argc, char *const *argv)
 {
 	if (argc == 1)
 	{
-		const char* res = om_sysfs_get("brightness");
-		if (res == NULL)
+		int val = om_screen_brightness_get();
+		if (val < 0)
 		{
 			perror("getting brightness: ");
 			return 1;
 		}
-		fputs(res, stdout);
+		printf("%d\n", val);
 	}
 	else
 	{
 		if (opts.swap)
 		{
-			const char* res = om_sysfs_swap("brightness", argv[1]);
-			if (res == NULL)
+			int old_val = om_screen_brightness_swap(atoi(argv[1]));
+			if (old_val < 0)
 			{
 				perror("getting/setting brightness: ");
 				return 1;
 			}
-			fputs(res, stdout);
+			printf("%d\n", old_val);
 		} else {
-			int res = om_sysfs_set("brightness", argv[1]);
+			int res = om_screen_brightness_set(atoi(argv[1]));
 			if (res < 0)
 			{
 				perror("setting brightness: ");
-				return 1;
-			} else if (res > 0) {
-				fprintf(stderr, "partial write to /sys of %d bytes", res);
 				return 1;
 			}
 		}

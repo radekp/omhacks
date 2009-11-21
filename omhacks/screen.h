@@ -1,5 +1,5 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
+#ifndef OMHACKS_SCREEN_H
+#define OMHACKS_SCREEN_H
 
 /*
  * omhacks - Various useful utility functions for the FreeRunner
@@ -21,9 +21,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/resumereason.h>
+/*
+ * Read screen brightness.
+ *
+ * If the result is negative, then an error happened.
+ */ 
+int om_screen_brightness_get();
+
+/* Set screen brightness */
+int om_screen_brightness_set(int val);
+
+/* 
+ * Set screen brightness and read the old value
+ *
+ * If the result is negative, then an error happened.
+ */ 
+int om_screen_brightness_swap(int val);
+
 
 #endif

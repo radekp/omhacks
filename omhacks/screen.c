@@ -1,6 +1,3 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
-
 /*
  * omhacks - Various useful utility functions for the FreeRunner
  *
@@ -20,10 +17,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#include "screen.h"
+#include "sysfs.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/resumereason.h>
+int om_screen_brightness_get()
+{
+	const char* res = om_sysfs_get("brightness");
+	if (res == NULL) return -1;
+	return atoi(res);
+}
 
-#endif
+int om_screen_brightness_set(int val)
+{
+	char sval[20];
+	snprintf(sval, 20, "%d", val);
+	return om_sysfs_set("brightness", sval) == 0 ? 0 : -1;
+}
+
+int om_screen_brightness_swap(int val)
+{
+	char sval[20];
+	snprintf(sval, 20, "%d", val);
+	const char* res = om_sysfs_swap("brightness", sval);
+	if (res == NULL) return -1;
+	return atoi(res);
+}
