@@ -3,6 +3,7 @@
 Like pm-utils as much as possible.
 
 Pros:
+
  * It tries its best to run hooks in exactly the same way as pm-utils.
  * It's faster
  * It can load hooks from a .so file, which is much faster, avoids
@@ -14,6 +15,7 @@ Pros:
    case of a resume for usb disconnect.
 
 Cons:
+
  * No support for quirks
  * It does not ship the functions and pm-functions shell libraries, so plugins
    cannot make use of them
@@ -35,11 +37,16 @@ the library functions. Just run om to get its command line help.
 The extra om-led executable is the same as running "om led", but is also
 provided separately so that it's possible to make "om-led" suid but not "om".
 
+If you need another function in the library, please send a patch. Please try to
+keep in the minimalist spirit of the library, and also provide a command line
+front end.
+
 
 *** TODO list
  - recreate lindi's suspend/resume scripts
  - suspend/resume GPS
  - package
+    - move git repo to pkg-fso (and update debian/control)
     - update-alternatives for pm-suspend
       (or dpkg-divert)
     - tips for dpkg-statoverride on om-led
