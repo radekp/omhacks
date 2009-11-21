@@ -19,7 +19,7 @@ omhacks/libomhacks.so: $(libomhacks_SRC)
 omhacks/libomhacks.a: $(libomhacks_OBJ)
 	ar rcs $@ $^
 
-testhook.so: testhook.c
+testhook.so: testhook.c omhacks/libomhacks.so
 	gcc --shared -fPIC $(CFLAGS) -o $@ $^
 
 clean:
