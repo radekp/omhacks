@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH="$PATH:/root/omhacks"
+PATH="$PATH:/root/omhacks/src"
 STORAGEDIR="$PM_UTILS_RUNDIR/$STASHNAME/storage"
 
 suspend() {
