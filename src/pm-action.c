@@ -138,8 +138,8 @@ static int hooks_read_dir(const char* dir, int priority)
 			// can override an executable file elsewhere
 			hooks[hooks_size].active = ((st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) != 0);
 			hooks[hooks_size].function = NULL;
+			++hooks_size;
 		}
-		++hooks_size;
 	}
 
 	if (fdir != NULL) closedir(fdir);
