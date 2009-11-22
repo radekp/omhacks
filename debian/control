@@ -4,9 +4,9 @@ Priority: extra
 Maintainer: Enrico Zini <enrico@debian.org>
 Build-Depends: debhelper (>= 7)
 Standards-Version: 3.8.3
-Homepage: http://git.debian.org/?p=users/enrico/omhacks.git;a=blob;f=README
-Vcs-Git: git://git.debian.org/users/enrico/omhacks.git
-Vcs-Browser: http://git.debian.org/?p=users/enrico/omhacks.git
+Homepage: http://git.debian.org/?p=pkg-fso/omhacks.git;a=blob;f=README
+Vcs-Git: git://git.debian.org/git/pkg-fso/omhacks.git
+Vcs-Browser: http://git.debian.org/?p=pkg-fso/omhacks.git
 
 Package: omhacks
 Architecture: any
