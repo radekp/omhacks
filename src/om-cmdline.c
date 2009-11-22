@@ -398,6 +398,9 @@ int do_battery(int argc, char *const *argv)
 			usage_battery(stderr);
 			return 1;
 		}
+	} else {
+		usage_battery(stderr);
+		return 1;
 	}
 	return 0;
 }
@@ -430,6 +433,9 @@ int do_power(int argc, char *const *argv)
 		if (om_gsm_power_set(0) < 0) return -1;
 		if (om_gps_power_set(0) < 0) return -1;
 		if (om_wifi_power_set(0) < 0) return -1;
+	} else {
+		usage_power(stderr);
+		return 1;
 	}
 	return 0;
 }
