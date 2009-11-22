@@ -33,6 +33,7 @@ struct opt_t opts;
 int om_flags_sysfs = 0;
 int om_flags_backlight = 0;
 int om_flags_touchscreen = 0;
+int om_flags_gsm = 0;
 int om_flags_resume_reason = 0;
 int om_flags_led = 0;
 
@@ -113,7 +114,7 @@ int do_touchscreen(int argc, char *const *argv)
 	if (argc == 1 || strcmp(argv[1], "lock") != 0)
 	{
 		usage_touchscreen(stderr);
-		return -1;
+		return 1;
 	}
 	int ts = om_touchscreen_open();
 	if (ts < 0)
@@ -130,6 +131,55 @@ int do_touchscreen(int argc, char *const *argv)
 	if (close(ts) < 0)
 	{
 		perror("closing touchscreen");
+		return 1;
+	}
+	return 0;
+}
+
+void usage_gsm(FILE* out)
+{
+	fprintf(out, "Usage: %s gsm [--swap] power [1/0]\n", argv0);
+}
+
+int do_gsm(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		usage_gsm(stderr);
+		return 1;
+	}
+	if (strcmp(argv[1], "power") == 0)
+	{
+		if (argc == 2)
+		{
+			int res = om_gsm_power_get();
+			if (res < 0)
+			{
+				perror("reading GSM power");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			if (opts.swap)
+			{
+				int res = om_gsm_power_swap(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("reading/setting GSM power");
+					return 1;
+				}
+				printf("%d\n", res);
+			} else {
+				int res = om_gsm_power_set(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("setting GSM power");
+					return 1;
+				}
+			}
+		}
+	} else {
+		usage_gsm(stderr);
 		return 1;
 	}
 	return 0;

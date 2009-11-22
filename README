@@ -97,21 +97,25 @@ front end.
 
 *** TODO list
  - recreate lindi's suspend/resume scripts
- - suspend/resume GPS
+ - GSM
+    - turn on power
+    - turn on all, inc. PIN
+ - GPS
+    - suspend/resume GPS
+    - turn on/off power
+ - battery
+    - read, monitor
  - hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
- - upload to pkg-fso
  - zavai hooks (alarm, mostly)
  - fork pm-utils-light off omhacks at a later stage
 
+ - reduce the size of lindi's ~/bin/
+   http://lindi.iki.fi/lindi/openmoko/custom-scripts.txt
 16:18 #openmoko-debian < enrico> lindi-: a few questions:
-16:18 #openmoko-debian < enrico> lindi-: 1. why do you lock the touch screen? my phone doesn't wake up if the 
-                                 touchscreen is not locked
 16:18 #openmoko-debian < enrico> lindi-: 2. what's the fiddling with sysrq-trigger?
 16:19 #openmoko-debian < enrico> lindi-: 3. why touch /tmp/frameworkd.pid ?
 -------------------------------------------------------------------------------------------------------------------
-16:40 #openmoko-debian < lindi-> enrico: 1. to make sure that i don't accidentally type "rm -fr /" when the phone 
-                                 is in my pocket and wakes up with rtc
 16:40 #openmoko-debian < lindi-> enrico: 2. sysrq trigger just makes sure kernel does not log anything on resume 
                                  to display, this used to slow things down a lot with debugging information
 16:40 #openmoko-debian < lindi-> enrico: 3. gsm-watchdog looks at the freshness of /tmp/frameworkd.pid

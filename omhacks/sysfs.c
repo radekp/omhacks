@@ -63,22 +63,48 @@ static const char* scan_resume_reason2()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason";
 	return NULL;
 }
+static const char* scan_pm_bt()
+{
+	// TODO return \"$(find /sys -wholename "*pm-bt*/power_on" -o -wholename "*pm-bt*/pwron")\"
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0";
+	return NULL;
+}
+static const char* scan_pm_gps()
+{
+	// TODO return $(find /sys -wholename "*pm-gps*/power_on" -o -wholename "*pm-gps*/pwron")
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0";
+	return NULL;
+}
+static const char* scan_pm_gsm()
+{
+	// TODO return $(find /sys -name neo1973-pm-gsm.0 -type d)
+	// TODO sys_pm_gsm_power=\"$(find /sys -wholename "*pm-gsm*/power_on" -o -wholename "*pm-gsm*/pwron")\"
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0";
+	return NULL;
+}
+static const char* scan_pm_wlan()
+{
+	// TODO sys_pm_wlan=\"$(find /sys -wholename "*gta02-pm-wlan/gta02-pm-wlan.0")\"
+	if (exists("/sys/bus/platform/drivers/gta02-pm-wlan/gta02-pm-wlan.0"))
+		return "/sys/bus/platform/drivers/gta02-pm-wlan/gta02-pm-wlan.0";
+	return NULL;
+}
 
 static struct om_sysfs_name om_sysfs_names[] = {
-// TODO sys_auxled=\"$(find /sys -name "gta02-aux:red")\"
 // TODO sys_battery=\"$(find /sys -wholename "*/power_supply/battery" -o -wholename "*/power_supply/bat" -type d)\"
 	{ "brightness", scan_brightness, NULL },
 // TODO sys_force_usb_limit_dangerous=\"$(find /sys -name force_usb_limit_dangerous -o -name usb_curlim)\"
 // TODO sys_hostmode=\"$(find /sys -name hostmode)\"
-// TODO sys_pm_bt_power=\"$(find /sys -wholename "*pm-bt*/power_on" -o -wholename "*pm-bt*/pwron")\"
-// TODO sys_pm_gps_power=\"$(find /sys -wholename "*pm-gps*/power_on" -o -wholename "*pm-gps*/pwron")\"
-// TODO sys_pm_gsm=\"$(find /sys -name neo1973-pm-gsm.0 -type d)\"
-// TODO sys_pm_gsm_power=\"$(find /sys -wholename "*pm-gsm*/power_on" -o -wholename "*pm-gsm*/pwron")\"
-// TODO sys_pm_wlan=\"$(find /sys -wholename "*gta02-pm-wlan/gta02-pm-wlan.0")\"
+	{ "pm-bt", scan_pm_bt, NULL },
+	{ "pm-gps", scan_pm_gps, NULL },
+	{ "pm-gsm", scan_pm_gsm, NULL },
+	{ "pm-wlan", scan_pm_wlan, NULL },
 	{ "resume_reason", scan_resume_reason, NULL },
 	{ "resume_reason2", scan_resume_reason2, NULL },
 // TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
-// TODO sys_vibrator=\"$(find /sys -name neo1973:vibrator)\"
 // TODO sys_wlan_driver=\"/sys/bus/platform/drivers/s3c2440-sdi\"
 };
 static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
