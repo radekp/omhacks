@@ -98,11 +98,13 @@ front end.
 *** TODO list
  - recreate lindi's suspend/resume scripts
  - GSM
-    + turn on power
     - turn on all, inc. PIN
  - GPS
-    - suspend/resume GPS
-    - turn on/off power
+    - suspend/resume GPS, saving/restoring status
+    - set funky parameters
+       - keep GPS on during suspend
+       - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)
+         http://lists.linuxtogo.org/pipermail/smartphones-userland/2009-October/002037.html
  - battery
     - read, monitor
  - hook that calls atq and sets rtcwake to wake for the next at event

@@ -51,20 +51,45 @@ int om_gps_power_get()
 
 int om_gps_power_set(int value)
 {
-	const char* path = om_gps_power_path();
-	if (path == NULL) return -1;
-	return om_sysfs_writefile(path, value ? "1\n" : "0\n");
+	// This feels rather silly at the moment, but it makes sense to have
+	// some consistency in the various get/set/swap APIs.
+	int res = om_gps_power_swap(value);
+	if (res < 0) return res;
+	return 0;
 }
 
 int om_gps_power_swap(int value)
 {
-	const char* path = om_gps_power_path();
-	if (path == NULL) return -1;
-	const char* val = om_sysfs_readfile(path);
+	const char* power_path = om_gps_power_path();
+	if (power_path == NULL) return -1;
+
+	const char* val = om_sysfs_readfile(power_path);
 	if (val == NULL) return -1;
 	int old_val = atoi(val);
-	int res = om_sysfs_writefile(path, value ? "1\n" : "0\n");
-	if (res < 0) return res;
+
+	// If we are setting it to what it already is, don't bother
+	if (value == old_val) return old_val;
+
+	if (value)
+	{
+		// Turn on
+		if (om_sysfs_writefile(power_path, "1\n") < 0) return -1;
+	} else {
+		// Note: the logic here is Enrico cargo-culting Lindi
+
+		// Turn off
+		if (om_sysfs_writefile(power_path, "0\n") < 0) return -1;
+
+		// Is it off?
+		const char* val = om_sysfs_readfile(power_path);
+		if (val == NULL) return -1;
+		if (val[0] == '1')
+		{
+			// No, try again
+			if (om_sysfs_writefile(power_path, "1\n") < 0) return -1;
+			if (om_sysfs_writefile(power_path, "0\n") < 0) return -1;
+		}
+	}
 	return old_val;
 }
 
