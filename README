@@ -107,6 +107,8 @@ front end.
        + gps on during suspend (done)
     - wake up alarm
        - all done, just hooks need to be written
+ - Example of an at job that goes back to sleep at the end, if resume reason
+   was rtcwake and there has been no meaningful input
  - What to do with this resume reason?
    [...]
    * EINT01_GSM
