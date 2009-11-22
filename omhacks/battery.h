@@ -1,5 +1,5 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
+#ifndef OMHACKS_BATTERY_H
+#define OMHACKS_BATTERY_H
 
 /*
  * omhacks - Various useful utility functions for the FreeRunner
@@ -21,14 +21,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/bt.h>
-#include <omhacks/gsm.h>
-#include <omhacks/gps.h>
-#include <omhacks/resumereason.h>
-#include <omhacks/wifi.h>
-#include <omhacks/battery.h>
+/*
+ * Read temperature of battery (in celsius degrees)
+ *
+ * Writes result to supplied pointer. Returns zero on success and
+ * negative on error.
+ */ 
+int om_battery_temperature_get(float *temperature);
 
 #endif

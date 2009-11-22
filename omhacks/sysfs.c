@@ -40,6 +40,16 @@ static int exists(const char* fname)
 	return access(fname, F_OK) == 0;
 }
 
+static const char* scan_battery()
+{
+	// TODO sys_battery=`find /sys -wholename "*/power_supply/battery" -o -wholename "*/power_supply/bat" -type d`
+	if (exists("/sys/class/power_supply/battery"))
+		return "/sys/class/power_supply/battery";
+	if (exists("/sys/class/power_supply/bat"))
+		return "/sys/class/power_supply/bat";
+	return NULL;
+}
+
 static const char* scan_brightness()
 {
 	// TODO sys_brightness=\"$(find /sys -wholename "*backlight*/brightness")\"
@@ -94,7 +104,7 @@ static const char* scan_pm_wlan()
 }
 
 static struct om_sysfs_name om_sysfs_names[] = {
-// TODO sys_battery=\"$(find /sys -wholename "*/power_supply/battery" -o -wholename "*/power_supply/bat" -type d)\"
+	{ "battery", scan_battery, NULL },
 	{ "brightness", scan_brightness, NULL },
 // TODO sys_force_usb_limit_dangerous=\"$(find /sys -name force_usb_limit_dangerous -o -name usb_curlim)\"
 // TODO sys_hostmode=\"$(find /sys -name hostmode)\"
