@@ -424,7 +424,7 @@ int do_power(int argc, char *const *argv)
 		if ((val = om_wifi_power_get()) < 0) return val;
 		printf("wifi power %d\n", val);
 	}
-	if (strcmp(argv[1], "all-off") == 0)
+	else if (strcmp(argv[1], "all-off") == 0)
 	{
 		if (om_bt_power_set(0) < 0) return -1;
 		if (om_gsm_power_set(0) < 0) return -1;

@@ -97,13 +97,6 @@ front end.
 
 *** TODO list
  - recreate lindi's suspend/resume scripts
- 19:55 #openmoko-debian < lindi-> enrico: how about changing "om <gps|bt|wifi> power" to "om power <gps|bt|wifi>" so 
-                                  that plain "om power" could display status of all of them just like "om led" does?
- 19:57 #openmoko-debian < enrico> lindi-: I wanted to have a om gps something where many things fit
- 19:57 #openmoko-debian < enrico> lindi-: but I can still do a "om power status" that lists them all
- 19:57 #openmoko-debian < lindi-> enrico: ok everything seems to work
- 19:57 #openmoko-debian < enrico> lindi-: and also "om power all-off" that turns everything off (such as at boot)
-
  - GSM
     - turn on all, inc. PIN
  - GPS
