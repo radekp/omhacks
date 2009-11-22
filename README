@@ -96,7 +96,23 @@ front end.
 
 
 *** TODO list
+ - get rid of *_swap() in omhacks
  - recreate lindi's suspend/resume scripts
+ - My goals
+    - stand-alone pppd
+       + turn gsm on/off (done)
+       - turn gsm really on (can be done in pppd's chatscript)
+    - zavai ported to gpsd
+       + turn gps on/off (done)
+       + gps on during suspend (done)
+    - wake up alarm
+       - all done, just hooks need to be written
+ - What to do with this resume reason?
+   [...]
+   * EINT01_GSM
+   [...]
+   * EINT09_PMU
+   [...]
  - GSM
     - turn on all, inc. PIN
  - GPS
@@ -106,18 +122,25 @@ front end.
        - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)
          http://lists.linuxtogo.org/pipermail/smartphones-userland/2009-October/002037.html
    http://wiki.openmoko.org/wiki/Neo_FreeRunner_GPS#UBX_protocol
+   00:29 #openmoko-debian < lindi-> enrico: 'om gps keep-on-in-suspend' does not say anything to the gps chip. does 
+                                    this really work? won't it wake up the main cpu since it is sending coordinates 
+				    constantly?
+   00:30 #openmoko-debian < enrico> lindi-: I have *no* idea
+   00:30 #openmoko-debian < enrico> lindi-: it's too cold outside now to test it
+   00:30 #openmoko-debian < lindi-> since there's some UBX command to put the GPS chip to a "keep fix but don't 
+   			            actively track and report coordinates" mode
+
    20:37 #openmoko-debian < enrico> lindi-: in fact I can code that ubxgen in C
    20:37 #openmoko-debian < lindi-> enrico: yes
    20:38 #openmoko-debian < lindi-> enrico: together with manual page that has examples it would be very useful tool
  - Wifi
     - ask the kernel people what is the proper way to turn it on/off, and to check if it's on
+ - .vapi for omhacks, to use in zavai
  - battery
     - read, monitor
 20:18 #openmoko-debian < lindi-> enrico: how about adding "energy" and "consumption" to om?
 20:19 #openmoko-debian < lindi-> enrico: and usb_curlimit
 20:19 #openmoko-debian < lindi-> and host/device modes
-20:19 #openmoko-debian < lindi-> and temperature :)
-- hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
  - zavai hooks (alarm, mostly)
  - fork pm-utils-light off omhacks at a later stage
