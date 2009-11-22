@@ -105,7 +105,6 @@ static struct om_sysfs_name om_sysfs_names[] = {
 	{ "resume_reason", scan_resume_reason, NULL },
 	{ "resume_reason2", scan_resume_reason2, NULL },
 // TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
-// TODO sys_wlan_driver=\"/sys/bus/platform/drivers/s3c2440-sdi\"
 };
 static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
 

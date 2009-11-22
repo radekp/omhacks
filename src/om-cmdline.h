@@ -67,6 +67,10 @@ extern int om_flags_gps;
 void usage_gps(FILE* out);
 int do_gps(int argc, char *const *argv);
 
+extern int om_flags_wifi;
+void usage_wifi(FILE* out);
+int do_wifi(int argc, char *const *argv);
+
 extern int om_flags_resume_reason;
 void usage_resume_reason(FILE* out);
 int do_resume_reason(int argc, char *const *argv);

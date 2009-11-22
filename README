@@ -105,6 +105,8 @@ front end.
        - keep GPS on during suspend
        - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)
          http://lists.linuxtogo.org/pipermail/smartphones-userland/2009-October/002037.html
+ - Wifi
+    - ask the kernel people what is the proper way to turn it on/off, and to check if it's on
  - battery
     - read, monitor
  - hook that calls atq and sets rtcwake to wake for the next at event

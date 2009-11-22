@@ -37,6 +37,7 @@ static void usage(FILE* out)
 	usage_bt(out);
 	usage_gsm(out);
 	usage_gps(out);
+	usage_wifi(out);
 	usage_resume_reason(out);
 	usage_led(out, NULL);
 	usage_options(out);
@@ -80,6 +81,8 @@ int main(int argc, char *const *argv)
 		return do_gsm(argc, argv);
 	else if (strcmp(argv[0], "gps") == 0)
 		return do_gps(argc, argv);
+	else if (strcmp(argv[0], "wifi") == 0)
+		return do_wifi(argc, argv);
 	else if (strcmp(argv[0], "resume-reason") == 0)
 		return do_resume_reason(argc, argv);
 	else if (strcmp(argv[0], "led") == 0)
