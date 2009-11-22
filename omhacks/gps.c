@@ -27,6 +27,9 @@
 static char gps_power_path[PATH_MAX];
 static int gps_power_path_found = 0;
 
+static char gps_keep_on_in_suspend_path[PATH_MAX];
+static int gps_keep_on_in_suspend_path_found = 0;
+
 static const char* om_gps_power_path()
 {
 	if (!gps_power_path_found)
@@ -38,6 +41,19 @@ static const char* om_gps_power_path()
 		gps_power_path_found = 1;
 	}
 	return gps_power_path;
+}
+
+static const char* om_gps_keep_on_in_suspend_path()
+{
+	if (!gps_keep_on_in_suspend_path_found)
+	{
+		const char* root = om_sysfs_path("pm-gps");
+		if (root == NULL) return NULL;
+		snprintf(gps_keep_on_in_suspend_path, PATH_MAX, "%s/keep_on_in_suspend", root);
+		if (access(gps_keep_on_in_suspend_path, F_OK) != 0) return NULL;
+		gps_keep_on_in_suspend_path_found = 1;
+	}
+	return gps_keep_on_in_suspend_path;
 }
 
 int om_gps_power_get()
@@ -90,6 +106,42 @@ int om_gps_power_swap(int value)
 			if (om_sysfs_writefile(power_path, "0\n") < 0) return -1;
 		}
 	}
+	return old_val;
+}
+
+
+int om_gps_keep_on_in_suspend_get()
+{
+	const char* path = om_gps_keep_on_in_suspend_path();
+	if (path == NULL) return -1;
+	const char* val = om_sysfs_readfile(path);
+	if (val == NULL) return -1;
+	return atoi(val);
+}
+
+int om_gps_keep_on_in_suspend_set(int value)
+{
+	const char* path = om_gps_keep_on_in_suspend_path();
+	if (path == NULL) return -1;
+
+	return om_sysfs_writefile(path, value ? "1\n" : "0\n");
+}
+
+int om_gps_keep_on_in_suspend_swap(int value)
+{
+	const char* keep_on_in_suspend_path = om_gps_keep_on_in_suspend_path();
+	if (keep_on_in_suspend_path == NULL) return -1;
+
+	const char* val = om_sysfs_readfile(keep_on_in_suspend_path);
+	if (val == NULL) return -1;
+	int old_val = atoi(val);
+
+	// If we are setting it to what it already is, don't bother
+	if (value == old_val) return old_val;
+
+	if (om_sysfs_writefile(keep_on_in_suspend_path, value ? "1\n" : "0\n") < 0)
+		return -1;
+
 	return old_val;
 }
 

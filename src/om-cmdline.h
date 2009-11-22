@@ -74,6 +74,9 @@ int do_wifi(int argc, char *const *argv);
 void usage_battery(FILE* out);
 int do_battery(int argc, char *const *argv);
 
+void usage_power(FILE* out);
+int do_power(int argc, char *const *argv);
+
 extern int om_flags_resume_reason;
 void usage_resume_reason(FILE* out);
 int do_resume_reason(int argc, char *const *argv);

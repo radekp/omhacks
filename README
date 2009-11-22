@@ -97,6 +97,13 @@ front end.
 
 *** TODO list
  - recreate lindi's suspend/resume scripts
+ 19:55 #openmoko-debian < lindi-> enrico: how about changing "om <gps|bt|wifi> power" to "om power <gps|bt|wifi>" so 
+                                  that plain "om power" could display status of all of them just like "om led" does?
+ 19:57 #openmoko-debian < enrico> lindi-: I wanted to have a om gps something where many things fit
+ 19:57 #openmoko-debian < enrico> lindi-: but I can still do a "om power status" that lists them all
+ 19:57 #openmoko-debian < lindi-> enrico: ok everything seems to work
+ 19:57 #openmoko-debian < enrico> lindi-: and also "om power all-off" that turns everything off (such as at boot)
+
  - GSM
     - turn on all, inc. PIN
  - GPS
@@ -105,11 +112,19 @@ front end.
        - keep GPS on during suspend
        - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)
          http://lists.linuxtogo.org/pipermail/smartphones-userland/2009-October/002037.html
+   http://wiki.openmoko.org/wiki/Neo_FreeRunner_GPS#UBX_protocol
+   20:37 #openmoko-debian < enrico> lindi-: in fact I can code that ubxgen in C
+   20:37 #openmoko-debian < lindi-> enrico: yes
+   20:38 #openmoko-debian < lindi-> enrico: together with manual page that has examples it would be very useful tool
  - Wifi
     - ask the kernel people what is the proper way to turn it on/off, and to check if it's on
  - battery
     - read, monitor
- - hook that calls atq and sets rtcwake to wake for the next at event
+20:18 #openmoko-debian < lindi-> enrico: how about adding "energy" and "consumption" to om?
+20:19 #openmoko-debian < lindi-> enrico: and usb_curlimit
+20:19 #openmoko-debian < lindi-> and host/device modes
+20:19 #openmoko-debian < lindi-> and temperature :)
+- hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
  - zavai hooks (alarm, mostly)
  - fork pm-utils-light off omhacks at a later stage

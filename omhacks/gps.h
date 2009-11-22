@@ -44,4 +44,30 @@ int om_gps_power_set(int value);
  */
 int om_gps_power_swap(int value);
 
+
+/*
+ * Return the keep_on_in_suspend status of the GPS chip.
+ *
+ * Returns 1 if on, 0 if off, a negative value in case of problems.
+ */
+int om_gps_keep_on_in_suspend_get();
+
+/*
+ * Turn on/off the keep_on_in_suspend bit on the GPS chip
+ *
+ * If value is true, GPS stays on during suspend. Else, it gets switched off.
+ */
+int om_gps_keep_on_in_suspend_set(int value);
+
+/*
+ * Turn on/off the keep_on_in_suspend bit on the GPS chip, and return the
+ * previous value.
+ *
+ * If value is true, GPS stays on during suspend. Else, it gets switched off.
+ *
+ * Returns 1 if on, 0 if off, a negative value in case of problems.
+ */
+int om_gps_keep_on_in_suspend_swap(int value);
+
+
 #endif

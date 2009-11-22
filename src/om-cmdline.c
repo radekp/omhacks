@@ -240,6 +240,7 @@ int do_gsm(int argc, char *const *argv)
 void usage_gps(FILE* out)
 {
 	fprintf(out, "Usage: %s gps [--swap] power [1/0]\n", argv0);
+	fprintf(out, "Usage: %s gps [--swap] keep-on-in-suspend [1/0]\n", argv0);
 }
 
 int do_gps(int argc, char *const *argv)
@@ -275,6 +276,35 @@ int do_gps(int argc, char *const *argv)
 				if (res < 0)
 				{
 					perror("setting GPS power");
+					return 1;
+				}
+			}
+		}
+	} else if (strcmp(argv[1], "keep-on-in-suspend") == 0) {
+		if (argc == 2)
+		{
+			int res = om_gps_keep_on_in_suspend_get();
+			if (res < 0)
+			{
+				perror("reading GPS keep-on-in-suspend");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			if (opts.swap)
+			{
+				int res = om_gps_keep_on_in_suspend_swap(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("reading/setting GPS keep-on-in-suspend");
+					return 1;
+				}
+				printf("%d\n", res);
+			} else {
+				int res = om_gps_keep_on_in_suspend_set(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("setting GPS keep-on-in-suspend");
 					return 1;
 				}
 			}
@@ -368,6 +398,38 @@ int do_battery(int argc, char *const *argv)
 			usage_battery(stderr);
 			return 1;
 		}
+	}
+	return 0;
+}
+
+void usage_power(FILE* out)
+{
+	fprintf(out, "Usage: %s power\n", argv0);
+	fprintf(out, "Usage: %s power all-off\n", argv0);
+}
+
+int do_power(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		int val;
+		if ((val = om_bt_power_get()) < 0) return val;
+		printf("bt power %d\n", val);
+		if ((val = om_gsm_power_get()) < 0) return val;
+		printf("gsm power %d\n", val);
+		if ((val = om_gps_power_get()) < 0) return val;
+		printf("gps power %d\n", val);
+		if ((val = om_gps_keep_on_in_suspend_get()) < 0) return val;
+		printf("gps keep-on-in-suspend %d\n", val);
+		if ((val = om_wifi_power_get()) < 0) return val;
+		printf("wifi power %d\n", val);
+	}
+	if (strcmp(argv[1], "all-off") == 0)
+	{
+		if (om_bt_power_set(0) < 0) return -1;
+		if (om_gsm_power_set(0) < 0) return -1;
+		if (om_gps_power_set(0) < 0) return -1;
+		if (om_wifi_power_set(0) < 0) return -1;
 	}
 	return 0;
 }
