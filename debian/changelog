@@ -1,3 +1,10 @@
+omhacks (0.2-1) unstable; urgency=low
+
+  * New upstream version
+     - Implemented power on/off functions for BlueTooth, GSM, GPS, WiFi
+
+ -- Enrico Zini <enrico@debian.org>  Sun, 22 Nov 2009 18:25:18 +0000
+
 omhacks (0.1-1) unstable; urgency=low
 
   * Initial release
