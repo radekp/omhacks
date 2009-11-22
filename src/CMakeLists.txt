@@ -7,9 +7,8 @@ add_executable(om-led om-led.c om-cmdline.c)
 
 # TODO: see how to add -rdynamic only to pm-suspend
 add_definitions(-rdynamic)
-# TODO: see how to add -ldl only to pm-suspend
-link_libraries(dl)
 add_executable(pm-suspend pm-action.c)
+target_link_libraries(pm-suspend dl)
 
 install(TARGETS om om-led RUNTIME DESTINATION bin)
 install(TARGETS pm-suspend RUNTIME DESTINATION sbin)

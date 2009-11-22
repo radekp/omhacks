@@ -43,13 +43,12 @@ front end.
 
 
 *** TODO list
- - recreate lindi's suspend/resume scripts
- - suspend/resume GPS
  - package
-    - move git repo to pkg-fso (and update debian/control)
     - update-alternatives for pm-suspend
       (or dpkg-divert)
     - tips for dpkg-statoverride on om-led
+ - recreate lindi's suspend/resume scripts
+ - suspend/resume GPS
  - hook that calls atq and sets rtcwake to wake for the next at event
  - zavai calls pm-suspend
  - upload to pkg-fso
