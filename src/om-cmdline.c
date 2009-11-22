@@ -34,6 +34,7 @@ int om_flags_sysfs = 0;
 int om_flags_backlight = 0;
 int om_flags_touchscreen = 0;
 int om_flags_gsm = 0;
+int om_flags_gps = 0;
 int om_flags_resume_reason = 0;
 int om_flags_led = 0;
 
@@ -180,6 +181,55 @@ int do_gsm(int argc, char *const *argv)
 		}
 	} else {
 		usage_gsm(stderr);
+		return 1;
+	}
+	return 0;
+}
+
+void usage_gps(FILE* out)
+{
+	fprintf(out, "Usage: %s gps [--swap] power [1/0]\n", argv0);
+}
+
+int do_gps(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		usage_gps(stderr);
+		return 1;
+	}
+	if (strcmp(argv[1], "power") == 0)
+	{
+		if (argc == 2)
+		{
+			int res = om_gps_power_get();
+			if (res < 0)
+			{
+				perror("reading GPS power");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			if (opts.swap)
+			{
+				int res = om_gps_power_swap(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("reading/setting GPS power");
+					return 1;
+				}
+				printf("%d\n", res);
+			} else {
+				int res = om_gps_power_set(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("setting GPS power");
+					return 1;
+				}
+			}
+		}
+	} else {
+		usage_gps(stderr);
 		return 1;
 	}
 	return 0;

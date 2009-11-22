@@ -98,7 +98,7 @@ front end.
 *** TODO list
  - recreate lindi's suspend/resume scripts
  - GSM
-    - turn on power
+    + turn on power
     - turn on all, inc. PIN
  - GPS
     - suspend/resume GPS

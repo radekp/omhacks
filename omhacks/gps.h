@@ -1,5 +1,5 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
+#ifndef OMHACKS_GPS_H
+#define OMHACKS_GPS_H
 
 /*
  * omhacks - Various useful utility functions for the FreeRunner
@@ -21,11 +21,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/gsm.h>
-#include <omhacks/gps.h>
-#include <omhacks/resumereason.h>
+/*
+ * Return the power status of the GPS chip.
+ *
+ * Returns 1 if on, 0 if off, a negative value in case of problems.
+ */
+int om_gps_power_get();
+
+/*
+ * Turn on/off the GPS chip
+ *
+ * If value is true, turn on the GPS. Else, turn it off.
+ */
+int om_gps_power_set(int value);
+
+/*
+ * Turn on/off the GPS chip, and return the previous status.
+ *
+ * If value is true, turn on the GPS. Else, turn it off.
+ *
+ * Returns 1 if on, 0 if off, a negative value in case of problems.
+ */
+int om_gps_power_swap(int value);
 
 #endif
