@@ -34,6 +34,7 @@ static void usage(FILE* out)
 	usage_sysfs(out);
 	usage_backlight(out);
 	usage_touchscreen(out);
+	usage_bt(out);
 	usage_gsm(out);
 	usage_gps(out);
 	usage_resume_reason(out);
@@ -73,6 +74,8 @@ int main(int argc, char *const *argv)
 		return do_backlight(argc, argv);
 	else if (strcmp(argv[0], "touchscreen") == 0)
 		return do_touchscreen(argc, argv);
+	else if (strcmp(argv[0], "bt") == 0)
+		return do_bt(argc, argv);
 	else if (strcmp(argv[0], "gsm") == 0)
 		return do_gsm(argc, argv);
 	else if (strcmp(argv[0], "gps") == 0)

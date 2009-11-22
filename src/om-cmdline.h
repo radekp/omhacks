@@ -55,6 +55,10 @@ extern int om_flags_touchscreen;
 void usage_touchscreen(FILE* out);
 int do_touchscreen(int argc, char *const *argv);
 
+extern int om_flags_bt;
+void usage_bt(FILE* out);
+int do_bt(int argc, char *const *argv);
+
 extern int om_flags_gsm;
 void usage_gsm(FILE* out);
 int do_gsm(int argc, char *const *argv);

@@ -33,6 +33,7 @@ struct opt_t opts;
 int om_flags_sysfs = 0;
 int om_flags_backlight = 0;
 int om_flags_touchscreen = 0;
+int om_flags_bt = 0;
 int om_flags_gsm = 0;
 int om_flags_gps = 0;
 int om_flags_resume_reason = 0;
@@ -132,6 +133,55 @@ int do_touchscreen(int argc, char *const *argv)
 	if (close(ts) < 0)
 	{
 		perror("closing touchscreen");
+		return 1;
+	}
+	return 0;
+}
+
+void usage_bt(FILE* out)
+{
+	fprintf(out, "Usage: %s bt [--swap] power [1/0]\n", argv0);
+}
+
+int do_bt(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		usage_bt(stderr);
+		return 1;
+	}
+	if (strcmp(argv[1], "power") == 0)
+	{
+		if (argc == 2)
+		{
+			int res = om_bt_power_get();
+			if (res < 0)
+			{
+				perror("reading BlueTooth power");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			if (opts.swap)
+			{
+				int res = om_bt_power_swap(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("reading/setting BlueTooth power");
+					return 1;
+				}
+				printf("%d\n", res);
+			} else {
+				int res = om_bt_power_set(atoi(argv[2]));
+				if (res < 0)
+				{
+					perror("setting BlueTooth power");
+					return 1;
+				}
+			}
+		}
+	} else {
+		usage_bt(stderr);
 		return 1;
 	}
 	return 0;
