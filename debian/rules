@@ -12,5 +12,5 @@ debsrc: vercheck
 	fakeroot debian/rules clean
 	test -z "`git ls-files -d -o -m -u -s`" || (echo "There are uncommitted changes" >&2; /bin/false)
 	test -z "`git diff --cached`" || (echo "There are uncommitted changes in the index" >&2; /bin/false)
-	tar --transform "s/^./omhacks-$(VERSION)/" --exclude=.git --exclude=.gitignore --exclude=debian -zcf ../omhacks-$(VERSION).tar.gz . && ln -f ../omhacks-$(VERSION).tar.gz ../omhacks_$(VERSION).orig.tar.gz
-	debuild -S -us -uc -rfakeroot -i.git -I.git -i.gitignore -I.gitignore
+	tar --transform "s/^./omhacks-$(VERSION)/" --exclude=.git --exclude=debian -zcf ../omhacks-$(VERSION).tar.gz . && ln -f ../omhacks-$(VERSION).tar.gz ../omhacks_$(VERSION).orig.tar.gz
+	debuild -S -us -uc -rfakeroot -i.git -I.git
