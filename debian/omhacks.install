@@ -1,2 +1,2 @@
-hooks/omhacks.so usr/lib/pm-utils/sleep.d/
+usr/lib/pm-utils/sleep.d/*
 usr/bin/*
