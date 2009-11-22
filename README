@@ -12,7 +12,8 @@ Pros:
    non-executable .so file to have it loaded by pm-utils light but ignored by
    pm-utils.
  * It allows to cancel a resume, for example in order to go back to sleep in
-   case of a resume for usb disconnect.
+   case of a resume for usb disconnect. To do so, a script can exit with status
+   250.
 
 Cons:
 
@@ -25,6 +26,54 @@ Tips:
  * To disable the existing pm-utils hooks:
    cd /usr/lib/pm-utils/sleep.d
    for i in *; do touch /etc/pm/sleep.d/$i; done
+
+ * To create a .so hook:
+
+   // You only need "hooks_add_function" from pm-utils-light
+   typedef int hook_function(const char* name, const char* param);
+   extern void hooks_add_function(const char* name, hook_function func);
+
+   /*
+    * A hook function works just like a hook script, it gets the same parameter
+    * and it returns the same values.
+    *
+    * `name' is the name used when registering this hook
+    */
+   static int hook_example(const char* name, const char* param)
+   {
+        if (strcmp(param, "suspend") == 0)
+        {
+		// Do something
+        }
+        else if (strcmp(param, "resume") == 0)
+        {
+		// Do something
+        }
+        return 0;
+   }
+ 
+   // pm-utils-light will call init() when loading the plugin
+   void init()
+   {
+	// Register plugins
+   	hooks_add_function("00-example", hook_example);
+   }
+
+   Build the hook with: gcc --shared -fPIC -o hook.so hook.c
+
+   Then install it, non executable, among the other pm-utils hooks.
+   Since it is not executable, normal pm-utils will not touch it.
+
+ * To provide shell alternatives for .so hooks, for use with normal pm-utils
+
+   pm-utils light will give a slightly higher priority to dynamic hooks than to
+   hooks with the same name in the same directory. This means that it is
+   possible to package fallback normal hooks for use by normal pm-utils.
+
+   For example, if hooks.so provides "00-example", you can also install a
+   "00-example" shellscript in the same directory. pm-utils light will prefer
+   to run the function in the .so hook, and normal pm-utils will ignore the
+   non-executable .so file and run the "00-example" shellscript.
 
 
 *** README for omhacks
@@ -44,8 +93,6 @@ front end.
 
 *** TODO list
  - package
-    - update-alternatives for pm-suspend
-      (or dpkg-divert)
     - tips for dpkg-statoverride on om-led
  - recreate lindi's suspend/resume scripts
  - suspend/resume GPS
