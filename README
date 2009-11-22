@@ -27,6 +27,10 @@ Tips:
    cd /usr/lib/pm-utils/sleep.d
    for i in *; do touch /etc/pm/sleep.d/$i; done
 
+ * To make om-led suid root:
+
+   dpkg-statoverride --update --add root root 04755 /usr/bin/om-led
+
  * To create a .so hook:
 
    // You only need "hooks_add_function" from pm-utils-light
@@ -92,8 +96,6 @@ front end.
 
 
 *** TODO list
- - package
-    - tips for dpkg-statoverride on om-led
  - recreate lindi's suspend/resume scripts
  - suspend/resume GPS
  - hook that calls atq and sets rtcwake to wake for the next at event
