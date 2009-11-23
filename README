@@ -97,16 +97,34 @@ front end.
 
 *** TODO list
  - get rid of *_swap() in omhacks
+ - instead of keeping a table of sysfs names, scan things and create symlink in
+   /var/run/omhacks/
+   http://wiki.openmoko.org/wiki/GTA02_sysfs
  - recreate lindi's suspend/resume scripts
+   http://lindi.iki.fi/lindi/openmoko/custom-scripts.txt
  - My goals
     - stand-alone pppd
        + turn gsm on/off (done)
        - turn gsm really on (can be done in pppd's chatscript)
+      http://lindi.iki.fi/lindi/openmoko/manual-call.txt
     - zavai ported to gpsd
        + turn gps on/off (done)
        + gps on during suspend (done)
     - wake up alarm
        - all done, just hooks need to be written
+       - at hook, date +%s > $STORAGE/last-resume
+       - "alert" script redone
+          - for desktop and moko
+	  - with config file
+	     - on/off go back to sleep if triggered within 1 minute from resume
+	     - on/off moko specific
+	        - inputs (listen to aux button instead of keyboard/mouse)
+		- audio (fiddle with mixer)
+		- vibration / leds (flash aux so one can see what to push in
+		  the dark)
+		- X display to use if undefined
+             - ringtone
+	  - run maximised
  - Example of an at job that goes back to sleep at the end, if resume reason
    was rtcwake and there has been no meaningful input
  - What to do with this resume reason?
@@ -159,4 +177,15 @@ front end.
 16:41 #openmoko-debian < lindi-> enrico: 3. (Right after resume ogsmd won't respond to dbus. touching pid file 
                                  makes sure the watchdog does not immediately kill ogsmd in this case but waits 
                                  for a while)
+
+ - leds
+   http://www.mjmwired.net/kernel/Documentation/leds-class.txt
+   From: Richard Purdie <rpurdie@rpsys.net>
+   Cc: openmoko-kernel <openmoko-kernel@lists.openmoko.org>
+   Subject: Re: Renaming of devices in 2.6.31
+   [...]
+   Note that the sysfs people hate me for this. They would want you to go
+   through each directory in /sys/class/leds/ opening
+   the /sys/class/leds/*/function file and reading it to find what you
+   want. So it could be much worse!
 
