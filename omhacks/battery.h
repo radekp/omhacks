@@ -36,4 +36,13 @@ int om_battery_temperature_get(float *temperature);
  */
 int om_battery_energy_get();
 
+/*
+ * Read battery consumption.
+ *
+ * Writes battery current in microamperes is to supplied
+ * pointer. Negative current means that battery is being
+ * charged. Return value is zero on success and negative on error.
+ */
+int om_battery_consumption_get(int *consumption);
+
 #endif
