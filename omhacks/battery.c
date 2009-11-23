@@ -32,6 +32,9 @@
 static char battery_temperature_path[PATH_MAX];
 static int battery_temperature_path_found = 0;
 
+static char battery_energy_path[PATH_MAX];
+static int battery_energy_path_found = 0;
+
 static const char *om_battery_temperature_path()
 {
     if (!battery_temperature_path_found)
@@ -54,3 +57,27 @@ int om_battery_temperature_get(float *temperature)
     *temperature = atoi(val) / 10.0;
     return 0;
 }
+
+static const char *om_battery_energy_path()
+{
+    if (!battery_energy_path_found)
+    {
+        const char *root = om_sysfs_path("battery");
+        if (root == NULL) return NULL;
+        snprintf(battery_energy_path, PATH_MAX, "%s/capacity", root);
+        if (access(battery_energy_path, F_OK) != 0) return NULL;
+        battery_energy_path_found = 1;
+    }
+    return battery_energy_path;
+}
+
+int om_battery_energy_get()
+{
+    const char *path = om_battery_energy_path();
+    if (path == NULL) return -1;
+    const char *val = om_sysfs_readfile(path);
+    if (val == NULL) return -1;
+    return atoi(val);
+}
+
+

@@ -29,4 +29,11 @@
  */ 
 int om_battery_temperature_get(float *temperature);
 
+/*
+ * Read battery energy percentage.
+ *
+ * Returns 0-100 on success and negative on error.
+ */
+int om_battery_energy_get();
+
 #endif

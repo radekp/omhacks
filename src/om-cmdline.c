@@ -373,6 +373,7 @@ int do_wifi(int argc, char *const *argv)
 void usage_battery(FILE* out)
 {
 	fprintf(out, "Usage: %s battery temperature\n", argv0);
+	fprintf(out, "Usage: %s battery energy\n", argv0);
 }
 
 int do_battery(int argc, char *const *argv)
@@ -394,13 +395,30 @@ int do_battery(int argc, char *const *argv)
 				return 1;
 			}
 			printf("%.2f\n", temperature);
-		} else {
+		}
+		else
+		{
 			usage_battery(stderr);
 			return 1;
 		}
-	} else {
-		usage_battery(stderr);
-		return 1;
+	}
+	else if (strcmp(argv[1], "energy") == 0)
+	{
+		if (argc == 2)
+		{
+			int res = om_battery_energy_get();
+			if (res < 0)
+			{
+				perror("reading battery energy");
+				return 1;
+			}
+			printf("%d\n", res);
+		}
+		else
+		{
+			usage_battery(stderr);
+			return 1;
+		}
 	}
 	return 0;
 }
