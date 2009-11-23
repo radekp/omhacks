@@ -142,6 +142,9 @@ front end.
        - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)
          http://lists.linuxtogo.org/pipermail/smartphones-userland/2009-October/002037.html
    http://wiki.openmoko.org/wiki/Neo_FreeRunner_GPS#UBX_protocol
+   http://lists.openmoko.org/pipermail/openmoko-kernel/2008-July/004047.html
+   http://people.openmoko.org/tony_tu/src/u-blox/AssistNowOfflineServerSampleImplementation/
+   http://svn.openmoko.org/developers/matt_hsu/agps-online/
    00:29 #openmoko-debian < lindi-> enrico: 'om gps keep-on-in-suspend' does not say anything to the gps chip. does 
                                     this really work? won't it wake up the main cpu since it is sending coordinates 
 				    constantly?
