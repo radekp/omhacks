@@ -89,7 +89,7 @@ const char** om_resume_reason()
 			} else if (reason2[0] == '4') {
 				orr_append_str("rtc_alarm");
 			} else if (reason2[1] == '8') {
-				orr_append_str("rtc_disconnect");
+				orr_append_str("usb_disconnect");
 			} else {
 				orr_append_str(reason2);
 			}
