@@ -440,6 +440,11 @@ int do_battery(int argc, char *const *argv)
 			return 1;
 		}
 	}
+	else
+	{
+		usage_battery(stderr);
+		return 1;
+	}
 	return 0;
 }
 
