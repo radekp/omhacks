@@ -5,41 +5,41 @@ import time
 import subprocess
 
 def first_in_at_queue():
-	first = None
-	atq = subprocess.Popen(["atq"], stdout=subprocess.PIPE).communicate()[0]
-	for line in atq.split("\n"):
-		if not line: continue
-		qid, rest = line.split("\t")
-		date, queue, user = rest.rsplit(' ', 2)
-		t = time.mktime(time.strptime(date, "%a %b %d %H:%M:%S %Y"))
-		if first is None:
-			first = t
-		elif t < first:
-			first = t
-	return first
+    first = None
+    atq = subprocess.Popen(["atq"], stdout=subprocess.PIPE).communicate()[0]
+    for line in atq.split("\n"):
+        if not line: continue
+        qid, rest = line.split("\t")
+        date, queue, user = rest.rsplit(' ', 2)
+        t = time.mktime(time.strptime(date, "%a %b %d %H:%M:%S %Y"))
+        if first is None:
+            first = t
+        elif t < first:
+            first = t
+    return first
 
 def suspend():
-	first = first_in_at_queue()
-	if first is None: return
-	now = time.time()
-	# Wake up 2 seconds after, so that atd -s runs pending jobs right away
-	delay = first - now - +2
-	if delay < 15: delay = 15
-	subprocess.check_call(["rtcwake", "-m", "no", "-s", str(int(delay))])
-	print "Wakeup scheduled in %d seconds" % delay
+    first = first_in_at_queue()
+    if first is None: return
+    now = time.time()
+    # Wake up 2 seconds after, so that atd -s runs pending jobs right away
+    delay = first - now - +2
+    if delay < 15: delay = 15
+    subprocess.check_call(["rtcwake", "-m", "no", "-s", str(int(delay))])
+    print "Wakeup scheduled in %d seconds" % delay
 
 def resume():
-	resume_reason = subprocess.Popen(["om", "resume-reason"], stdout=subprocess.PIPE).communicate()[0].strip()
-	print "Resume reason", resume_reason
-	if resume_reason == "EINT09_PMU:rtc_alarm":
-		print "Running atd -s"
-		subprocess.check-call(["atd", "-s"])
+    resume_reason = subprocess.Popen(["om", "resume-reason"], stdout=subprocess.PIPE).communicate()[0].strip()
+    print "Resume reason", resume_reason
+    if resume_reason == "EINT09_PMU:rtc_alarm":
+        print "Running atd -s"
+        subprocess.check-call(["atd", "-s"])
 
 if sys.argv[1] in ["hibernate", "suspend"]:
-	suspend()
+    suspend()
 elif sys.argv[1] in ["thaw", "resume"]:
-	resume()
+    resume()
 else:
-	sys.exit(254)
+    sys.exit(254)
 
 sys.exit(0)
