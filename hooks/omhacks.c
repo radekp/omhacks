@@ -86,9 +86,10 @@ static int hook_cancel_on_usb_disconnect(const char* name, const char* param)
 {
 	if (strcmp(param, "resume") == 0)
 	{
-		const char* resume_reason = om_resume_reason();
-		if (strcmp(resume_reason, "EINT09_PMU:usb_disconnect") == 0)
-			return 250;
+		const char** resume_reason = om_resume_reason();
+		for ( ; *resume_reason != NULL; ++resume_reason)
+			if (strcmp(*resume_reason, "EINT09_PMU:usb_disconnect") == 0)
+				return 250;
 	}
 	return 0;
 }

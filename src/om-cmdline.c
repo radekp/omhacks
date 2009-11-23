@@ -316,11 +316,6 @@ int do_gps(int argc, char *const *argv)
 	return 0;
 }
 
-void usage_resume_reason(FILE* out)
-{
-	fprintf(out, "Usage: %s resume-reason\n", argv0);
-}
-
 void usage_wifi(FILE* out)
 {
 	fprintf(out, "Usage: %s wifi [--swap] power [1/0]\n", argv0);
@@ -472,10 +467,10 @@ int do_power(int argc, char *const *argv)
 	}
 	else if (strcmp(argv[1], "all-off") == 0)
 	{
-		if (om_bt_power_set(0) < 0) return -1;
-		if (om_gsm_power_set(0) < 0) return -1;
-		if (om_gps_power_set(0) < 0) return -1;
-		if (om_wifi_power_set(0) < 0) return -1;
+		if (om_bt_power_set(0) < 0) return 1;
+		if (om_gsm_power_set(0) < 0) return 1;
+		if (om_gps_power_set(0) < 0) return 1;
+		if (om_wifi_power_set(0) < 0) return 1;
 	} else {
 		usage_power(stderr);
 		return 1;
@@ -483,15 +478,34 @@ int do_power(int argc, char *const *argv)
 	return 0;
 }
 
+void usage_resume_reason(FILE* out)
+{
+	fprintf(out, "Usage: %s resume-reason\n", argv0);
+	fprintf(out, "Usage: %s resume-reason contains <val>\n", argv0);
+}
+
 int do_resume_reason(int argc, char *const *argv)
 {
-	const char* res = om_resume_reason();
+	const char** res = om_resume_reason();
 	if (res == NULL)
 	{
 		perror("getting resume reason");
 		return 1;
 	}
-	puts(res);
+	if (argc == 1)
+	{
+		for ( ; *res != NULL; ++res)
+			puts(*res);
+	} else if (strcmp(argv[1], "contains") == 0 && argc == 3) {
+		int found = 0;
+		for ( ; *res != NULL && !found; ++res)
+			if (strcmp(*res, argv[2]) == 0)
+				found = 1;
+		if (!found) return 1;
+	} else {
+		usage_power(stderr);
+		return 1;
+	}
 	return 0;
 }
 

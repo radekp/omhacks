@@ -22,45 +22,82 @@
 #include <stdio.h>
 #include <string.h>
 
-const char* om_resume_reason()
+#define ORR_BUFSIZE 512
+#define ORR_ARRSIZE 32
+
+static struct orr_t
 {
-	static char buf[1024];
+	char buf[ORR_BUFSIZE];
+	int buf_size;
+
+	char* arr[ORR_ARRSIZE];
+	int arr_size;
+} orr;
+
+static void orr_append_str(const char* line)
+{
+	if (orr.buf_size >= ORR_BUFSIZE) return;
+
+	for ( ; *line && *line != '\n' && orr.buf_size < ORR_BUFSIZE-1; ++line)
+		orr.buf[orr.buf_size++] = *line;
+	orr.buf[orr.buf_size++] = 0;
+}
+
+const char** om_resume_reason()
+{
+	static char line[256];
+	const char* reason2 = NULL;
+
+	orr.buf_size = 0;
+	orr.arr_size = 0;
+
 	const char* fname = om_sysfs_path("resume_reason");
-	FILE* in;
 	if (fname == NULL) return NULL;
-	in = fopen(fname, "r");
+
+	FILE* in = fopen(fname, "r");
 	if (in == NULL) return NULL;
-	while (fgets(buf, 1024, in))
+
+	while (fgets(line, 256, in) && orr.buf_size < ORR_BUFSIZE && orr.arr_size < ORR_ARRSIZE - 1)
 	{
-		if (buf[0] == '*' && buf[1] != 0)
+		// Skip empty or inactive lines
+		if (line[0] != '*' || line[1] == 0) continue;
+
+		// Append resume reason from this line
+		orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+		orr_append_str(line + 2);
+
+		// Do we have extra PMU reasons?
+		if (orr.buf_size < ORR_BUFSIZE && strcmp(orr.arr[orr.arr_size], "EINT09_PMU") == 0)
 		{
-			int dst = 0, src = 2;
-			for ( ; buf[src] && buf[src] != '\n'; ++src, ++dst)
-				buf[dst] = buf[src];
-			buf[dst] = 0;
-			break;
+			if (reason2 == NULL)
+			{
+				// Read them only once
+				reason2 = om_sysfs_get("resume_reason2");
+				if (reason2 == NULL) return NULL;
+				if (strlen(reason2) < 10) return NULL;
+			}
+
+			// Overwrite the ending 0 with a semicolon
+			orr.buf[orr.buf_size-1] = ':';
+
+			// Append the extra PMU reason
+			if (reason2[3] == '2')
+			{
+				orr_append_str("button");
+			} else if (reason2[1] == '4') {
+				orr_append_str("usb_connect");
+			} else if (reason2[0] == '4') {
+				orr_append_str("rtc_alarm");
+			} else if (reason2[1] == '8') {
+				orr_append_str("rtc_disconnect");
+			} else {
+				orr_append_str(reason2);
+			}
 		}
+		++orr.arr_size;
 	}
 	fclose(in);
-	if (strcmp(buf, "EINT09_PMU") == 0)
-	{
-		const char* reason2 = om_sysfs_get("resume_reason2");
-		if (reason2 == NULL) return NULL;
-		if (strlen(reason2) < 10) return NULL;
-		if (reason2[3] == '2')
-		{
-			strcat(buf, ":button");
-		} else if (reason2[1] == '4') {
-			strcat(buf, ":usb_connect");
-		} else if (reason2[0] == '4') {
-			strcat(buf, ":rtc_alarm");
-		} else if (reason2[1] == '8') {
-			strcat(buf, ":usb_disconnect");
-		} else {
-			strcat(buf, ":");
-			strcat(buf, reason2);
-			buf[strlen(buf)-1] = 0;
-		}
-	}
-	return buf;
+	orr.arr[orr.arr_size] = NULL;
+	return (const char**)orr.arr;
 }
+

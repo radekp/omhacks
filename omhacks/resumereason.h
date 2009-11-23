@@ -22,11 +22,11 @@
  */
 
 /*
- * Get resume reason
+ * Return a NULL-terminated string array with the reasons for the last resume.
  *
- * Note: the result is returned in a static buffer that will be overwritten by
- * following invocations.
+ * Note that the strings are in a statically allocated buffer that is rewritten
+ * at every invocation.
  */
-const char* om_resume_reason();
+const char** om_resume_reason();
 
 #endif

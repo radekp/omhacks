@@ -100,6 +100,40 @@ front end.
  - instead of keeping a table of sysfs names, scan things and create symlink in
    /var/run/omhacks/
    http://wiki.openmoko.org/wiki/GTA02_sysfs
+
+    enrico> lindi-: after reading that thread on -kernel, I decided that the way to go is a 
+            symlink farm in /var/run/omhacks
+    enrico> lindi-: yes, there's a lot of code duplication. I think it's ok so far, eventually 
+            we'll see a way to collapse it into something sensible
+    lindi-> enrico: when is /var/run available? can you use omhacks on initramfs?
+    lindi-> enrico: i'd like to be able to force 500 mA charging in the very beginning of 
+            initramfs
+    lindi-> enrico: it's always a tradeoff :(
+    lindi-> enrico: any idea why running plain 'om' opens /dev/urandom?
+    enrico> lindi-: erhm, I see wrt initramfs. You have a point
+    enrico> lindi-: OTOH, we can fail gracefully and return the real pathname instead of the 
+            symlink
+    lindi-> enrico: I already dim backlight in the very beginning of boot to make my phone boot 
+            with low battery
+    enrico> lindi-: and just use the symlink instead of the cache, as a sort of persistent 
+            cache. If there's no /var/run, then skip the symlink
+    enrico> no idea why plain om opens urandom. I really can't think why
+    lindi-> enrico: ok using the symlink as a fallback is probably good idea
+    enrico> maybe "break open" in gdb should tell you when it happens
+
+20:16 #openmoko-debian < lindi-> enrico: also, access() is useless
+20:16 #openmoko-debian < lindi-> enrico: why could just have "FILE *try_open(const char *list_of_alternatives[])" 
+                                 that tries to fopen() each alternative and returns NULL if all failed
+20:17 #openmoko-debian < lindi-> s/why/we/
+20:17 #openmoko-debian < lindi-> then one of the alternatives could be the symlink path
+20:19 #openmoko-debian < enrico> lindi-: I thought access was faster than open
+20:20 #openmoko-debian < enrico> lindi-: ah, you mean, combining the search with the opening, like a sysfs_open
+20:20 #openmoko-debian < enrico> lindi-: interesting... clever...
+
+22:14 #openmoko-debian < lindi-> enrico: it stays asleep and when i resume using button it still has fix
+22:14 #openmoko-debian < lindi-> enrico: so works perfectly. now just implement "om gps ubx /dev/gps 
+                                 go-to-low-power-state"  to make it also save energy
+
  - recreate lindi's suspend/resume scripts
    http://lindi.iki.fi/lindi/openmoko/custom-scripts.txt
  - My goals
@@ -117,6 +151,7 @@ front end.
           - for desktop and moko
 	  - with config file
 	     - on/off go back to sleep if triggered within 1 minute from resume
+	       (no need to look at resume_reason)
 	     - on/off moko specific
 	        - inputs (listen to aux button instead of keyboard/mouse)
 		- audio (fiddle with mixer)
@@ -137,6 +172,11 @@ front end.
     - turn on all, inc. PIN
  - GPS
     - suspend/resume GPS, saving/restoring status
+    - lindi-> enrico: http://lists.openmoko.org/nabble.html#nabble-td2476690 has info about low power mode
+    - 00:08 #openmoko-debian < lindi-> enrico: | http://downloads.openmoko.org/developer/sources/svn/omgps.googlecode.com/svn/trunk/omgps/src/ubx.c seems to have routines for this
+      00:09 #openmoko-debian < lindi-> enrico: README from Jul 2009 says 'Omgps is a GPS application for OpenMolo mobile phone.'
+      00:10 #openmoko-debian < lindi-> enrico: so we have yet another GPS program :)
+
     - set funky parameters
        - keep GPS on during suspend
        - set stationary threshold for different profiles (Automotive = 3, pedestrian = 2, stationary = 1)

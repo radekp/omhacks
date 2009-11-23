@@ -45,12 +45,4 @@ int om_led_get(struct om_led* led);
 /* Set led status */
 int om_led_set(struct om_led* led);
 
-/*
- * Get resume reason
- *
- * Note: the result is returned in a static buffer that will be overwritten by
- * following invocations.
- */
-const char* om_resume_reason();
-
 #endif
