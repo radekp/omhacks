@@ -145,7 +145,6 @@ front end.
        + turn gps on/off (done)
        + gps on during suspend (done)
     - wake up alarm
-       - all done, just hooks need to be written
        - at hook, date +%s > $STORAGE/last-resume
        - "alert" script redone
           - for desktop and moko
@@ -160,6 +159,12 @@ front end.
 		- X display to use if undefined
              - ringtone
 	  - run maximised
+         enrico> lindi-: the hook works! scheduling jobs with at will wake up the phone and at will 
+                 run the scheduled job *right away*
+         enrico> lindi-: now I need to tweak your alert script a bit, so that if it's run within one minute from resume and noone pushes aux while it's being noisy, then it goes back to sleep
+         enrico> lindi-: then any at job can be followed by a run of that alert script, and it solves the issue of going back to sleep at the end of the job
+         enrico> lindi-: for extra kicks, the at script can have an option to run a program in background and also wait for it to end before suspending
+
  - Example of an at job that goes back to sleep at the end, if resume reason
    was rtcwake and there has been no meaningful input
  - What to do with this resume reason?
