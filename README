@@ -150,7 +150,7 @@ front end.
        + gps on during suspend (done)
        - more in zavai's todo list
     - wake up alarm
-       - at hook, date +%s > $STORAGE/last-resume
+       + at hook, date +%s > $STORAGE/last-resume
        - "alert" script redone
           - for desktop and moko
 	  - with config file
