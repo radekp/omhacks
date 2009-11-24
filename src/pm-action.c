@@ -59,7 +59,7 @@ long int timing_end()
 
 #define MAX_HOOKS 1024
 
-typedef int hook_function(const char* name, const char* param);
+typedef int hook_function(int argc, const char* argv[]);
 typedef void hook_init_function(void);
 
 struct hook {
@@ -241,13 +241,19 @@ static int hook_run(int hook, const char* parm)
 {
 	char cmd[PATH_MAX + 30];
 	int res;
+    int argc = 2;
+    const char* argv[3];
+
 	if (!hooks[hook].active) return 0;
+    argv[0] = hooks[hook].name;
+    argv[1] = parm;
+    argv[2] = NULL;
 
 	timing_start();
 	if (hooks[hook].function != NULL)
 	{
 		fprintf(stderr, "Running function %s:%s %s... ", hooks[hook].dirname, hooks[hook].name, parm);
-		res = hooks[hook].function(hooks[hook].name, parm);
+		res = hooks[hook].function(argc, argv);
 	} else {
 		snprintf(cmd, PATH_MAX + 30, "%s/%s %s", hooks[hook].dirname, hooks[hook].name, parm);
 		fprintf(stderr, "Running %s... ", cmd);
