@@ -380,7 +380,7 @@ int main(int argc, const char* argv[])
             return 0;
         }
 
-        if (argc == 4 && strcmp(argv[1], "run") == 0)
+        if (argc > 2 && strcmp(argv[1], "run") == 0)
         {
             // pm-suspend run <script> param
             int cur = 0;
@@ -389,7 +389,18 @@ int main(int argc, const char* argv[])
             hooks_filter();
             for ( ; cur < hooks_size; ++cur)
                 if (strcmp(hooks[cur].name, argv[2]) == 0)
-                    return hook_run(cur, argv[3]);
+                {
+                    if (argc > 3)
+                        return hook_run(cur, argv[3]);
+                    else
+                    {
+                        int res = hook_run(cur, forwards);
+                        printf("%s %s returned status %d\n", argv[2], forwards, res);
+                        res = hook_run(cur, backwards);
+                        printf("%s %s returned status %d\n", argv[2], backwards, res);
+                        return res;
+                    }
+                }
             fprintf(stderr, "Hook %s not found\n", argv[2]);
             return 1;
         }
