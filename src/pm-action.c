@@ -329,6 +329,24 @@ static int makedirs(const char* stashname)
 	return 0;
 }
 
+int setup_env(const char* logfile, const char* name)
+{
+	if (makedirs(name) < 0)
+	{
+		perror("Creating state dir: ");
+		return 1;
+	}
+	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
+	setenv("PM_LOGFILE", logfile, 1);
+	setenv("PM_UTILS_RUNDIR", "/var/run/pm-utils", 1);
+	setenv("STASHNAME", name, 1);
+	setenv("NA", "254", 1);
+	setenv("NX", "253", 1);
+	setenv("DX", "252", 1);
+	setenv("CA", "250", 1);
+    return 0;
+}
+
 int main(int argc, const char* argv[])
 {
 	const char* forwards = "suspend"; // hibernate
@@ -343,29 +361,42 @@ int main(int argc, const char* argv[])
 		return 1;
 	}
 
-	if (argc == 2 && strcmp(argv[1], "print") == 0)
-	{
-		hooks_read_all();
-		hooks_sort();
-		fprintf(stderr, "Before filtering:\n");
-		hooks_print(stderr);
-		hooks_filter();
-		fprintf(stderr, "After filtering:\n");
-		hooks_print(stderr);
-		return 0;
-	}
-
-    if (argc == 4 && strcmp(argv[1], "run") == 0)
+    if (argc > 1)
     {
-        // pm-suspend run <script> param
-        int cur = 0;
-		hooks_read_all();
-		hooks_sort();
-		hooks_filter();
-        for ( ; cur < hooks_size; ++cur)
-            if (strcmp(hooks[cur].name, argv[2]) == 0)
-                return hook_run(cur, argv[3]);
-        fprintf(stderr, "Hook %s not found\n", argv[2]);
+        // Setup the environment
+        int res = setup_env(logfile, name);
+        if (res != 0)
+            return res;
+
+        if (argc == 2 && strcmp(argv[1], "print") == 0)
+        {
+            hooks_read_all();
+            hooks_sort();
+            fprintf(stderr, "Before filtering:\n");
+            hooks_print(stderr);
+            hooks_filter();
+            fprintf(stderr, "After filtering:\n");
+            hooks_print(stderr);
+            return 0;
+        }
+
+        if (argc == 4 && strcmp(argv[1], "run") == 0)
+        {
+            // pm-suspend run <script> param
+            int cur = 0;
+            hooks_read_all();
+            hooks_sort();
+            hooks_filter();
+            for ( ; cur < hooks_size; ++cur)
+                if (strcmp(hooks[cur].name, argv[2]) == 0)
+                    return hook_run(cur, argv[3]);
+            fprintf(stderr, "Hook %s not found\n", argv[2]);
+            return 1;
+        }
+
+        fprintf(stderr, "Usage: %s\n", argv[0]);
+        fprintf(stderr, "Usage: %s print\n", argv[0]);
+        fprintf(stderr, "Usage: %s run <hookname> <param>\n", argv[0]);
         return 1;
     }
 
@@ -400,19 +431,9 @@ int main(int argc, const char* argv[])
 	}
 
 	// Setup the environment
-	if (makedirs(name) < 0)
-	{
-		perror("Creating state dir: ");
-		return 1;
-	}
-	setenv("PM_FUNCTIONS", "/usr/lib/pm-utils/pm-functions", 1);
-	setenv("PM_LOGFILE", logfile, 1);
-	setenv("PM_UTILS_RUNDIR", "/var/run/pm-utils", 1);
-	setenv("STASHNAME", name, 1);
-	setenv("NA", "254", 1);
-	setenv("NX", "253", 1);
-	setenv("DX", "252", 1);
-	setenv("CA", "250", 1);
+    int res = setup_env(logfile, name);
+    if (res != 0)
+        return res;
 
 	hooks_read_all();
 	hooks_sort();
