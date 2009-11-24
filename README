@@ -96,6 +96,10 @@ front end.
 
 
 *** TODO list
+ 18:00 #openmoko-debian < lindi-> enrico: btw, how about using "on|off" instead of 0 and 1?
+ 18:00 #openmoko-debian < enrico> lindi-: I thought about it, since I keep using 'on' and turning things off because 
+                                  atoi("on") is 0
+ 18:01 #openmoko-debian < lindi-> but 1 and 0 sound very odd indeed. almost no command uses that kind of logic
  - get rid of *_swap() in omhacks
  - instead of keeping a table of sysfs names, scan things and create symlink in
    /var/run/omhacks/
@@ -144,6 +148,7 @@ front end.
     - zavai ported to gpsd
        + turn gps on/off (done)
        + gps on during suspend (done)
+       - more in zavai's todo list
     - wake up alarm
        - at hook, date +%s > $STORAGE/last-resume
        - "alert" script redone
