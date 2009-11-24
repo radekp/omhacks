@@ -29,9 +29,7 @@ def suspend():
     print "Wakeup scheduled in %d seconds" % delay
 
 def resume():
-    resume_reason = subprocess.Popen(["om", "resume-reason"], stdout=subprocess.PIPE).communicate()[0].strip()
-    print "Resume reason", resume_reason
-    if resume_reason == "EINT09_PMU:rtc_alarm":
+    if subprocess.call(["om", "resume-reason", "contains", "EINT09_PMU:rtc_alarm"]) == 0:
         print "Running atd -s"
         subprocess.check-call(["atd", "-s"])
 
