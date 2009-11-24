@@ -355,6 +355,20 @@ int main(int argc, const char* argv[])
 		return 0;
 	}
 
+    if (argc == 4 && strcmp(argv[1], "run") == 0)
+    {
+        // pm-suspend run <script> param
+        int cur = 0;
+		hooks_read_all();
+		hooks_sort();
+		hooks_filter();
+        for ( ; cur < hooks_size; ++cur)
+            if (strcmp(hooks[cur].name, argv[2]) == 0)
+                return hook_run(cur, argv[3]);
+        fprintf(stderr, "Hook %s not found\n", argv[2]);
+        return 1;
+    }
+
 	if (getuid() != 0)
 	{
 		fprintf(stderr, "This utility may only be run by the root user.\n");
