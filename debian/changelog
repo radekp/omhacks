@@ -1,3 +1,10 @@
+omhacks (0.3-1) unstable; urgency=low
+
+  * New upstream release
+     - dynamic plugin hook signatures changed to be the same as main()
+
+ -- Enrico Zini <enrico@debian.org>  Tue, 24 Nov 2009 23:34:18 +0000
+
 omhacks (0.2-1) unstable; urgency=low
 
   * New upstream version
