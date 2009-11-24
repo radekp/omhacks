@@ -3,6 +3,9 @@
 import sys
 import time
 import subprocess
+import os
+
+STORAGEDIR="%s/%s/storage" % (os.environ["PM_UTILS_RUNDIR"], os.environ["STASHNAME"])
 
 def first_in_at_queue():
     first = None
@@ -29,6 +32,9 @@ def suspend():
     print "Wakeup scheduled in %d seconds" % delay
 
 def resume():
+    # Touch last-resume flagfile
+    open(STORAGEDIR+"/last-resume", "w").close()
+
     if subprocess.call(["om", "resume-reason", "contains", "EINT09_PMU:rtc_alarm"]) == 0:
         print "Running atd -s"
         subprocess.check-call(["atd", "-s"])
