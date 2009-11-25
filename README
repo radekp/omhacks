@@ -34,7 +34,7 @@ Tips:
  * To create a .so hook:
 
    // You only need "hooks_add_function" from pm-utils-light
-   typedef int hook_function(const char* name, const char* param);
+   typedef int hook_function(int argc, const char* argv[]);
    extern void hooks_add_function(const char* name, hook_function func);
 
    /*
@@ -43,17 +43,22 @@ Tips:
     *
     * `name' is the name used when registering this hook
     */
-   static int hook_example(const char* name, const char* param)
+   static int hook_example(int argc, const char* argv[])
    {
-        if (strcmp(param, "suspend") == 0)
+	if (argc < 2) return 254;
+
+	if (strcmp(argv[1], "suspend") == 0)
         {
 		// Do something
+		return 0;
         }
-        else if (strcmp(param, "resume") == 0)
+        else if (strcmp(argv[1], "resume") == 0)
         {
 		// Do something
+		return 0;
         }
-        return 0;
+
+        return 254;
    }
  
    // pm-utils-light will call init() when loading the plugin
@@ -93,6 +98,9 @@ provided separately so that it's possible to make "om-led" suid but not "om".
 If you need another function in the library, please send a patch. Please try to
 keep in the minimalist spirit of the library, and also provide a command line
 front end.
+
+
+
 
 
 *** TODO list
@@ -172,12 +180,6 @@ front end.
 
  - Example of an at job that goes back to sleep at the end, if resume reason
    was rtcwake and there has been no meaningful input
- - What to do with this resume reason?
-   [...]
-   * EINT01_GSM
-   [...]
-   * EINT09_PMU
-   [...]
  - GSM
     - turn on all, inc. PIN
  - GPS
@@ -215,8 +217,7 @@ front end.
 20:19 #openmoko-debian < lindi-> enrico: and usb_curlimit
 20:19 #openmoko-debian < lindi-> and host/device modes
  - zavai calls pm-suspend
- - zavai hooks (alarm, mostly)
- - fork pm-utils-light off omhacks at a later stage
+ - fork pm-utils-light off omhacks
 
  - reduce the size of lindi's ~/bin/
    http://lindi.iki.fi/lindi/openmoko/custom-scripts.txt
