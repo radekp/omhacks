@@ -69,6 +69,7 @@ int do_sysfs(int argc, char *const *argv)
 void usage_backlight(FILE* out)
 {
 	fprintf(out, "Usage: %s backlight\n", argv0);
+	fprintf(out, "Usage: %s backlight get-max\n", argv0);
 	fprintf(out, "Usage: %s backlight <brightness>\n", argv0);
 }
 
@@ -86,8 +87,16 @@ int do_backlight(int argc, char *const *argv)
 	}
 	else
 	{
-		if (opts.swap)
+		if (strcmp(argv[1], "get-max") == 0)
 		{
+			int val = om_screen_brightness_get_max();
+			if (val < 0)
+			{
+				perror("getting max brightness value");
+				return 1;
+			}
+			printf("%d\n", val);
+		} else if (opts.swap) {
 			int old_val = om_screen_brightness_swap(atoi(argv[1]));
 			if (old_val < 0)
 			{

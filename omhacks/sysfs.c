@@ -59,6 +59,15 @@ static const char* scan_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/brightness";
 	return NULL;
 }
+static const char* scan_max_brightness()
+{
+	// TODO sys_brightness=\"$(find /sys -wholename "*backlight*/brightness")\"
+	if (exists("/sys/class/backlight/gta02-bl/max_brightness"))
+		return "/sys/class/backlight/gta02-bl/max_brightness";
+	if (exists("/sys/devices/virtual/backlight/acpi_video0/max_brightness"))
+		return "/sys/devices/virtual/backlight/acpi_video0/max_brightness";
+	return NULL;
+}
 static const char* scan_resume_reason()
 {
 	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
@@ -106,6 +115,7 @@ static const char* scan_pm_wlan()
 static struct om_sysfs_name om_sysfs_names[] = {
 	{ "battery", scan_battery, NULL },
 	{ "brightness", scan_brightness, NULL },
+	{ "max_brightness", scan_max_brightness, NULL },
 // TODO sys_force_usb_limit_dangerous=\"$(find /sys -name force_usb_limit_dangerous -o -name usb_curlim)\"
 // TODO sys_hostmode=\"$(find /sys -name hostmode)\"
 	{ "pm-bt", scan_pm_bt, NULL },
