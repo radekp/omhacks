@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
 project(omhacks)
-set(omhacks_version "0.3")
+set(omhacks_version "0.4")
 add_subdirectory(omhacks)
 add_subdirectory(src)
 add_subdirectory(hooks)
