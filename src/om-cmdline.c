@@ -39,6 +39,7 @@ int om_flags_gps = 0;
 int om_flags_wifi = 0;
 int om_flags_resume_reason = 0;
 int om_flags_led = 0;
+int om_flags_uevent = 0;
 
 void usage_sysfs(FILE* out)
 {
@@ -634,6 +635,52 @@ int do_led(int argc, char *const *argv)
 			perror("setting led status");
 			return 1;
 		}
+	}
+	return 0;
+}
+
+void usage_uevent(FILE* out)
+{
+	fprintf(out, "Usage: %s dump\n", argv0);
+}
+
+int do_uevent(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		usage_uevent(stderr);
+		return 1;
+	} else if (strcmp(argv[1], "dump") == 0 && argc == 2) {
+		int sock = om_uevent_open();
+		struct om_uevent ou;
+		if (sock < 0)
+		{
+			perror("opening uevent socket");
+			return 1;
+		}
+		while (1)
+		{
+			if (om_uevent_read(sock, &ou) < 0)
+			{
+				perror("reading from uevent socket");
+				return 1;
+			}
+
+			if (om_uevent_parse(&ou) == 0)
+			{
+				int i;
+				printf("OU_ACTION=%s\n", ou.action);
+				printf("OU_DEVPATH=%s\n", ou.devpath);
+				for (i = 0; ou.envp[i] != NULL; i++)
+					printf("%s\n", ou.envp[i]);
+				putchar('\n');
+			} else {
+				fprintf(stderr, "Skipping unparsed event %s\n", ou.buffer);
+			}
+		}
+	} else {
+		usage_uevent(stderr);
+		return 1;
 	}
 	return 0;
 }

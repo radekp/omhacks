@@ -69,9 +69,10 @@ int om_uevent_parse(struct om_uevent* ou)
 
 	/* Split action string and sysfs path */
 	char* pos = strchr(ou->buffer, '@');
-	pos[0] = '\0';
 
 	if (pos == NULL) return -1;
+
+	pos[0] = '\0';
 
 	/* Action string */
 	ou->action = ou->buffer;
