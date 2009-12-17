@@ -21,7 +21,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/*
+#include <stddef.h>
+
+#define OM_UEVENT_ENV_MAX 32
+
+/* UEvent information */
+struct om_uevent
+{
+	char buffer[1024 + 512]; // Buffer with the raw uevent data
+				 // At the beginning of the buffer, is the
+				 // null-terminated action@devpath string
+	size_t buflen;		 // Buffer length
+	const char *action;	 // Parsed action
+	const char *devpath;	 // Parsed device path
+	const char *envp[OM_UEVENT_ENV_MAX];	 // Parsed environment
+};
+
+/**
  * Open a uevent socket.
  *
  * The socket is a normal unix file descriptor, to be closed using normal
@@ -30,5 +46,18 @@
  * Returns the socket, or a negative value in case of problems.
  */
 int om_uevent_open();
+
+/**
+ * Read a uevent record
+ */
+int om_uevent_read(int sock, struct om_uevent* ou);
+
+/**
+ * Parse the raw uevent buffer in its components
+ *
+ * Returns 0 if all parsed correctly, -1 if this record does not parse properly
+ * and should be skipped.
+ */
+int om_uevent_parse(struct om_uevent* ou);
 
 #endif

@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 #include "uevent.h"
 #include <string.h>
 #include <sys/socket.h>
@@ -44,4 +45,52 @@ int om_uevent_open()
 		return retval;
 
 	return sock;
+}
+
+int om_uevent_read(int sock, struct om_uevent* ou)
+{
+	ssize_t buflen = recv(sock, ou, sizeof(ou->buffer), 0);
+	if (buflen < 0)
+		return -1;
+	if ((size_t)buflen > sizeof(ou->buffer)-1)
+		buflen = sizeof(ou->buffer)-1;
+	ou->buflen = buflen;
+	ou->buffer[buflen] = '\0';
+	return 0;
+}
+
+int om_uevent_parse(struct om_uevent* ou)
+{
+	// See uevent_listen.c
+	int i;
+
+	/* Save start of payload */
+	size_t bufpos = strlen(ou->buffer) + 1;
+
+	/* Split action string and sysfs path */
+	char* pos = strchr(ou->buffer, '@');
+	pos[0] = '\0';
+
+	if (pos == NULL) return -1;
+
+	/* Action string */
+	ou->action = ou->buffer;
+
+	/* Sysfs path */
+	ou->devpath = &pos[1];
+
+	/* Events have the environment attached - reconstruct envp[] */
+	for (i = 0; (bufpos < ou->buflen) && (i < OM_UEVENT_ENV_MAX - 1); ++i)
+	{
+		int keylen;
+		char *key;
+
+		key = &ou->buffer[bufpos];
+		keylen = strlen(key);
+		ou->envp[i] = key;
+		bufpos += keylen + 1;
+	}
+	ou->envp[i] = NULL;
+
+	return 0;
 }
