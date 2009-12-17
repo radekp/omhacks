@@ -1,3 +1,10 @@
+omhacks (0.5-1) unstable; urgency=low
+
+  * New upstream version
+     - added uevent module
+
+ -- Enrico Zini <enrico@debian.org>  Thu, 17 Dec 2009 22:52:21 +0000
+
 omhacks (0.4-1) unstable; urgency=low
 
   * New upstream release
