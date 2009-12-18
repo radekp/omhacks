@@ -52,3 +52,18 @@ int om_usb_mode_set(int mode)
     }
     return 0;
 }
+
+static const char *usb_charger_mode_path = "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode";
+
+int om_usb_charger_mode_get()
+{
+    const char *mode = om_sysfs_readfile(usb_charger_mode_path);
+    if (mode == NULL) return -1;
+    return atoi(mode);
+}
+
+int om_usb_charger_mode_set(int mode)
+{
+    if (om_sysfs_writefile(usb_charger_mode_path, mode ? "1\n" : "0\n") < 0) return -1;
+    return 0;
+}

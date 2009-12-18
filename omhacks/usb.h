@@ -39,4 +39,22 @@ int om_usb_mode_get();
  */
 int om_usb_mode_set(int mode);
 
+/*
+ * Get status of battery charger.
+ *
+ * Returns 1 if charger charges the battery from USB power.
+ * Returns 0 if charger is disabled and power from battery is provided to USB bus.
+ * Returns negative value on failure.
+ */
+int om_usb_charger_mode_get();
+
+/*
+ * Set status of battery charger.
+ *
+ * See above for description of the two possible modes.
+ *
+ * Returns 0 on success and negative value on failure.
+ */
+int om_usb_charger_mode_set(int value);
+ 
 #endif

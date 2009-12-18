@@ -707,6 +707,7 @@ int do_uevent(int argc, char *const *argv)
 void usage_usb(FILE* out)
 {
     fprintf(out, "Usage: %s usb mode [device|host]\n", argv0);
+    fprintf(out, "Usage: %s usb charger-mode [charge-battery|power-usb]\n", argv0);
 }
 
 int do_usb(int argc, char *const *argv)
@@ -744,6 +745,33 @@ int do_usb(int argc, char *const *argv)
         } else {
             usage_usb(stderr);
             return 1;
+        }
+    } else if (strcmp(argv[1], "charger-mode") == 0) {
+        if (argc == 2)
+        {
+            int res = om_usb_charger_mode_get();
+            if (res < 0)
+            {
+                perror("reading usb charger mode");
+                return 1;
+            }
+            printf("%s\n", res == 0 ? "charge-battery" : "power-usb");
+        } else if (argc == 3) {
+            int res;
+            if (strcmp(argv[2], "charge-battery") == 0) {
+                res = om_usb_charger_mode_set(0);
+            } else if (strcmp(argv[2], "power-usb") == 0) {
+                res = om_usb_charger_mode_set(1);
+            } else {
+                usage_usb(stderr);
+                return 1;
+            }
+            if (res < 0)
+            {
+                perror("setting usb charger mode");
+                return 1;
+            }
+            return 0;
         }
     }
     return 0;
