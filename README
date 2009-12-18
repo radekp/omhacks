@@ -153,10 +153,6 @@ front end.
        + turn gsm on/off (done)
        - turn gsm really on (can be done in pppd's chatscript)
       http://lindi.iki.fi/lindi/openmoko/manual-call.txt
-    - zavai ported to gpsd
-       + turn gps on/off (done)
-       + gps on during suspend (done)
-       - more in zavai's todo list
     - wake up alarm
        + at hook, date +%s > $STORAGE/last-resume
        - "alert" script redone
@@ -216,7 +212,6 @@ front end.
 20:18 #openmoko-debian < lindi-> enrico: how about adding "energy" and "consumption" to om?
 20:19 #openmoko-debian < lindi-> enrico: and usb_curlimit
 20:19 #openmoko-debian < lindi-> and host/device modes
- - zavai calls pm-suspend
  - fork pm-utils-light off omhacks
 
  - reduce the size of lindi's ~/bin/

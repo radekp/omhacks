@@ -28,6 +28,13 @@
  */ 
 int om_screen_brightness_get();
 
+/*
+ * Read the maximum allowed brightness value
+ *
+ * If the result is negative, then an error happened.
+ */ 
+int om_screen_brightness_get_max();
+
 /* Set screen brightness */
 int om_screen_brightness_set(int val);
 

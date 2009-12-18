@@ -1,3 +1,17 @@
+omhacks (0.5-1) unstable; urgency=low
+
+  * New upstream version
+     - added uevent module
+
+ -- Enrico Zini <enrico@debian.org>  Thu, 17 Dec 2009 22:52:21 +0000
+
+omhacks (0.4-1) unstable; urgency=low
+
+  * New upstream release
+     - added function to get the max brightness value
+
+ -- Enrico Zini <enrico@debian.org>  Wed, 16 Dec 2009 15:10:46 +0000
+
 omhacks (0.3-1) unstable; urgency=low
 
   * New upstream release

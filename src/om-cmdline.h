@@ -86,6 +86,10 @@ extern int om_flags_led;
 void usage_led(FILE* out, const char* ledname);
 int do_led(int argc, char *const *argv);
 
+extern int om_flags_uevent;
+void usage_uevent(FILE* out);
+int do_uevent(int argc, char *const *argv);
+
 void usage_options(FILE* out);
 
 int parse_options(int argc, char *const *argv);

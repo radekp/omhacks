@@ -30,5 +30,6 @@
 #include <omhacks/resumereason.h>
 #include <omhacks/wifi.h>
 #include <omhacks/battery.h>
+#include <omhacks/uevent.h>
 
 #endif

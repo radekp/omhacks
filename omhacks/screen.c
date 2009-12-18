@@ -37,6 +37,13 @@ int om_screen_brightness_get()
 	return atoi(res);
 }
 
+int om_screen_brightness_get_max()
+{
+	const char* res = om_sysfs_get("max_brightness");
+	if (res == NULL) return -1;
+	return atoi(res);
+}
+
 int om_screen_brightness_set(int val)
 {
 	char sval[20];
