@@ -1,3 +1,12 @@
+omhacks (0.6-1) unstable; urgency=low
+
+  * New upstream release
+     - Forked pm-utils-light in a separate package
+     - New "om gps flowcontrol" function
+     - New "om usb" functions
+
+ -- Enrico Zini <enrico@debian.org>  Fri, 18 Dec 2009 23:41:27 +0000
+
 omhacks (0.5-1) unstable; urgency=low
 
   * New upstream version
