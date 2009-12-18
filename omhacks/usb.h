@@ -56,5 +56,23 @@ int om_usb_charger_mode_get();
  * Returns 0 on success and negative value on failure.
  */
 int om_usb_charger_mode_set(int value);
- 
+
+/*
+ * Get the charger current limit.
+ *
+ * Returns current limit in milliamperes or negative value on error.
+ */
+int om_usb_charger_limit_get();
+
+/*
+ * Set the charger current limit.
+ *
+ * By default kernel will draw 100 mA but try to negotiate more
+ * if possible. This API can be used to override this selection.
+ * Do not set the limit to be too large if your charger can not handle it!
+ *
+ * Returns 0 on success and negative value on failure.
+ */
+int om_usb_charger_limit_set(int limit);
+
 #endif

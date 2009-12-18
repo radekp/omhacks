@@ -67,3 +67,20 @@ int om_usb_charger_mode_set(int mode)
     if (om_sysfs_writefile(usb_charger_mode_path, mode ? "1\n" : "0\n") < 0) return -1;
     return 0;
 }
+
+static const char *usb_charger_limit_path = "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-mbc/usb_curlim";
+
+int om_usb_charger_limit_get()
+{
+    const char *limit = om_sysfs_readfile(usb_charger_limit_path);
+    if (limit == NULL) return -1;
+    return atoi(limit);
+}
+
+int om_usb_charger_limit_set(int limit)
+{
+    char buf[128];
+    snprintf(buf, sizeof(buf), "%d\n", limit);
+    if (om_sysfs_writefile(usb_charger_limit_path, buf) < 0) return -1;
+    return 0;
+}

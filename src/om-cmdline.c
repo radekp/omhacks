@@ -708,6 +708,7 @@ void usage_usb(FILE* out)
 {
     fprintf(out, "Usage: %s usb mode [device|host]\n", argv0);
     fprintf(out, "Usage: %s usb charger-mode [charge-battery|power-usb]\n", argv0);
+    fprintf(out, "Usage: %s usb charger-limit [0|100|500]\n", argv0);
 }
 
 int do_usb(int argc, char *const *argv)
@@ -773,6 +774,30 @@ int do_usb(int argc, char *const *argv)
             }
             return 0;
         }
+    } else if (strcmp(argv[1], "charger-limit") == 0)
+    {
+        if (argc == 2)
+        {
+            int res = om_usb_charger_limit_get();
+            if (res < 0)
+            {
+                perror("reading usb charger limit");
+                return 1;
+            }
+            printf("%d\n", res);
+            return 0;
+        } else if (argc == 3) {
+            int res = om_usb_charger_limit_set(atoi(argv[2]));
+            if (res < 0)
+            {
+                perror("setting usb charger limit");
+                return 1;
+            }
+            return 0;
+        }
+    } else {
+        usage_usb(stderr);
+        return 1;
     }
     return 0;
 }
