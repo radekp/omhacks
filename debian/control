@@ -14,26 +14,6 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: command line interface to OpenMoko hardware
  This has only been tested on the FreeRunner.
 
-Package: pm-utils-light
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: pm-utils replacement for embedded hardware
- Pros:
- * It tries its best to run hooks in exactly the same way as pm-utils.
- * It's faster
- * It can load hooks from a .so file, which is much faster, avoids
-   context switches and allows to keep state conveniently in memory.
- * .so files will be loaded also if they are not executable. Install a
-   non-executable .so file to have it loaded by pm-utils light but ignored by
-   pm-utils.
- * It allows to cancel a resume, for example in order to go back to sleep in
-   case of a resume for usb disconnect.
- .
- Cons:
- * No support for quirks
- * It does not ship the functions and pm-functions shell libraries, so plugins
-   cannot make use of them
-
 Package: libomhacks-dev
 Section: libdevel
 Architecture: any
