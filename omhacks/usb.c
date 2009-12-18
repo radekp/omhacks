@@ -1,6 +1,3 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
-
 /*
  * omhacks - Various useful utility functions for the FreeRunner
  *
@@ -20,17 +17,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#include "usb.h"
+#include "sysfs.h"
+#include <stdio.h>
+#include <limits.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/bt.h>
-#include <omhacks/gsm.h>
-#include <omhacks/gps.h>
-#include <omhacks/resumereason.h>
-#include <omhacks/wifi.h>
-#include <omhacks/battery.h>
-#include <omhacks/uevent.h>
-#include <omhacks/usb.h>
+static const char *usb_mode_path = "/sys/devices/platform/s3c-ohci/usb_mode";
+/* todo: also /sys/devices/platform/s3c2410-ohci/usb_mode ? */
 
-#endif
+int om_usb_mode_get()
+{
+    const char *mode = om_sysfs_readfile(usb_mode_path);
+    if (mode == NULL) return -1;
+    if (!strcmp(mode, "device\n")) {
+        return 0;
+    } else if (!strcmp(mode, "host\n")) {
+        return 1;
+    } else {
+        return -2;
+    }
+}
+
+int om_usb_mode_set(int mode)
+{
+    if (mode == 0) {
+        if (om_sysfs_writefile(usb_mode_path, "device\n") < 0) return -1;
+    } else if (mode == 1) {
+        if (om_sysfs_writefile(usb_mode_path, "host\n") < 0) return -1;
+    } else {
+        return -2;
+    }
+    return 0;
+}

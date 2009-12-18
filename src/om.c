@@ -43,6 +43,7 @@ static void usage(FILE* out)
 	usage_resume_reason(out);
 	usage_led(out, NULL);
 	usage_uevent(out);
+	usage_usb(out);
 	usage_options(out);
 }
 
@@ -96,6 +97,8 @@ int main(int argc, char *const *argv)
 		return do_led(argc, argv);
 	else if (strcmp(argv[0], "uevent") == 0)
 		return do_uevent(argc, argv);
+	else if (strcmp(argv[0], "usb") == 0)
+		return do_usb(argc, argv);
 	else {
 		fprintf(stderr, "Unknown argument: %s\n", argv[0]);
 		return 1;

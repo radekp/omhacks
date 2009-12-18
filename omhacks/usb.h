@@ -1,5 +1,5 @@
-#ifndef OMHACKS_ALL_H
-#define OMHACKS_ALL_H
+#ifndef OMHACKS_USB_H
+#define OMHACKS_USB_H
 
 /*
  * omhacks - Various useful utility functions for the FreeRunner
@@ -21,16 +21,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <omhacks/sysfs.h>
-#include <omhacks/screen.h>
-#include <omhacks/led.h>
-#include <omhacks/bt.h>
-#include <omhacks/gsm.h>
-#include <omhacks/gps.h>
-#include <omhacks/resumereason.h>
-#include <omhacks/wifi.h>
-#include <omhacks/battery.h>
-#include <omhacks/uevent.h>
-#include <omhacks/usb.h>
+/*
+ * Return the mode in which the USB controller is.
+ *
+ * Returns 0 for device mode, 1 for host mode and negative for
+ * failure.
+ */
+int om_usb_mode_get();
+
+/*
+ * Set mode of the USB controller.
+ *
+ * If mode is 0 controller will be put to device mode and if it is 1
+ * it will be put to host mode.
+ *
+ * Returns 0 on success and negative value on failure.
+ */
+int om_usb_mode_set(int mode);
 
 #endif

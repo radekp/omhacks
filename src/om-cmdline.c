@@ -704,6 +704,51 @@ int do_uevent(int argc, char *const *argv)
 	return 0;
 }
 
+void usage_usb(FILE* out)
+{
+    fprintf(out, "Usage: %s usb mode [device|host]\n", argv0);
+}
+
+int do_usb(int argc, char *const *argv)
+{
+    if (argc == 1)
+    {
+        usage_usb(stderr);
+    } else if (strcmp(argv[1], "mode") == 0) {
+        if (argc == 2)
+        {
+            int res = om_usb_mode_get();
+            if (res < 0 || res > 1)
+            {
+                perror("reading usb mode");
+                return 1;
+            }
+            printf("%s\n", res == 0 ? "device" : "host");
+        } else if (argc == 3) {
+            int res;
+            if (strcmp(argv[2], "device") == 0)
+            {
+                res = om_usb_mode_set(0);
+            } else if (strcmp(argv[2], "host") == 0) {
+                res = om_usb_mode_set(1);
+            } else {
+                usage_usb(stderr);
+                return 1;
+            }
+            if (res < 0)
+            {
+                perror("setting usb mode");
+                return 1;
+            }
+            return 0;
+        } else {
+            usage_usb(stderr);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void usage_options(FILE* out)
 {
 	fprintf(out, "Options:\n");
