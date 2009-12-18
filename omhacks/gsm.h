@@ -44,4 +44,20 @@ int om_gsm_power_set(int value);
  */
 int om_gsm_power_swap(int value);
 
+/*
+ * Return flow control status of GSM serial port.
+ *
+ * Returns 1 if port is flow contolled, 0 if it is not and negative if an error occured.
+ */
+int om_gsm_flowcontrol_get();
+
+/*
+ * Set GSM serial port flow control status
+ *
+ * If value is true, enable flow contorl. Else, disable it.
+ *
+ */
+int om_gsm_flowcontrol_set(int value);
+
+
 #endif

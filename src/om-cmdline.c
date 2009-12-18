@@ -191,6 +191,7 @@ int do_bt(int argc, char *const *argv)
 void usage_gsm(FILE* out)
 {
 	fprintf(out, "Usage: %s gsm [--swap] power [1/0]\n", argv0);
+	fprintf(out, "Usage: %s gsm flowcontrol [1/0]\n", argv0);
 }
 
 int do_gsm(int argc, char *const *argv)
@@ -228,6 +229,24 @@ int do_gsm(int argc, char *const *argv)
 					perror("setting GSM power");
 					return 1;
 				}
+			}
+		}
+	} else if (strcmp(argv[1], "flowcontrol") == 0) {
+		if (argc == 2)
+		{
+			int res = om_gsm_flowcontrol_get();
+			if (res < 0)
+			{
+				perror("reading GSM flowcontrol");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			int res = om_gsm_flowcontrol_set(atoi(argv[2]));
+			if (res < 0)
+			{
+				perror("settings GSM flowcontrol");
+				return 1;
 			}
 		}
 	} else {

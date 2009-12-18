@@ -28,6 +28,8 @@ static char gsm_power_path[PATH_MAX];
 static int gsm_power_path_found = 0;
 static char gsm_reset_path[PATH_MAX];
 static int gsm_reset_path_found = 0;
+static char gsm_flowcontrol_path[PATH_MAX];
+static int gsm_flowcontrol_path_found = 0;
 
 static const char* om_gsm_power_path()
 {
@@ -53,6 +55,19 @@ static const char* om_gsm_reset_path()
 		gsm_reset_path_found = 1;
 	}
 	return gsm_reset_path;
+}
+
+static const char* om_gsm_flowcontrol_path()
+{
+	if (!gsm_flowcontrol_path_found)
+	{
+		const char* root = om_sysfs_path("pm-gsm");
+		if (root == NULL) return NULL;
+		snprintf(gsm_flowcontrol_path, PATH_MAX, "%s/flowcontrolled", root);
+		if (access(gsm_flowcontrol_path, F_OK) != 0) return NULL;
+		gsm_flowcontrol_path_found = 1;
+	}
+	return gsm_flowcontrol_path;
 }
 
 int om_gsm_power_get()
@@ -101,4 +116,21 @@ int om_gsm_power_swap(int value)
 		if (om_sysfs_writefile(power_path, "0\n") < 0) return -1;
 	}
 	return old_val;
+}
+
+int om_gsm_flowcontrol_get()
+{
+	const char* path = om_gsm_flowcontrol_path();
+	if (path == NULL) return -1;
+	const char* val = om_sysfs_readfile(path);
+	if (val == NULL) return -1;
+	return atoi(val);
+}
+
+int om_gsm_flowcontrol_set(int value)
+{
+	const char* flowcontrol_path = om_gsm_flowcontrol_path();
+	if (flowcontrol_path == NULL) return -1;
+	if (om_sysfs_writefile(flowcontrol_path, value ? "1\n" : "0\n") < 0) return -1;
+	return 0;
 }
