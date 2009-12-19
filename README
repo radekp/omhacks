@@ -20,6 +20,8 @@ front end.
 
  - package descriptions (!)
  - at.c cannot be shipped unimplemented: it overrides the working version atm
+ - Write the at hook also as a shlib, and package it so that it works both with
+   pm-utils and with pm-utils-light
 
 
 

@@ -13,6 +13,11 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: pm-utils-light
 Description: command line interface to OpenMoko hardware
+ Command line interface to libomhacks functions.
+ .
+ This package provides an "om" command line tool to control various aspects of
+ an OpenMoko phone.
+ .
  This has only been tested on the FreeRunner.
 
 Package: libomhacks-dev
@@ -20,6 +25,9 @@ Section: libdevel
 Architecture: any
 Depends: libomhacks0 (= ${binary:Version}), ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
+ This library is a collective collection of functions to control various
+ aspects of an OpenMoko phone. It is intended to be light and simple.
+ .
  This has only been tested on the FreeRunner.
  .
  This is the development library.
@@ -29,6 +37,9 @@ Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
+ This library is a collective collection of functions to control various
+ aspects of an OpenMoko phone. It is intended to be light and simple.
+ .
  This has only been tested on the FreeRunner.
  .
  This is the shared library.
