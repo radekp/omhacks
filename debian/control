@@ -11,6 +11,7 @@ Vcs-Browser: http://git.debian.org/?p=pkg-fso/omhacks.git
 Package: omhacks
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: pm-utils-light
 Description: command line interface to OpenMoko hardware
  This has only been tested on the FreeRunner.
 

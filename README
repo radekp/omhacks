@@ -18,8 +18,8 @@ front end.
 
 *** TODO list
 
- - split pm-utils-light in a separate package
- - suggests: pm-utils-light because it packages hooks
+ - package descriptions (!)
+ - at.c cannot be shipped unimplemented: it overrides the working version atm
 
 
 
