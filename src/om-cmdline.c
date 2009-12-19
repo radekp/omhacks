@@ -41,9 +41,23 @@ int om_flags_resume_reason = 0;
 int om_flags_led = 0;
 int om_flags_uevent = 0;
 
+static const char* om_usage_lead = NULL;
+
+void usage_lead_reset()
+{
+	om_usage_lead = "Usage: ";
+}
+
+const char* usage_lead()
+{
+	const char* res = om_usage_lead;
+	om_usage_lead = "   or: ";
+	return res;
+}
+
 void usage_sysfs(FILE* out)
 {
-	fprintf(out, "Usage: %s sysfs name [name...]\n", argv0);
+	fprintf(out, "%s %s sysfs name [name...]\n", usage_lead(), argv0);
 }
 
 int do_sysfs(int argc, char *const *argv)
@@ -69,9 +83,9 @@ int do_sysfs(int argc, char *const *argv)
 
 void usage_backlight(FILE* out)
 {
-	fprintf(out, "Usage: %s backlight\n", argv0);
-	fprintf(out, "Usage: %s backlight get-max\n", argv0);
-	fprintf(out, "Usage: %s backlight <brightness>\n", argv0);
+	fprintf(out, "%s %s backlight\n", usage_lead(), argv0);
+	fprintf(out, "%s %s backlight get-max\n", usage_lead(), argv0);
+	fprintf(out, "%s %s backlight <brightness>\n", usage_lead(), argv0);
 }
 
 int do_backlight(int argc, char *const *argv)
@@ -119,7 +133,7 @@ int do_backlight(int argc, char *const *argv)
 
 void usage_touchscreen(FILE* out)
 {
-	fprintf(out, "Usage: %s touchscreen lock\n", argv0);
+	fprintf(out, "%s %s touchscreen lock\n", usage_lead(), argv0);
 }
 
 int do_touchscreen(int argc, char *const *argv)
@@ -151,7 +165,7 @@ int do_touchscreen(int argc, char *const *argv)
 
 void usage_bt(FILE* out)
 {
-	fprintf(out, "Usage: %s bt [--swap] power [1/0]\n", argv0);
+	fprintf(out, "%s %s bt [--swap] power [1/0]\n", usage_lead(), argv0);
 }
 
 int do_bt(int argc, char *const *argv)
@@ -200,8 +214,8 @@ int do_bt(int argc, char *const *argv)
 
 void usage_gsm(FILE* out)
 {
-	fprintf(out, "Usage: %s gsm [--swap] power [1/0]\n", argv0);
-	fprintf(out, "Usage: %s gsm flowcontrol [1/0]\n", argv0);
+	fprintf(out, "%s %s gsm [--swap] power [1/0]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s gsm flowcontrol [1/0]\n", usage_lead(), argv0);
 }
 
 int do_gsm(int argc, char *const *argv)
@@ -268,8 +282,8 @@ int do_gsm(int argc, char *const *argv)
 
 void usage_gps(FILE* out)
 {
-	fprintf(out, "Usage: %s gps [--swap] power [1/0]\n", argv0);
-	fprintf(out, "Usage: %s gps [--swap] keep-on-in-suspend [1/0]\n", argv0);
+	fprintf(out, "%s %s gps [--swap] power [1/0]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s gps [--swap] keep-on-in-suspend [1/0]\n", usage_lead(), argv0);
 }
 
 int do_gps(int argc, char *const *argv)
@@ -347,7 +361,7 @@ int do_gps(int argc, char *const *argv)
 
 void usage_wifi(FILE* out)
 {
-	fprintf(out, "Usage: %s wifi [--swap] power [1/0]\n", argv0);
+	fprintf(out, "%s %s wifi [--swap] power [1/0]\n", usage_lead(), argv0);
 }
 
 int do_wifi(int argc, char *const *argv)
@@ -396,9 +410,9 @@ int do_wifi(int argc, char *const *argv)
 
 void usage_battery(FILE* out)
 {
-	fprintf(out, "Usage: %s battery temperature\n", argv0);
-	fprintf(out, "Usage: %s battery energy\n", argv0);
-	fprintf(out, "Usage: %s battery consumption\n", argv0);
+	fprintf(out, "%s %s battery temperature\n", usage_lead(), argv0);
+	fprintf(out, "%s %s battery energy\n", usage_lead(), argv0);
+	fprintf(out, "%s %s battery consumption\n", usage_lead(), argv0);
 }
 
 int do_battery(int argc, char *const *argv)
@@ -474,8 +488,8 @@ int do_battery(int argc, char *const *argv)
 
 void usage_power(FILE* out)
 {
-	fprintf(out, "Usage: %s power\n", argv0);
-	fprintf(out, "Usage: %s power all-off\n", argv0);
+	fprintf(out, "%s %s power\n", usage_lead(), argv0);
+	fprintf(out, "%s %s power all-off\n", usage_lead(), argv0);
 }
 
 int do_power(int argc, char *const *argv)
@@ -509,8 +523,8 @@ int do_power(int argc, char *const *argv)
 
 void usage_resume_reason(FILE* out)
 {
-	fprintf(out, "Usage: %s resume-reason\n", argv0);
-	fprintf(out, "Usage: %s resume-reason contains <val>\n", argv0);
+	fprintf(out, "%s %s resume-reason\n", usage_lead(), argv0);
+	fprintf(out, "%s %s resume-reason contains <val>\n", usage_lead(), argv0);
 }
 
 int do_resume_reason(int argc, char *const *argv)
@@ -547,9 +561,9 @@ void usage_led(FILE* out, const char* ledname)
 		ledcmd = " led";
 
 	if (ledname == NULL) ledname = "<name>";
-	fprintf(out, "Usage: %s%s %s\n", argv0, ledcmd, ledname);
-	fprintf(out, "Usage: %s%s %s <brightness>\n", argv0, ledcmd, ledname);
-	fprintf(out, "Usage: %s%s %s <brightness> timer <ontime> <offtime>\n", argv0, ledcmd, ledname);
+	fprintf(out, "%s %s %s %s\n", usage_lead(), argv0, ledcmd, ledname);
+	fprintf(out, "%s %s %s %s <brightness>\n", usage_lead(), argv0, ledcmd, ledname);
+	fprintf(out, "%s %s %s %s <brightness> timer <ontime> <offtime>\n", usage_lead(), argv0, ledcmd, ledname);
 }
 
 static int led_read_extra_args(struct om_led* led, int argc, char *const *argv)
@@ -660,7 +674,7 @@ int do_led(int argc, char *const *argv)
 
 void usage_uevent(FILE* out)
 {
-	fprintf(out, "Usage: %s dump\n", argv0);
+	fprintf(out, "%s %s uevent dump\n", usage_lead(), argv0);
 }
 
 int do_uevent(int argc, char *const *argv)
@@ -706,9 +720,9 @@ int do_uevent(int argc, char *const *argv)
 
 void usage_usb(FILE* out)
 {
-    fprintf(out, "Usage: %s usb mode [device|host]\n", argv0);
-    fprintf(out, "Usage: %s usb charger-mode [charge-battery|power-usb]\n", argv0);
-    fprintf(out, "Usage: %s usb charger-limit [0|100|500]\n", argv0);
+    fprintf(out, "%s %s usb mode [device|host]\n", usage_lead(), argv0);
+    fprintf(out, "%s %s usb charger-mode [charge-battery|power-usb]\n", usage_lead(), argv0);
+    fprintf(out, "%s %s usb charger-limit [0|100|500]\n", usage_lead(), argv0);
 }
 
 int do_usb(int argc, char *const *argv)

@@ -97,6 +97,11 @@ int do_version(int argc, char *const *argv);
 
 void usage_options(FILE* out);
 
+/* Reset the initial "Usage: " string to "Usage: " */
+void usage_lead_reset();
+/* Return "Usage: " just after a usage lead reset, or "   or: " */
+const char* usage_lead();
+
 int parse_options(int argc, char *const *argv);
 
 #endif

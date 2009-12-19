@@ -26,19 +26,21 @@
 
 static void usage_help(FILE* out)
 {
-	fprintf(out, "Usage: %s help\n", argv0);
+	fprintf(out, "%s %s help\n", usage_lead(), argv0);
 }
 
 static void usage(FILE* out)
 {
+	usage_lead_reset();
 	usage_help(out);
 	usage_led(out, NULL);
+	putchar('\n');
+	printf("Control OpenMoko phone leds\n\n");
 	usage_options(out);
 }
 
 static int do_help(int argc, char *const *argv)
 {
-	printf("Control OpenMoko phone leds\n\n");
 	usage(stdout);
 	return 0;
 }

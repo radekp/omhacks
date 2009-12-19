@@ -25,11 +25,13 @@
 
 static void usage_help(FILE* out)
 {
-	fprintf(out, "Usage: %s help\n", argv0);
+	fprintf(out, "%s %s help\n", usage_lead(), argv0);
 }
 
 static void usage(FILE* out)
 {
+	printf("Collection of functions to control OpenMoko phones\n\n");
+	usage_lead_reset();
 	usage_help(out);
 	usage_sysfs(out);
 	usage_backlight(out);
@@ -44,12 +46,12 @@ static void usage(FILE* out)
 	usage_led(out, NULL);
 	usage_uevent(out);
 	usage_usb(out);
+	putchar('\n');
 	usage_options(out);
 }
 
 static int do_help(int argc, char *const *argv)
 {
-	printf("Collection of functions to control OpenMoko phones\n\n");
 	usage(stdout);
 	return 0;
 }
