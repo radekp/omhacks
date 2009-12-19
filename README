@@ -18,12 +18,8 @@ front end.
 
 *** TODO list
 
- - package descriptions (!)
- - at.c cannot be shipped unimplemented: it overrides the working version atm
  - Write the at hook also as a shlib, and package it so that it works both with
    pm-utils and with pm-utils-light
-
-
 
  18:00 #openmoko-debian < lindi-> enrico: btw, how about using "on|off" instead of 0 and 1?
  18:00 #openmoko-debian < enrico> lindi-: I thought about it, since I keep using 'on' and turning things off because 
