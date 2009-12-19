@@ -49,6 +49,7 @@ static void usage(FILE* out)
 
 static int do_help(int argc, char *const *argv)
 {
+	printf("Collection of functions to control OpenMoko phones\n\n");
 	usage(stdout);
 	return 0;
 }
@@ -65,6 +66,8 @@ int main(int argc, char *const *argv)
 
 	if (opts.help)
 		return do_help(argc, argv);
+	if (opts.version)
+		return do_version(argc, argv);
 
 	if (argc == 0)
 	{

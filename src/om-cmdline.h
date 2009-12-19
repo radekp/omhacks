@@ -25,8 +25,8 @@
 struct opt_t
 {
 	int help;
-	/*
 	int version;
+	/*
 	int verbose;
 	int brightness;
 	int ontime;
@@ -92,6 +92,8 @@ int do_uevent(int argc, char *const *argv);
 
 void usage_usb(FILE* out);
 int do_usb(int argc, char *const *argv);
+
+int do_version(int argc, char *const *argv);
 
 void usage_options(FILE* out);
 

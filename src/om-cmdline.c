@@ -802,11 +802,18 @@ int do_usb(int argc, char *const *argv)
     return 0;
 }
 
+int do_version(int argc, char *const *argv)
+{
+	printf("%s version %s\n", argv0, VERSION);
+	return 0;
+}
+
 void usage_options(FILE* out)
 {
 	fprintf(out, "Options:\n");
-	fprintf(out, "  --help: print this help message\n");
-	fprintf(out, "  --swap: set new value and print old value\n");
+	fprintf(out, "  --help:    print this help message\n");
+	fprintf(out, "  --version: print version and exit\n");
+	fprintf(out, "  --swap:    set new value and print old value\n");
 }
 
 int parse_options(int argc, char *const *argv)
@@ -818,8 +825,8 @@ int parse_options(int argc, char *const *argv)
         
         static struct option long_options[] = {
             {"help", 0, &opts.help, 1},
+            {"version", 0, &opts.version, 1},
 	    /*
-            {"version", 0, 0, 0},
             {"brightness", 1, 0, 0},
             {"on", 0, 0, 0},
             {"off", 0, 0, 0},
