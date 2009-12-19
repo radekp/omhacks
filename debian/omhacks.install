@@ -1,2 +1,3 @@
 usr/lib/pm-utils/sleep.d/*
 usr/bin/*
+usr/share/man/*
