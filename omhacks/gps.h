@@ -69,5 +69,45 @@ int om_gps_keep_on_in_suspend_set(int value);
  */
 int om_gps_keep_on_in_suspend_swap(int value);
 
+/*
+ * Open a connection to the GPS chip.
+ *
+ * Returns a connection handle (file descriptor) or negative value on
+ * error.
+ */
+int om_gps_open(void);
+
+/*
+ * Close a connection to the GPS chip.
+ *
+ * The parameter should be a value returned by om_gps_open.
+ */
+void om_gps_close(int fd);
+
+/*
+ * Send an arbitrary UBX packet to the GPS chip.
+ *
+ * @param fd handle returned by om_gps_open
+ * @param klass UBX packet class
+ * @param type UBX packet type
+ * @param payload actual payload of the packet
+ * @param payloadlen length of payload.
+ * @return 0 on success and a negative value in case of problems.
+ *
+ * Please read "ANTARIS_Protocol_Specification(GPS.G3-X-03002).chm" to
+ * understand the protocol. Here are examples of commands that are
+ * tested to work:
+ *
+ * type class payload # description
+ * 06   01    f0 01 00 # disable GPGLL messages
+ * 06   01    f0 02 00 # disable GPGSA messages
+ * 06   01    f0 03 00 # disable GPGSV messages
+ * 06   01    f0 05 00 # disable GPGTG messages
+ * 06   01    f0 08 00 # disable GPZDA messages
+ * 06   08    fa 00 01 00 00 00 # report position 4 times/s
+ * 06   08    f4 01 01 00 00 00 # report position 2 times/s
+ *
+ */
+int om_gps_ubx_send(int fd, int klass, int type, const char *payload, int payloadlen);
 
 #endif
