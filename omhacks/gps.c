@@ -23,6 +23,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 static char gps_power_path[PATH_MAX];
 static int gps_power_path_found = 0;
@@ -145,3 +146,50 @@ int om_gps_keep_on_in_suspend_swap(int value)
 	return old_val;
 }
 
+int om_gps_open(void)
+{
+    return open("/dev/ttySAC1", O_RDWR);
+}
+
+void om_gps_close(int fd)
+{
+    close(fd);
+}
+
+int om_gps_ubx_send(int fd, int klass, int type, const char *payload, int payloadlen)
+{
+    char *packet;
+    int i, res = 0, packetlen = 2 + 1 + 1 + 2 + payloadlen + 2;
+    ssize_t count;
+
+    packet = malloc(packetlen);
+    if (packet == NULL) return -1;
+
+    packet[0] = 0xb5;
+    packet[1] = 0x62;
+    packet[2] = klass;
+    packet[3] = type;
+    packet[4] = payloadlen & 0xff;
+    packet[5] = (payloadlen >> 8) & 0xff;
+
+    for (i = 0; i < payloadlen; i++) {
+        packet[6 + i] = payload[i];
+    }
+
+    {
+        unsigned char sum[2] = { 0, 0 };
+
+        for (i = 0; i < packetlen - 4; i++) {
+            sum[0] += packet[2 + i];
+            sum[1] += sum[0];
+        }
+        packet[packetlen - 2] = sum[0];
+        packet[packetlen - 1] = sum[1];
+    }
+
+    count = write(fd, packet, packetlen);
+    if (count != packetlen) res = -3;
+    free(packet);
+
+    return res;
+}

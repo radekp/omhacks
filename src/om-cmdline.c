@@ -284,6 +284,7 @@ void usage_gps(FILE* out)
 {
 	fprintf(out, "%s %s gps [--swap] power [1/0]\n", usage_lead(), argv0);
 	fprintf(out, "%s %s gps [--swap] keep-on-in-suspend [1/0]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s gps send-ubx <class> <type> [payload_byte0] [payload_byte1] ...\n", usage_lead(), argv0);
 }
 
 int do_gps(int argc, char *const *argv)
@@ -352,6 +353,41 @@ int do_gps(int argc, char *const *argv)
 				}
 			}
 		}
+        } else if (strcmp(argv[1], "send-ubx") == 0) {
+            if (argc < 4)
+            {
+                usage_gps(stderr);
+                return 1;
+            } else {
+                char *payload;
+                int klass, type, payloadlen, fd, res, i;
+
+                fd = om_gps_open();
+                if (fd < 0) {
+                    perror("opening GPS device");
+                    return 1;
+                }
+                klass = strtol(argv[2], NULL, 16);
+                type = strtol(argv[3], NULL, 16);
+                payloadlen = argc - 4;
+
+                payload = malloc(payloadlen);
+                if (payload == NULL) {
+                    perror("allocating memory for UBX packet");
+                    return 1;
+                }
+                for (i = 0; i < payloadlen; i++) {
+                    payload[i] = strtol(argv[4 + i], NULL, 16);
+                }
+
+                res = om_gps_ubx_send(fd, klass, type, payload, payloadlen);
+                if (res < 0) {
+                    perror("sending UBX packet");
+                }
+                om_gps_close(fd);
+                free(payload);
+                return (res < 0) ? 1 : 0;
+            }
 	} else {
 		usage_gps(stderr);
 		return 1;
