@@ -2,8 +2,9 @@ omhacks (0.7-1) unstable; urgency=low
 
   * New upstream release
      - Link omhacks.so pm-suspend hook to libomhacks.so
+     - om ubx thanks to lindi 
 
- -- Enrico Zini <enrico@debian.org>  Sun, 27 Dec 2009 23:20:46 +0100
+ -- Enrico Zini <enrico@debian.org>  Mon, 28 Dec 2009 00:03:21 +0100
 
 omhacks (0.6-1) unstable; urgency=low
 
