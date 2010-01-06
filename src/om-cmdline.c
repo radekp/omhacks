@@ -449,6 +449,7 @@ void usage_battery(FILE* out)
 	fprintf(out, "%s %s battery temperature\n", usage_lead(), argv0);
 	fprintf(out, "%s %s battery energy\n", usage_lead(), argv0);
 	fprintf(out, "%s %s battery consumption\n", usage_lead(), argv0);
+	fprintf(out, "%s %s battery charger-limit [0-500]\n", usage_lead(), argv0);
 }
 
 int do_battery(int argc, char *const *argv)
@@ -512,6 +513,28 @@ int do_battery(int argc, char *const *argv)
 		{
 			usage_battery(stderr);
 			return 1;
+		}
+        }
+        else if (strcmp(argv[1], "charger-limit") == 0)
+        {
+		if (argc == 2)
+		{
+			int res = om_battery_charger_limit_get();
+			if (res < 0)
+			{
+				perror("reading battery charger limit");
+				return 1;
+			}
+			printf("%d\n", res);
+			return 0;
+		} else if (argc == 3) {
+			int res = om_battery_charger_limit_set(atoi(argv[2]));
+			if (res < 0)
+			{
+				perror("setting battery charger limit");
+				return 1;
+			}
+			return 0;
 		}
 	}
 	else
