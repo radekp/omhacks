@@ -68,6 +68,14 @@ static const char* scan_max_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/max_brightness";
 	return NULL;
 }
+static const char* scan_actual_brightness()
+{
+	if (exists("/sys/class/backlight/gta02-bl/actual_brightness"))
+		return "/sys/class/backlight/gta02-bl/actual_brightness";
+	if (exists("/sys/devices/virtual/backlight/acpi_video0/actual_brightness"))
+		return "/sys/devices/virtual/backlight/acpi_video0/actual_brightness";
+	return NULL;
+}
 static const char* scan_resume_reason()
 {
 	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
@@ -113,6 +121,7 @@ static const char* scan_pm_wlan()
 }
 
 static struct om_sysfs_name om_sysfs_names[] = {
+	{ "actual_brightness", scan_actual_brightness, NULL },
 	{ "battery", scan_battery, NULL },
 	{ "brightness", scan_brightness, NULL },
 	{ "max_brightness", scan_max_brightness, NULL },
