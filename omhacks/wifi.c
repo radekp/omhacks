@@ -23,11 +23,22 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <linux/types.h>
+#include <linux/if.h>
+#include <linux/wireless.h>
 
 #define WIFI_ROOT "/sys/bus/platform/drivers/s3c2440-sdi"
 #define WIFI_BIND WIFI_ROOT "/bind"
 #define WIFI_UNBIND WIFI_ROOT "/unbind"
 #define WIFI_BOUND WIFI_ROOT "/s3c2440-sdi"
+
+#define AR6000_XIOCTRL_WMI_GET_POWER_MODE 34
+#define AR6000_IOCTL_EXTENDED (SIOCIWFIRSTPRIV+31)
+#define AR6000_IOCTL_WMI_SETPWR (SIOCIWFIRSTPRIV+11)
+#define MAX_PERF_POWER 2
 
 int om_wifi_power_get()
 {
@@ -63,4 +74,47 @@ int om_wifi_power_swap(int value)
 	}
 
 	return old_val;
+}
+
+int om_wifi_maxperf_get(const char *ifname)
+{
+	int sock, ret;
+	struct ifreq ifr;
+	char buf[256];
+
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock < 0) return -1;
+
+	memset(ifr.ifr_name, '\0', sizeof(ifr.ifr_name));
+	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+
+	((int *)buf)[0] = AR6000_XIOCTRL_WMI_GET_POWER_MODE;
+	ifr.ifr_data = buf;
+
+	ret = ioctl(sock, AR6000_IOCTL_EXTENDED, &ifr);
+	if (ret != 0) return -2;
+
+	return buf[0] == MAX_PERF_POWER;
+}
+
+
+int om_wifi_maxperf_set(const char *ifname, int mode)
+{
+	int sock, ret;
+	struct ifreq ifr;
+	char buf[256];
+
+	sock = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sock < 0) return -1;
+
+	memset(ifr.ifr_name, '\0', sizeof(ifr.ifr_name));
+	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+
+	((int *)buf)[0] = mode ? MAX_PERF_POWER : 0;
+	ifr.ifr_data = buf;
+
+	ret = ioctl(sock, AR6000_IOCTL_WMI_SETPWR, &ifr);
+	if (ret != 0) return -2;
+
+	return 0;
 }

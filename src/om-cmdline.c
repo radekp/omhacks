@@ -436,6 +436,7 @@ int do_gps(int argc, char *const *argv)
 void usage_wifi(FILE* out)
 {
 	fprintf(out, "%s %s wifi [--swap] power [1/0]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s wifi maxperf <iface> [1/0]\n", usage_lead(), argv0);
 }
 
 int do_wifi(int argc, char *const *argv)
@@ -474,6 +475,27 @@ int do_wifi(int argc, char *const *argv)
 					return 1;
 				}
 			}
+		}
+	} else if (strcmp(argv[1], "maxperf") == 0) {
+		if (argc == 3)
+		{
+			int res = om_wifi_maxperf_get(argv[2]);
+			if (res < 0)
+			{
+				perror("reading WiFi maxperf");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else if (argc == 4) {
+			int res = om_wifi_maxperf_set(argv[2], atoi(argv[3]));
+			if (res < 0)
+			{
+				perror("setting WiFi maxperf");
+				return 1;
+			}
+		} else {
+			usage_wifi(stderr);
+			return 1;
 		}
 	} else {
 		usage_wifi(stderr);

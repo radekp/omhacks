@@ -44,4 +44,22 @@ int om_wifi_power_set(int value);
  */
 int om_wifi_power_swap(int value);
 
+
+/*
+ * Return status maximum performance mode of the wifi chip.
+ *
+ * Returns 0 if wifi if maximum performance mode is disable, 1 if it
+ * is enabled and negative value on error.
+ */
+int om_wifi_maxperf_get(const char *ifname);
+
+/*
+ * Enable/disable wifi maximum performance mode
+ *
+ * If value is true, enable maximum performance mode. Else, turn it
+ * off. Performance mode reduces latency but consumes more energy.
+ *
+ * Returns 0 on success and negative value on error.
+ */
+int om_wifi_maxperf_set(const char *ifname, int value);
 #endif
