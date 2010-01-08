@@ -51,6 +51,9 @@ extern int om_flags_backlight;
 void usage_backlight(FILE* out);
 int do_backlight(int argc, char *const *argv);
 
+void usage_screen(FILE* out);
+int do_screen(int argc, char *const *argv);
+
 extern int om_flags_touchscreen;
 void usage_touchscreen(FILE* out);
 int do_touchscreen(int argc, char *const *argv);

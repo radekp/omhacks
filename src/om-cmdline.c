@@ -131,6 +131,44 @@ int do_backlight(int argc, char *const *argv)
 	return 0;
 }
 
+void usage_screen(FILE* out)
+{
+	fprintf(out, "%s %s screen power [1/0]\n", usage_lead(), argv0);
+}
+
+int do_screen(int argc, char *const *argv)
+{
+	if (argc == 1)
+	{
+		usage_screen(stderr);
+		return 1;
+	}
+	if (strcmp(argv[1], "power")== 0)
+	{
+		if (argc == 2)
+		{
+			int res = om_screen_power_get();
+			if (res < 0)
+			{
+				perror("reading screen power");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else {
+			int res = om_screen_power_set(atoi(argv[2]));
+			if (res < 0)
+			{
+				perror("setting screen power");
+				return 1;
+			}
+		}
+	} else {
+		usage_screen(stderr);
+		return 1;
+	}
+	return 0;
+}
+
 void usage_touchscreen(FILE* out)
 {
 	fprintf(out, "%s %s touchscreen lock\n", usage_lead(), argv0);

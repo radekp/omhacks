@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <linux/fb.h>
 
 #ifndef EVIOCGRAB
 #define EVIOCGRAB 0x40044590
@@ -33,6 +34,13 @@
 int om_screen_brightness_get()
 {
 	const char* res = om_sysfs_get("brightness");
+	if (res == NULL) return -1;
+	return atoi(res);
+}
+
+static int om_screen_actual_brightness_get()
+{
+	const char* res = om_sysfs_get("actual_brightness");
 	if (res == NULL) return -1;
 	return atoi(res);
 }
@@ -73,4 +81,29 @@ int om_touchscreen_lock(int fd)
 int om_touchscreen_unlock(int fd)
 {
 	return ioctl(fd, EVIOCGRAB, 0);
+}
+
+int om_screen_power_get()
+{
+	int brightness, actual_brightness;
+
+	if ((brightness = om_screen_brightness_get()) < 0) return -1;
+	if ((actual_brightness = om_screen_actual_brightness_get()) < 0) return -2;
+        /* This is a hack but there is really no other way to retrieve
+         * this information from userland. Xorg never reads power
+         * status and fso-frameworkd uses this same trick on startup. */
+	return brightness == actual_brightness;
+}
+
+int om_screen_power_set(int val)
+{
+	int fd, ret;
+
+	fd = open("/dev/fb0", O_RDWR);
+	if (fd < 0) return -1;
+
+        ret = ioctl(fd, FBIOBLANK, (void*)(val ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN));
+	if (ret != 0) return -2;
+
+	return 0;
 }
