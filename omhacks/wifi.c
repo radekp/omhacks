@@ -80,7 +80,7 @@ int om_wifi_maxperf_get(const char *ifname)
 {
 	int sock, ret;
 	struct ifreq ifr;
-	char buf[256];
+	int buf[64];
 
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) return -1;
@@ -88,13 +88,13 @@ int om_wifi_maxperf_get(const char *ifname)
 	memset(ifr.ifr_name, '\0', sizeof(ifr.ifr_name));
 	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 
-	((int *)buf)[0] = AR6000_XIOCTRL_WMI_GET_POWER_MODE;
+	buf[0] = AR6000_XIOCTRL_WMI_GET_POWER_MODE;
 	ifr.ifr_data = buf;
 
 	ret = ioctl(sock, AR6000_IOCTL_EXTENDED, &ifr);
 	if (ret != 0) return -2;
 
-	return buf[0] == MAX_PERF_POWER;
+	return ((char *)buf)[0] == MAX_PERF_POWER;
 }
 
 
@@ -102,7 +102,7 @@ int om_wifi_maxperf_set(const char *ifname, int mode)
 {
 	int sock, ret;
 	struct ifreq ifr;
-	char buf[256];
+	int buf[64];
 
 	sock = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sock < 0) return -1;
@@ -110,7 +110,7 @@ int om_wifi_maxperf_set(const char *ifname, int mode)
 	memset(ifr.ifr_name, '\0', sizeof(ifr.ifr_name));
 	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 
-	((int *)buf)[0] = mode ? MAX_PERF_POWER : 0;
+	buf[0] = mode ? MAX_PERF_POWER : 0;
 	ifr.ifr_data = buf;
 
 	ret = ioctl(sock, AR6000_IOCTL_WMI_SETPWR, &ifr);
