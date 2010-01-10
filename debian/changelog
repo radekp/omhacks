@@ -1,3 +1,12 @@
+omhacks (0.8-1) unstable; urgency=low
+
+  * New upstream release
+     - om battery charger-limit [0-500] (by lindi)
+     - om screen power [1/0] (by lindi)
+     - om wifi maxperf <iface> [1/0] (by lindi)
+
+ -- Enrico Zini <enrico@debian.org>  Sun, 10 Jan 2010 13:07:45 +0000
+
 omhacks (0.7-1) unstable; urgency=low
 
   * New upstream release
