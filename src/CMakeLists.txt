@@ -16,13 +16,13 @@ if (HELP2MAN)
 	    TARGET om
 	    POST_BUILD
 	    DEPENDS om
-	    COMMAND ${HELP2MAN} ${bindir}/om > ${bindir}/om.1 )
+	    COMMAND ${HELP2MAN} --no-info -I${srcdir}/om.help2man ${bindir}/om > ${bindir}/om.1 )
 
 	add_custom_command(
 	    TARGET om-led
 	    POST_BUILD
 	    DEPENDS om-led
-	    COMMAND ${HELP2MAN} ${bindir}/om-led > ${bindir}/om-led.1 )
+	    COMMAND ${HELP2MAN} --no-info -I${srcdir}/om-led.help2man ${bindir}/om-led > ${bindir}/om-led.1 )
 
 	install(FILES ${bindir}/om.1 ${bindir}/om-led.1 DESTINATION share/man/man1 )
 else ()
