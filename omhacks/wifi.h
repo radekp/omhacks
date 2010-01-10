@@ -22,23 +22,23 @@
  */
 
 /*
- * Return the power status of the BlueTooth chip.
+ * Return the power status of the Wifi chip.
  *
  * Returns 1 if on, 0 if off, a negative value in case of problems.
  */
 int om_wifi_power_get();
 
 /*
- * Turn on/off the BlueTooth chip
+ * Turn on/off the Wifi chip
  *
- * If value is true, turn on the BlueTooth. Else, turn it off.
+ * If value is true, turn on the Wifi. Else, turn it off.
  */
 int om_wifi_power_set(int value);
 
 /*
- * Turn on/off the BlueTooth chip, and return the previous status.
+ * Turn on/off the Wifi chip, and return the previous status.
  *
- * If value is true, turn on the BlueTooth. Else, turn it off.
+ * If value is true, turn on the Wifi. Else, turn it off.
  *
  * Returns 1 if on, 0 if off, a negative value in case of problems.
  */
@@ -58,6 +58,10 @@ int om_wifi_maxperf_get(const char *ifname);
  *
  * If value is true, enable maximum performance mode. Else, turn it
  * off. Performance mode reduces latency but consumes more energy.
+ *
+ * Note that root privileges are not currently required for tuning
+ * this wifi parameter so a local user can cause DoS by constantly
+ * disabling maximum performance mode.
  *
  * Returns 0 on success and negative value on error.
  */
