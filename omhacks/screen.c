@@ -102,7 +102,7 @@ int om_screen_power_set(int val)
 	fd = open("/dev/fb0", O_RDWR);
 	if (fd < 0) return -1;
 
-        ret = ioctl(fd, FBIOBLANK, (void*)(val ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN));
+        ret = ioctl(fd, FBIOBLANK, val ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN);
 	if (ret != 0) return -2;
 
 	return 0;
