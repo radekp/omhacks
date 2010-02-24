@@ -191,7 +191,7 @@ int om_sysfs_writefile(const char* pathname, const char* str)
 	size_t ssize = strlen(str);
 	ssize_t count;
 	int fd = -1;
-	fd = open(pathname, O_WRONLY | O_CREAT);
+	fd = open(pathname, O_WRONLY);
 	if (fd < 0) return fd;
 	count = write(fd, str, ssize);
 	if (count != ssize)
