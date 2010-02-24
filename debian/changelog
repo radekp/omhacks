@@ -1,3 +1,12 @@
+omhacks (0.9-1) unstable; urgency=low
+
+  * Removed useless O_CREAT. Closes: #569610
+  * Install at suspend hook as executable, so it actually works.
+    (thanks to lindi)
+  * Manpages and usage messages greatly improved (by lindi)
+
+ -- Enrico Zini <enrico@debian.org>  Wed, 24 Feb 2010 11:44:53 +0000
+
 omhacks (0.8-1) unstable; urgency=low
 
   * New upstream release
