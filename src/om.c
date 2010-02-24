@@ -30,7 +30,10 @@ static void usage_help(FILE* out)
 
 static void usage(FILE* out)
 {
-	printf("Collection of functions to control OpenMoko phones\n\n");
+	printf("om provides a command line interface to various OpenMoko specific pieces of hardware.\n"
+	       "Note that om talks directly to the kernel and might not properly co-exist with\n"
+	       "fso-frameworkd that also wants to control the same pieces of hardware. Using om to\n"
+	       "read the state of the hardware should be safe however even when using fso-frameworkd.\n\n");
 	usage_lead_reset();
 	usage_help(out);
 	usage_sysfs(out);

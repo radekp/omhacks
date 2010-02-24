@@ -35,7 +35,9 @@ static void usage(FILE* out)
 	usage_help(out);
 	usage_led(out, NULL);
 	putchar('\n');
-	printf("Control OpenMoko phone leds\n\n");
+	printf("om-led provides the same functionality as \"om led\" but as a separate executable\n"
+	       "so that it can be made suid-root. No proper security audit has been done so\n"
+	       "you should only do this at your own risk.\n\n");
 	usage_options(out);
 }
 
