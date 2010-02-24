@@ -14,4 +14,4 @@ target_link_libraries(hook_omhacks omhacks)
 
 install(TARGETS hook_omhacks LIBRARY DESTINATION lib/pm-utils/sleep.d/)
 #install(TARGETS hook_at LIBRARY DESTINATION lib/pm-utils/sleep.d/)
-install(FILES 00at DESTINATION lib/pm-utils/sleep.d/)
+install(PROGRAMS 00at DESTINATION lib/pm-utils/sleep.d/)
