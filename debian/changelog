@@ -1,3 +1,9 @@
+omhacks (0.10-1) unstable; urgency=low
+
+  * Fixed python typo in 00at hook
+
+ -- Enrico Zini <enrico@debian.org>  Wed, 10 Mar 2010 21:51:26 +0100
+
 omhacks (0.9-1) unstable; urgency=low
 
   * Removed useless O_CREAT. Closes: #569610

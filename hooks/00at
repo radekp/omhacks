@@ -37,7 +37,7 @@ def resume():
 
     if subprocess.call(["om", "resume-reason", "contains", "EINT09_PMU:rtc_alarm"]) == 0:
         print "Running atd -s"
-        subprocess.check-call(["atd", "-s"])
+        subprocess.check_call(["atd", "-s"])
 
 if sys.argv[1] in ["hibernate", "suspend"]:
     suspend()
