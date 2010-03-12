@@ -1,0 +1,178 @@
+[OPTIONS]
+.TP
+\fBom backlight\fR
+Read backlight brightness. This is an integer between zero and what
+\fBom backlight get\-max\fR returns. Reports true brightness only if the screen
+has not been blanked with \fBom screen power 0\fR.
+.TP
+\fBom backlight get\-max\fR
+Get maximum value of brightness, usually 255.
+.TP
+\fBom backlight <brightness>\fR
+Set backlight brightness.
+.TP
+\fBom touchscreen lock\fR
+Locks touchscreen and waits for any signal to unlock it. This is
+useful when you want to keep the phone running in a pocket and don't
+want the backlight to turn on every time you accidentally touch the
+screen. Locking is done in a way that does not depend on X so if X
+server crashes and restarts your screen will still stay locked.
+.TP
+\fBom screen power [1/0]\fR
+Reads or sets the power state of the screen. Note that Xorg and
+fso-frameworkd do not know how to read the power status of the screen
+(frameworkd reads it on startup only). If Xorg turns the screen and
+after that you turn the screen off with omhacks then touching the
+screen won't turn the screen on (Xorg thinks the screen is still on
+and does not bother to try to power it on).
+.TP
+\fBom bt [\-\-swap] power [1/0]\fR
+Reads or sets the power state of bluetooth. Bluetooth is connected to
+USB bus so it might take a while for it to appear in lsusb and be
+usable after power on.
+.TP
+\fBom power\fR
+List the power status of various devices.
+.TP
+\fBom power all-off\fR
+Disable power to bluetooth, GSM, GPS and WLAN.
+.TP
+\fBom gsm [\-\-swap] power [1/0]\fR
+Reads or sets the power state of GSM.
+.TP
+\fBom gsm flowcontrol [1/0]\fR
+Reads or sets the state of GSM flowcontrol. When flowcontrol is
+enabled GSM chip will generate an interrupt when it has data and will
+not try to send it over serial port until flowcontrol is
+disabled. Enabling flowcontrol before suspend and disabling it after
+resume is required to make sure no data is lost during suspend.
+.TP
+\fBom gps [\-\-swap] power [1/0]\fR
+Reads or sets the power state of GPS.
+.TP
+\fBom gps [\-\-swap] keep\-on\-in\-suspend [1/0]\fR
+Reads or sets the flag that causes GPS to stay powered on during
+suspend. This is useful if you want to keep GPS fix during suspend.
+.TP
+\fBom gps send\-ubx <class> <type> [payload_byte0] [payload_byte1] ...\fR
+Send arbitrary UBX protocol command to the GPS chip.
+Please read "ANTARIS_Protocol_Specification(GPS.G3-X-03002).chm" to
+understand the protocol. Here are examples of commands that are
+tested to work:
+.TS
+l l l l.
+class	type	payload	description
+06	01	f0 01 00	disable GPGLL messages
+06	01	f0 02 00	disable GPGSA messages
+06	01	f0 03 00	disable GPGSV messages
+06	01	f0 05 00	disable GPGTG messages
+06	01	f0 08 00	disable GPZDA messages
+06	08	fa 00 01 00 00 00	report position 4 times/s
+06	08	f4 01 01 00 00 00	report position 2 times/s
+.TE
+.TP
+\fBom wifi [\-\-swap] power [1/0]\fR
+Reads or sets the power state of WLAN.
+.TP
+\fBom wifi maxperf <iface> [1/0]\fR
+Reads or sets the maxperf mode of WLAN. Enabling this increases energy
+consumption but lowers latency. Note that root privileges are not
+currently required for tuning this wifi parameter so a local user can
+cause DoS by constantly disabling maximum performance mode.
+.TP
+\fBom battery temperature\fR
+Reads battery temperature. Units are degrees Centigrade.
+.TP
+\fBom battery energy\fR
+Reads the current energy percentage of the battery.
+.TP
+\fBom battery consumption\fR
+Reads the current energy consumption as measure by the battery. Units
+are microamperes. Negative value indicates that battery is being charged.
+.TP
+\fBom battery charger\-limit [0\-500]\fR
+Reads or sets the upper limit for battery charger current. Units are
+milliamperes.  Normally USB charger limit and battery charger limit
+have the same value. However, sometimes it is useful to charger
+battery very slowly or not at all and still power rest of the system
+from USB. This allows one for example to keep battery at its
+recommended storage capacity of 40% without having to physically
+remove the battery.  Note that kernel will round the limit to nearest
+suitable value which is usually a few milliamperes lower than the
+supplied limit. Changing USB charger limit will reset also this limit
+to the same value so you must first set the USB charger limit and only
+then the battery charger limit.
+.TP
+\fBom resume\-reason\fR
+Read the reason for the most recent resume. If there are multiple
+resume reasons they are separated by newlines. Possible values include
+(but are not limited to)
+.TS
+l.
+EINT01_GSM
+EINT05_WLAN
+EINT09_PMU:button
+EINT09_PMU:usb_connect
+EINT09_PMU:usb_disconnect
+EINT09_PMU:rtc_alarm
+.TE
+.TP
+\fBom resume\-reason contains <val>\fR
+Checks if resume reasons include the given string.
+.TP
+\fBom led\fR
+Lists the state of all LED devices.
+.TP
+\fBom led <name>\fR
+Lists the state of the given LED device.
+.TP
+\fBom led <name> <brightness>\fR
+Sets the brightness of the given LED device to the given
+brightness. Brightness is an integer from 0 to 255 but only the
+vibrator device really cares about the brightness value.
+.TP
+\fBom led <name> <brightness> timer <ontime> <offtime>\fR
+In addition to above also makes the LED blink. Ontime and offtime are
+in milliseconds.
+.TP
+\fBom uevent dump\fR
+Dump uevent events to stdout.
+.TP
+\fBom usb mode [device|host]\fR
+Read or set the USB mode. In device mode the phone can talk to USB
+hosts (PCs or phones in host mode). In host mode the phone can talk to
+USB devices. See also the \fBom usb charger\-mode\fR option.
+.TP
+\fBom usb charger\-mode [charge\-battery|power\-usb]\fR
+Reads or sets the USB charger mode. Normally you want to charge the
+battery in device mode and power the USB bus in host mode but it is
+possible to for example use an external battery power the USB bus so
+that the phone can be in host mode and still charge itself over USB.
+.TP
+\fBom usb charger\-limit [0|100|500]\fR
+Reads or sets the charger limit of USB. Units are in milliamperes and
+control the current that the phone will draw from the USB bus. When
+the phone is in device mode and some gadget driver is loaded it will
+negotiate the highest allowed charging current automatically. However,
+if you are using a dumb external USB battery it might be necessary to
+force larger limit than the default of 100 mA. Do not set the limit to
+be too large if your charger can not handle it!
+.TP
+\fBom sysfs name [name...]\fR
+Shows the sysfs path associated with internal \fBom\fR path. This
+option is only useful for debugging \fBom\fR itself. Here are some
+examples:
+.TS
+l l.
+name	path as of 2010
+actual_brightness	/sys/class/backlight/gta02-bl/actual_brightness
+battery	/sys/class/power_supply/battery
+brightness	/sys/class/backlight/gta02-bl/brightness
+max_brightness	/sys/class/backlight/gta02-bl/max_brightness
+pm-bt	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0
+pm-gps	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0
+pm-gsm	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0
+pm-wlan	/sys/bus/platform/drivers/gta02-pm-wlan/gta02-pm-wlan.0
+resume_reason	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason
+resume_reason2	/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason
+.TE
