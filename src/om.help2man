@@ -80,6 +80,11 @@ consumption but lowers latency. Note that root privileges are not
 currently required for tuning this wifi parameter so a local user can
 cause DoS by constantly disabling maximum performance mode.
 .TP
+\fBom wifi keep-bus-on-in-suspend [1/0]\fR
+Reads or sets the the flag that controls whether the MCI bus between
+wifi and CPU will be kept powered on during suspend. You need to keep
+it powered on if you want to use wake-on-wireless.
+.TP
 \fBom battery temperature\fR
 Reads battery temperature. Units are degrees Centigrade.
 .TP

@@ -437,6 +437,7 @@ void usage_wifi(FILE* out)
 {
 	fprintf(out, "%s %s wifi [--swap] power [1/0]\n", usage_lead(), argv0);
 	fprintf(out, "%s %s wifi maxperf <iface> [1/0]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s wifi keep-bus-on-in-suspend [1/0]\n", usage_lead(), argv0);
 }
 
 int do_wifi(int argc, char *const *argv)
@@ -491,6 +492,27 @@ int do_wifi(int argc, char *const *argv)
 			if (res < 0)
 			{
 				perror("setting WiFi maxperf");
+				return 1;
+			}
+		} else {
+			usage_wifi(stderr);
+			return 1;
+		}
+	} else if (strcmp(argv[1], "keep-bus-on-in-suspend") == 0) {
+		if (argc == 2)
+		{
+			int res = om_wifi_keep_bus_on_in_suspend_get();
+			if (res < 0)
+			{
+				perror("reading WiFi keep-bus-on-in-suspend");
+				return 1;
+			}
+			printf("%d\n", res);
+		} else if (argc == 3) {
+			int res = om_wifi_keep_bus_on_in_suspend_set(atoi(argv[2]));
+			if (res < 0)
+			{
+				perror("setting WiFi keep-bus-on-in-suspend");
 				return 1;
 			}
 		} else {

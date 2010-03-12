@@ -34,6 +34,7 @@
 #define WIFI_BIND WIFI_ROOT "/bind"
 #define WIFI_UNBIND WIFI_ROOT "/unbind"
 #define WIFI_BOUND WIFI_ROOT "/s3c2440-sdi"
+#define WIFI_MCI_PERSIST_PATH "/sys/module/s3cmci/parameters/persist"
 
 #define AR6000_XIOCTRL_WMI_GET_POWER_MODE 34
 #define AR6000_IOCTL_EXTENDED (SIOCIWFIRSTPRIV+31)
@@ -117,4 +118,16 @@ int om_wifi_maxperf_set(const char *ifname, int mode)
 	if (ret != 0) return -2;
 
 	return 0;
+}
+
+int om_wifi_keep_bus_on_in_suspend_get()
+{
+    const char* val = om_sysfs_readfile(WIFI_MCI_PERSIST_PATH);
+    if (val == NULL) return -1;
+    return atoi(val);
+}
+
+int om_wifi_keep_bus_on_in_suspend_set(int value)
+{
+    return om_sysfs_writefile(WIFI_MCI_PERSIST_PATH, value ? "1\n" : "0\n");
 }

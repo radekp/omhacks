@@ -66,4 +66,23 @@ int om_wifi_maxperf_get(const char *ifname);
  * Returns 0 on success and negative value on error.
  */
 int om_wifi_maxperf_set(const char *ifname, int value);
+
+/*
+ * Return status of MCI bus during suspend. MCI bus connects wifi to
+ * CPU and is required for Wake-on-Wireless to work.
+ *
+ * Returns 0 if MCI bus will be powered down during suspend, 1 if it
+ * will be kept powered and negative value in case of problems.
+ */
+int om_wifi_keep_bus_on_in_suspend_get();
+
+/*
+ * Enable/disable the MCI bus during suspend.
+ *
+ * If value is true, MCI bus will be powered down during
+ * suspend. Else, it gets switched off.
+ */
+int om_wifi_keep_bus_on_in_suspend_set(int value);
+
+
 #endif
