@@ -944,9 +944,9 @@ int do_version(int argc, char *const *argv)
 void usage_options(FILE* out)
 {
 	fprintf(out, "Options:\n");
-	fprintf(out, "  --help:    print this help message\n");
-	fprintf(out, "  --version: print version and exit\n");
-	fprintf(out, "  --swap:    set new value and print old value\n");
+	fprintf(out, "  --help\tprint this help message\n");
+	fprintf(out, "  --version\tprint version and exit\n");
+	fprintf(out, "  --swap\tset new value and print old value\n");
 }
 
 int parse_options(int argc, char *const *argv)
