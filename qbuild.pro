@@ -1,6 +1,8 @@
 TEMPLATE=app
 TARGET=om
 
+CONFIG+=qtopia
+DEFINES+=QTOPIA
 DEFINES+=VERSION=0.10
 
 # I18n info
