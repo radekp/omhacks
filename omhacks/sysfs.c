@@ -102,6 +102,8 @@ static const char* scan_pm_gps()
 	// TODO return $(find /sys -wholename "*pm-gps*/power_on" -o -wholename "*pm-gps*/pwron")
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0";
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/gta02-pm-gps.0"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/gta02-pm-gps.0";
 	return NULL;
 }
 static const char* scan_pm_gsm()
@@ -110,6 +112,8 @@ static const char* scan_pm_gsm()
 	// TODO sys_pm_gsm_power=\"$(find /sys -wholename "*pm-gsm*/power_on" -o -wholename "*pm-gsm*/pwron")\"
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0";
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0";
 	return NULL;
 }
 static const char* scan_pm_wlan()
