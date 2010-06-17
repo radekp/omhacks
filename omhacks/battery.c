@@ -106,18 +106,14 @@ int om_battery_consumption_get(int *consumption)
     return 0;
 }
 
-
-static const char *battery_charger_limit_path = "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-mbc/chg_curlim";
-
 int om_battery_charger_limit_get(void) {
-    const char *limit = om_sysfs_readfile(battery_charger_limit_path);
-    if (limit == NULL) return -1;
-    return atoi(limit);
+    const char* res = om_sysfs_get("chg_curlim");
+    if (res == NULL) return -1;
+    return atoi(res);
 }
 
 int om_battery_charger_limit_set(int limit) {
     char buf[128];
     snprintf(buf, sizeof(buf), "%d\n", limit);
-    if (om_sysfs_writefile(battery_charger_limit_path, buf) < 0) return -1;
-    return 0;
+    return om_sysfs_set("chg_curlim", buf) == 0 ? 0 : -1;
 }

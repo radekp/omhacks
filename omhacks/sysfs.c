@@ -76,6 +76,14 @@ static const char* scan_actual_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/actual_brightness";
 	return NULL;
 }
+static const char* scan_chg_curlim()
+{
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-mbc/chg_curlim"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-mbc/chg_curlim";
+	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-mbc/chg_curlim"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-mbc/chg_curlim";
+	return NULL;
+}
 static const char* scan_resume_reason()
 {
 	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
@@ -128,6 +136,7 @@ static struct om_sysfs_name om_sysfs_names[] = {
 	{ "actual_brightness", scan_actual_brightness, NULL },
 	{ "battery", scan_battery, NULL },
 	{ "brightness", scan_brightness, NULL },
+	{ "chg_curlim", scan_chg_curlim, NULL },
 	{ "max_brightness", scan_max_brightness, NULL },
 // TODO sys_force_usb_limit_dangerous=\"$(find /sys -name force_usb_limit_dangerous -o -name usb_curlim)\"
 // TODO sys_hostmode=\"$(find /sys -name hostmode)\"
