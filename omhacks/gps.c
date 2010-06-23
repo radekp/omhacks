@@ -92,7 +92,7 @@ int om_gps_power_swap(int value)
 		// Turn on
 		if (om_sysfs_writefile(power_path, "1\n") < 0) return -1;
 	} else {
-		// Note: the logic here is Enrico cargo-culting Lindi
+		// Workaround bug http://docs.openmoko.org/trac/ticket/2293
 
 		// Turn off
 		if (om_sysfs_writefile(power_path, "0\n") < 0) return -1;

@@ -1,9 +1,15 @@
-omhacks (0.11-1) UNRELEASED; urgency=low
+omhacks (0.11-1) unstable; urgency=low
 
-  * Manpage improved (by lindi)
-  * om wifi keep-bus-on-in-suspend [0/1] (by lindi)
+  * New upstream release
+     - detailed manual page
+     - om wifi keep-bus-on-in-suspend [1/0]
+     - initial support for Linux 2.6.32 sysfs paths
+  * Explicitly specify source format to be 1.0
+  * Update standards-version from 3.8.3 to 3.8.4
+  * Make sleep.d/00at only an example to avoid dependency to atd and python.
+    Closes: #576312
 
- -- Enrico Zini <enrico@debian.org>  Sat, 13 Mar 2010 02:15:11 +0100
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Wed, 23 Jun 2010 07:17:53 -0400
 
 omhacks (0.10-1) unstable; urgency=low
 
