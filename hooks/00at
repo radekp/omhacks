@@ -3,7 +3,7 @@
 # This is an example pm-suspend hook that uses omhacks to
 # schedule the system to wake from suspend to run atd jobs.
 
-# To activate this example copy it to /etc/pm/sleep.d
+# To activate this example symlink it to /etc/pm/sleep.d
 
 import sys
 import time
