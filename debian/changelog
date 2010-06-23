@@ -1,3 +1,16 @@
+omhacks (0.11-1) unstable; urgency=low
+
+  * New upstream release
+     - detailed manual page
+     - om wifi keep-bus-on-in-suspend [1/0]
+     - initial support for Linux 2.6.32 sysfs paths
+  * Explicitly specify source format to be 1.0
+  * Update standards-version from 3.8.3 to 3.8.4
+  * Make sleep.d/00at only an example to avoid dependency to atd and python.
+    Closes: #576312
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Wed, 23 Jun 2010 07:17:53 -0400
+
 omhacks (0.10-1) unstable; urgency=low
 
   * Fixed python typo in 00at hook
