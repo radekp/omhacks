@@ -57,6 +57,8 @@ static const char* scan_brightness()
 		return "/sys/class/backlight/gta02-bl/brightness";
 	if (exists("/sys/devices/virtual/backlight/acpi_video0/brightness"))
 		return "/sys/devices/virtual/backlight/acpi_video0/brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/brightness";
 	return NULL;
 }
 static const char* scan_max_brightness()
@@ -66,6 +68,8 @@ static const char* scan_max_brightness()
 		return "/sys/class/backlight/gta02-bl/max_brightness";
 	if (exists("/sys/devices/virtual/backlight/acpi_video0/max_brightness"))
 		return "/sys/devices/virtual/backlight/acpi_video0/max_brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/max_brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/max_brightness";
 	return NULL;
 }
 static const char* scan_actual_brightness()
@@ -74,6 +78,8 @@ static const char* scan_actual_brightness()
 		return "/sys/class/backlight/gta02-bl/actual_brightness";
 	if (exists("/sys/devices/virtual/backlight/acpi_video0/actual_brightness"))
 		return "/sys/devices/virtual/backlight/acpi_video0/actual_brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/actual_brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/actual_brightness";
 	return NULL;
 }
 static const char* scan_chg_curlim()
