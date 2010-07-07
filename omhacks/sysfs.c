@@ -59,6 +59,8 @@ static const char* scan_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/brightness";
         if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/brightness"))
                 return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/brightness";
 	return NULL;
 }
 static const char* scan_max_brightness()
@@ -70,6 +72,8 @@ static const char* scan_max_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/max_brightness";
         if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/max_brightness"))
                 return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/max_brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/max_brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/max_brightness";
 	return NULL;
 }
 static const char* scan_actual_brightness()
@@ -80,6 +84,8 @@ static const char* scan_actual_brightness()
 		return "/sys/devices/virtual/backlight/acpi_video0/actual_brightness";
         if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/actual_brightness"))
                 return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight.0/backlight/pcf50633-backlight/actual_brightness";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/actual_brightness"))
+                return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-backlight/backlight/pcf50633-backlight/actual_brightness";
 	return NULL;
 }
 static const char* scan_chg_curlim()
@@ -109,6 +115,8 @@ static const char* scan_pm_bt()
 	// TODO return \"$(find /sys -wholename "*pm-bt*/power_on" -o -wholename "*pm-bt*/pwron")\"
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0";
+	if (exists("/sys/devices/platform/gta02-pm-bt.0"))
+		return "/sys/devices/platform/gta02-pm-bt.0";
 	return NULL;
 }
 static const char* scan_pm_gps()
@@ -118,6 +126,8 @@ static const char* scan_pm_gps()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0";
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/gta02-pm-gps.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/gta02-pm-gps.0";
+	if (exists("/sys/devices/platform/gta02-pm-gps.0"))
+		return "/sys/devices/platform/gta02-pm-gps.0";
 	return NULL;
 }
 static const char* scan_pm_gsm()
@@ -128,6 +138,8 @@ static const char* scan_pm_gsm()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0";
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.1/gta02-pm-gsm.0"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.1/gta02-pm-gsm.0";
 	return NULL;
 }
 static const char* scan_pm_wlan()
