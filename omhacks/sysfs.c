@@ -138,8 +138,8 @@ static const char* scan_pm_gsm()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0";
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/gta02-pm-gsm.0";
-        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.1/gta02-pm-gsm.0"))
-		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.1/gta02-pm-gsm.0";
+        if (exists("/sys/bus/platform/devices/gta02-pm-gsm.0"))
+		return "/sys/bus/platform/devices/gta02-pm-gsm.0";
 	return NULL;
 }
 static const char* scan_pm_wlan()
