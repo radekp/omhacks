@@ -29,8 +29,44 @@
 #include <fcntl.h>
 #include <errno.h>
 
+static int om_led_exists(const char *name) {
+	char buf[PATH_MAX];
+	if (snprintf(buf, PATH_MAX, "/sys/class/leds/%s", name) >= PATH_MAX)
+		return 0;
+	return access(buf, F_OK) == 0;
+}
+
+static const char* om_led_lookup(const char* alias) {
+	if (strcmp(alias, "vibrator") == 0)
+	{
+		if (om_led_exists("neo1973:vibrator"))
+                        return "neo1973:vibrator";
+		if (om_led_exists("gta02::vibrator"))
+			return "gta02::vibrator";
+	} else if (strcmp(alias, "power_orange") == 0) {
+		if (om_led_exists("gta02-power:orange"))
+                        return "gta02-power:orange";
+		if (om_led_exists("gta02:orange:power"))
+			return "gta02:orange:power";
+	} else if (strcmp(alias, "power_blue") == 0) {
+		if (om_led_exists("gta02-power:blue"))
+                        return "gta02-power:blue";
+		if (om_led_exists("gta02:blue:power"))
+			return "gta02:blue:power";
+	} else if (strcmp(alias, "aux_red") == 0) {
+		if (om_led_exists("gta02-aux:red"))
+                        return "gta02-aux:red";
+		if (om_led_exists("gta02:red:aux"))
+			return "gta02:red:aux";
+	}
+	return NULL;
+}
+
 int om_led_init(struct om_led* led, const char* name)
 {
+	const char* kernel_name = om_led_lookup(name);
+	if (kernel_name != NULL)
+		name = kernel_name;
 	if (strchr(name, '/') != NULL)
 	{
 		errno = EINVAL;

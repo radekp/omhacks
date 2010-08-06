@@ -126,19 +126,23 @@ EINT09_PMU:rtc_alarm
 Checks if resume reasons include the given string.
 .TP
 \fBom led\fR
-Lists the state of all LED devices.
+Lists the state of all LED devices. The printed names are native
+kernel names and can change between kernel versions.
 .TP
 \fBom led <name>\fR
-Lists the state of the given LED device.
+Lists the state of the given LED device. In addition to native kernel
+names you can also use the aliases vibrator, power_orange, power_blue
+and aux_red to get portability across different kernel versions.
 .TP
 \fBom led <name> <brightness>\fR
 Sets the brightness of the given LED device to the given
 brightness. Brightness is an integer from 0 to 255 but only the
-vibrator device really cares about the brightness value.
+vibrator device really cares about the brightness value. See \fBom
+led\fR for a list of supported aliases.
 .TP
 \fBom led <name> <brightness> timer <ontime> <offtime>\fR
 In addition to above also makes the LED blink. Ontime and offtime are
-in milliseconds.
+in milliseconds. See \fBom led\fR for a list of supported aliases.
 .TP
 \fBom uevent dump\fR
 Dump uevent events to stdout.
