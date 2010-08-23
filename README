@@ -12,6 +12,19 @@ If you need another function in the library, please send a patch. Please try to
 keep in the minimalist spirit of the library, and also provide a command line
 front end.
 
+omhacks can optionally be hooked to suspend/resume in various
+ways. /usr/share/doc/omhacks/examples/00at is an example on how to
+configure the phone to wake up using RTC alarm to run at
+jobs.
+
+/usr/lib/pm-utils/sleep.d/omhacks.so is a hook that is used only if
+pm-utils-light is installed, normal pm-utils ignores it. It turns the
+blue LED on during suspend/resume so that you an easily see if the
+phone gets stuck while executing suspend/resume scripts. It also
+automatically resuspends the phone if it was woken up by usb
+disconnect event. The touchscreen and backlight are kept disabled when
+this resuspending is taking place. When you unplug the usb cable you
+should only see the blue LED light for a few seconds.
 
 
 
