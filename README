@@ -27,6 +27,23 @@ this resuspending is taking place. When you unplug the usb cable you
 should only see the blue LED light for a few seconds.
 
 
+** pm-utils-light omhacks.so hooks
+
+omhacks installs some pm-utils-light suspend hooks, using its dynamic hooks
+feature to have fast, lightweight hooks implemented in C.
+
+The hooks provided by omhacks.so are:
+
+ Name                          On suspend          On resume
+ 00-statusled                  Turn on blue led    Turn on blue led
+ 74-screen                     Turn off screen     Turn on screen
+ 98-cancel-on-usb-disconnect   -                   Cancel resume if reason is
+                                                   USB disconnect
+ 99-statusled                  Turn off blue led   Turn off blue led
+
+If you do not want one of these hooks to run, just create an empty file
+/etc/pm/sleep.d/NN-HOOKNAME and make sure it is not executable. It will
+override and disable the hook in /usr as pm-utils hooks are expected to do.
 
 
 *** TODO list
