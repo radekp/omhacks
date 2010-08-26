@@ -20,6 +20,7 @@
 #include "screen.h"
 #include "sysfs.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -106,4 +107,20 @@ int om_screen_power_set(int val)
 	if (ret != 0) return -2;
 
 	return 0;
+}
+
+const char* om_screen_resolution_get()
+{
+	const char* res = om_sysfs_get("screen_resolution");
+	if (!res) return NULL;
+	if (strcmp(res, "normal\n") == 0)
+		return "normal";
+	if (strcmp(res, "qvga-normal\n") == 0)
+		return "qvga-normal";
+	return NULL;
+}
+
+int om_screen_resolution_set(const char *val)
+{
+	return om_sysfs_set("screen_resolution", val);
 }

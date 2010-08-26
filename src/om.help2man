@@ -26,6 +26,28 @@ after that you turn the screen off with omhacks then touching the
 screen won't turn the screen on (Xorg thinks the screen is still on
 and does not bother to try to power it on).
 .TP
+\fBom screen resolution [normal|qvga-normal]\fR
+Reads or sets the screen resolution. This lowlevel interface should
+not be used when Xorg is running but is useful when using applications
+that can draw directly to the framebuffer (like mplayer -vo
+fbdev). The argument \fBnormal\fR means 480x640 and \fBqvga-normal\fR
+means 240x320. After you have changed the screen resolution you also
+need to change the framebuffer resolution with e.g. the fbset tool
+using for example the following /etc/fb.modes entries:
+.TS
+l.
+mode "normal"
+  geometry 480 640 480 1280 16
+  timings 40816 8 16 2 16 8 2
+  rgba 5/11,6/5,5/0,0/0
+endmode
+mode "qvga-normal"
+  geometry 240 420 240 320 16
+  timings 100000 8 88 2 2 8 2
+  accel false
+endmode
+.TE
+.TP
 \fBom bt [\-\-swap] power [1/0]\fR
 Reads or sets the power state of bluetooth. Bluetooth is connected to
 USB bus so it might take a while for it to appear in lsusb and be

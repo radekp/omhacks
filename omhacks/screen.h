@@ -83,4 +83,22 @@ int om_screen_power_get();
  */
 int om_screen_power_set(int val);
 
+/*
+ * Read current screen resolution
+ *
+ * Possible values are "normal" for 640x480 and "qvga-normal" for
+ * 320x240. Return value is NULL on error.
+ */
+const char *om_screen_resolution_get();
+
+/*
+ * Set screen resolution
+ *
+ * Argument should be pointer to string describing the resolution. see
+ * om_screen_resolution_get() for list of options.
+ *
+ * If the result is negative, then an error happened.
+ */
+int om_screen_resolution_set(const char *val);
+
 #endif
