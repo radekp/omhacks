@@ -108,6 +108,8 @@ static const char* scan_resume_reason2()
 	// TODO return \"$(find /sys -wholename "*/0-0073/resume_reason")\"
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason";
+	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/resume_reason"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/resume_reason";
 	return NULL;
 }
 static const char* scan_pm_bt()
