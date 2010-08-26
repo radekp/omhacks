@@ -150,6 +150,15 @@ static const char* scan_pm_wlan()
 	return NULL;
 }
 
+static const char* scan_usb_charger_mode()
+{
+	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode"))
+		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode";
+	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on";
+	return NULL;
+}
+
 static const char* scan_usb_mode()
 {
 	// TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
@@ -175,6 +184,7 @@ static struct om_sysfs_name om_sysfs_names[] = {
 	{ "pm-wlan", scan_pm_wlan, NULL },
 	{ "resume_reason", scan_resume_reason, NULL },
 	{ "resume_reason2", scan_resume_reason2, NULL },
+	{ "usb_charger_mode", scan_usb_charger_mode, NULL },
 	{ "usb_mode", scan_usb_mode, NULL },
 };
 static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
