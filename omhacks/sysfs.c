@@ -150,6 +150,17 @@ static const char* scan_pm_wlan()
 	return NULL;
 }
 
+static const char* scan_usb_mode()
+{
+	// TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
+
+	if (exists("/sys/devices/platform/s3c-ohci/usb_mode"))
+		return "/sys/devices/platform/s3c-ohci/usb_mode";
+	if (exists("/sys/devices/platform/s3c2410-ohci/usb_mode"))
+		return "/sys/devices/platform/s3c2410-ohci/usb_mode";
+	return NULL;
+}
+
 static struct om_sysfs_name om_sysfs_names[] = {
 	{ "actual_brightness", scan_actual_brightness, NULL },
 	{ "battery", scan_battery, NULL },
@@ -164,7 +175,7 @@ static struct om_sysfs_name om_sysfs_names[] = {
 	{ "pm-wlan", scan_pm_wlan, NULL },
 	{ "resume_reason", scan_resume_reason, NULL },
 	{ "resume_reason2", scan_resume_reason2, NULL },
-// TODO sys_usb_mode=\"$(find /sys -name usb_mode)\"
+	{ "usb_mode", scan_usb_mode, NULL },
 };
 static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
 

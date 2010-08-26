@@ -25,11 +25,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char *usb_mode_path = "/sys/devices/platform/s3c-ohci/usb_mode";
-/* todo: also /sys/devices/platform/s3c2410-ohci/usb_mode ? */
-
 int om_usb_mode_get()
 {
+    const char* usb_mode_path = om_sysfs_path("usb_mode");
+    if (usb_mode_path == NULL) return -3;
     const char *mode = om_sysfs_readfile(usb_mode_path);
     if (mode == NULL) return -1;
     if (!strcmp(mode, "device\n")) {
@@ -43,6 +42,8 @@ int om_usb_mode_get()
 
 int om_usb_mode_set(int mode)
 {
+    const char* usb_mode_path = om_sysfs_path("usb_mode");
+    if (usb_mode_path == NULL) return -3;
     if (mode == 0) {
         if (om_sysfs_writefile(usb_mode_path, "device\n") < 0) return -1;
     } else if (mode == 1) {
