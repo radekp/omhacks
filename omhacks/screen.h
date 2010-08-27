@@ -101,4 +101,25 @@ const char *om_screen_resolution_get();
  */
 int om_screen_resolution_set(const char *val);
 
+/*
+ * Read timings of memory bus between the CPU and the glamo graphics
+ * chip. Read "man om" for more information.
+ *
+ * Return value is either "4-4-4" or "2-4-2" on success and NULL on
+ * failure.
+ */
+const char* om_screen_glamo_bus_timings_get();
+
+/*
+ * Set timings of the memory bus between the CPU and the glamo
+ * graphics chip. Read "man om" for more information.
+ *
+ * The argument must be a string listed in om_screen_glamo_timings_get
+ * above.
+ *
+ * If the result is negative, then an error happened.
+ */
+int om_screen_glamo_bus_timings_set(const char* val);
+
+
 #endif

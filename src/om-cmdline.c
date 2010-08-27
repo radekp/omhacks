@@ -135,6 +135,7 @@ void usage_screen(FILE* out)
 {
 	fprintf(out, "%s %s screen power [1/0]\n", usage_lead(), argv0);
 	fprintf(out, "%s %s screen resolution [normal|qvga-normal]\n", usage_lead(), argv0);
+	fprintf(out, "%s %s screen glamo-bus-timings [4-4-4|2-4-2]\n", usage_lead(), argv0);
 }
 
 int do_screen(int argc, char *const *argv)
@@ -178,6 +179,24 @@ int do_screen(int argc, char *const *argv)
 			if (res < 0)
 			{
 				perror("setting screen resolution");
+				return 1;
+			}
+		}
+	} else if (strcmp(argv[1], "glamo-bus-timings") == 0) {
+		if (argc == 2)
+		{
+			const char* res = om_screen_glamo_bus_timings_get();
+			if (res == NULL)
+			{
+				perror("reading screen glamo bus timings");
+				return 1;
+			}
+			puts(res);
+		} else {
+			int res = om_screen_glamo_bus_timings_set(argv[2]);
+			if (res < 0)
+			{
+				perror("setting screen glamo bus timings");
 				return 1;
 			}
 		}
