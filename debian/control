@@ -10,7 +10,7 @@ Vcs-Git: git://git.debian.org/git/pkg-fso/omhacks.git
 Vcs-Browser: http://git.debian.org/?p=pkg-fso/omhacks.git
 
 Package: omhacks
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: pm-utils-light
 Description: command line interface to OpenMoko hardware
@@ -23,7 +23,7 @@ Description: command line interface to OpenMoko hardware
 
 Package: libomhacks-dev
 Section: libdevel
-Architecture: any
+Architecture: linux-any
 Depends: libomhacks0 (= ${binary:Version}), ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
  This library is a collective collection of functions to control various
@@ -35,7 +35,7 @@ Description: library of useful functions to control OpenMoko hardware
 
 Package: libomhacks0
 Section: libs
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
  This library is a collective collection of functions to control various
