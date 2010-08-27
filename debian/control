@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Enrico Zini <enrico@debian.org>
 Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>
 Build-Depends: debhelper (>= 7), cmake (>= 2.6), help2man, linux-libc-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1.0
 Homepage: http://git.debian.org/?p=pkg-fso/omhacks.git;a=blob;f=README
 Vcs-Git: git://git.debian.org/git/pkg-fso/omhacks.git
 Vcs-Browser: http://git.debian.org/?p=pkg-fso/omhacks.git
