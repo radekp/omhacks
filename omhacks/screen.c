@@ -107,6 +107,7 @@ int om_screen_power_set(int val)
 	if (fd < 0) return -1;
 
         ret = ioctl(fd, FBIOBLANK, val ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN);
+	close(fd);
 	if (ret != 0) return -2;
 
 	return 0;
