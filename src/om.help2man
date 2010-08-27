@@ -36,12 +36,12 @@ need to change the framebuffer resolution with e.g. the fbset tool
 using for example the following /etc/fb.modes entries:
 .TS
 l.
-mode "normal"
+mode "480x640"
   geometry 480 640 480 1280 16
   timings 40816 8 16 2 16 8 2
   rgba 5/11,6/5,5/0,0/0
 endmode
-mode "qvga-normal"
+mode "240x320"
   geometry 240 420 240 320 16
   timings 100000 8 88 2 2 8 2
   accel false
