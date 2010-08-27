@@ -50,14 +50,11 @@ endmode
 .TP
 \fBom screen glamo-bus-timings [4-4-4|2-4-2]\fR
 Reads or sets the timings of the memory bus between the CPU and the
-glamo graphics chip. As of 2010 both Qi and U-boot boot loaders set
-these to 4-4-4 but according to Gennady Kupava and Thomas White 2-4-2
-might be more appropriate and faster. Since neither boot loader is
-configurable in this respect omhacks offers you the possibility to
-verify or change the timings after bootup. For more information refer
-to the post "Glamo slowness question. Glamo transfer speed
-improvements (+33%). Video sofdecoding playing profile. Glamo dma
-transfer." by Gennady.
+glamo graphics chip. Numbers are SRAM interface timings of the CPU.
+According to
+http://lists.openmoko.org/pipermail/community/2010-July/062495.html
+using 2-4-2 is more appropriate, view that article and following
+discussion for more details.
 .TP
 \fBom bt [\-\-swap] power [1/0]\fR
 Reads or sets the power state of bluetooth. Bluetooth is connected to
