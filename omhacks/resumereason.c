@@ -20,6 +20,7 @@
 #include "resumereason.h"
 #include "sysfs.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define ORR_BUFSIZE 512
@@ -69,6 +70,7 @@ const char** om_resume_reason()
 		// Do we have extra PMU reasons?
 		if (orr.buf_size < ORR_BUFSIZE && strcmp(orr.arr[orr.arr_size], "EINT09_PMU") == 0)
 		{
+			unsigned long int resume_reason_pmu;
 			if (reason2 == NULL)
 			{
 				// Read them only once
@@ -80,15 +82,17 @@ const char** om_resume_reason()
 			// Overwrite the ending 0 with a semicolon
 			orr.buf[orr.buf_size-1] = ':';
 
+			resume_reason_pmu = strtoul(reason2, NULL, 16);
+			
 			// Append the extra PMU reason
-			if (reason2[3] == '2')
+			if (resume_reason_pmu & 0x0002000000)
 			{
 				orr_append_str("button");
-			} else if (reason2[1] == '4') {
+			} else if (resume_reason_pmu & 0x0400000000) {
 				orr_append_str("usb_connect");
-			} else if (reason2[0] == '4') {
+			} else if (resume_reason_pmu & 0x4000000000) {
 				orr_append_str("rtc_alarm");
-			} else if (reason2[1] == '8') {
+			} else if (resume_reason_pmu & 0x0800000000) {
 				orr_append_str("usb_disconnect");
 			} else {
 				orr_append_str(reason2);
