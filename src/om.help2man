@@ -202,19 +202,7 @@ be too large if your charger can not handle it!
 .TP
 \fBom sysfs name [name...]\fR
 Shows the sysfs path associated with internal \fBom\fR path. This
-option is only useful for debugging \fBom\fR itself. Here are some
-examples:
-.TS
-l l.
-name	path as of 2010
-actual_brightness	/sys/class/backlight/gta02-bl/actual_brightness
-battery	/sys/class/power_supply/battery
-brightness	/sys/class/backlight/gta02-bl/brightness
-max_brightness	/sys/class/backlight/gta02-bl/max_brightness
-pm-bt	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0
-pm-gps	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0
-pm-gsm	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0
-pm-wlan	/sys/bus/platform/drivers/gta02-pm-wlan/gta02-pm-wlan.0
-resume_reason	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason
-resume_reason2	/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason
-.TE
+option is only useful for debugging \fBom\fR itself. Examples of valid
+arguments include actual_brightness, battery, brightness, chg_curlim,
+max_brightness, pm-bt, pm-gps, pm-gsm, pm-wlan, resume_reason,
+resume_reason2, screen_resolution, usb_charger_mode, usb_mode.
