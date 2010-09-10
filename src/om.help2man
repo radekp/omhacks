@@ -150,6 +150,7 @@ EINT09_PMU:button
 EINT09_PMU:usb_connect
 EINT09_PMU:usb_disconnect
 EINT09_PMU:rtc_alarm
+EINT09_PMU:low_battery
 .TE
 .TP
 \fBom resume\-reason contains <val>\fR

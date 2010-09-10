@@ -103,6 +103,12 @@ const char** om_resume_reason()
 					orr_append_str(line + 2);
 					orr.buf[orr.buf_size-1] = ':';
 					orr_append_str("usb_disconnect");
+				} else if (resume_reason_pmu & 0x0000000200ULL) {
+					resume_reason_pmu &= ~0x0000000200ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("low_battery");
 				} else {
 					resume_reason_pmu = 0;
 					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
