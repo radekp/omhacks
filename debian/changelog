@@ -1,5 +1,9 @@
-omhacks (0.12-1) unstable; urgency=low
+omhacks (0.12-0~fso1) unstable; urgency=low
 
+  [ Timo Jyrinki ]
+  * Upload to pkg-fso since Debian is in freeze
+
+  [ Timo Juhani Lindfors ]
   * New upstream release
      - Improve support for Linux 2.6.32.
      - om screen resolution [normal|qvga-normal]
@@ -8,7 +12,7 @@ omhacks (0.12-1) unstable; urgency=low
   * Improve documentation of pm-suspend integration in README.Debian
   * Update standards-version from 3.8.4 to 3.9.1.0
 
- -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Fri, 27 Aug 2010 19:08:18 +0300
+ -- Timo Jyrinki <timo@debian.org>  Mon, 11 Oct 2010 18:33:45 +0300
 
 omhacks (0.11-1) unstable; urgency=low
 
