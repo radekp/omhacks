@@ -21,6 +21,7 @@
 #include "sysfs.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
@@ -30,10 +31,10 @@
 #include <linux/if.h>
 #include <linux/wireless.h>
 
-#define WIFI_ROOT "/sys/bus/platform/drivers/s3c2440-sdi"
-#define WIFI_BIND WIFI_ROOT "/bind"
-#define WIFI_UNBIND WIFI_ROOT "/unbind"
-#define WIFI_BOUND WIFI_ROOT "/s3c2440-sdi"
+static char wifi_bind_path[PATH_MAX];
+static int wifi_bind_path_found = 0;
+static char wifi_unbind_path[PATH_MAX];
+static int wifi_unbind_path_found = 0;
 #define WIFI_MCI_PERSIST_PATH "/sys/module/s3cmci/parameters/persist"
 
 #define AR6000_XIOCTRL_WMI_GET_POWER_MODE 34
@@ -41,9 +42,42 @@
 #define AR6000_IOCTL_WMI_SETPWR (SIOCIWFIRSTPRIV+11)
 #define MAX_PERF_POWER 2
 
+static const char* om_wifi_bind_path()
+{
+	if (!wifi_bind_path_found)
+	{
+		const char* root = om_sysfs_path("wifi_root");
+		if (root == NULL) return NULL;
+		snprintf(wifi_bind_path, PATH_MAX, "%s/bind", root);
+		if (access(wifi_bind_path, F_OK) != 0) return NULL;
+		wifi_bind_path_found = 1;
+	}
+	return wifi_bind_path;
+}
+
+static const char* om_wifi_unbind_path()
+{
+	if (!wifi_unbind_path_found)
+	{
+		const char* root = om_sysfs_path("wifi_root");
+		if (root == NULL) return NULL;
+		snprintf(wifi_unbind_path, PATH_MAX, "%s/unbind", root);
+		if (access(wifi_unbind_path, F_OK) != 0) return NULL;
+		wifi_unbind_path_found = 1;
+	}
+	return wifi_unbind_path;
+}
+
 int om_wifi_power_get()
 {
-	int res = access(WIFI_BOUND, F_OK);
+	/* Caching this path (as static) does not make sense since we
+	   use its existence to check if wlan is bound or not. */
+	char wifi_bound_path[PATH_MAX];
+
+	const char* root = om_sysfs_path("wifi_root");
+	if (root == NULL) return -1;
+	snprintf(wifi_bound_path, PATH_MAX, "%s/s3c2440-sdi", root);
+	int res = access(wifi_bound_path, F_OK);
 	if (res == 0) return 1;
 	if (errno == ENOENT) return 0;
 	return res;
@@ -68,10 +102,14 @@ int om_wifi_power_swap(int value)
 	if (value)
 	{
 		// Turn on
-		if (om_sysfs_writefile(WIFI_BIND, "s3c2440-sdi\n") < 0) return -1;
+		const char* path = om_wifi_bind_path();
+		if (path == NULL) return -1;
+		if (om_sysfs_writefile(path, "s3c2440-sdi\n") < 0) return -1;
 	} else {
 		// Turn off
-		if (om_sysfs_writefile(WIFI_UNBIND, "s3c2440-sdi\n") < 0) return -1;
+		const char* path = om_wifi_unbind_path();
+		if (path == NULL) return -1;
+		if (om_sysfs_writefile(path, "s3c2440-sdi\n") < 0) return -1;
 	}
 
 	return old_val;
