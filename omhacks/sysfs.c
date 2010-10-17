@@ -165,6 +165,8 @@ static const char* scan_usb_charger_mode()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode";
 	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on"))
 		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio.0/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio.0/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on";
 	return NULL;
 }
 
