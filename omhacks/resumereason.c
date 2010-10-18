@@ -20,6 +20,7 @@
 #include "resumereason.h"
 #include "sysfs.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define ORR_BUFSIZE 512
@@ -46,7 +47,6 @@ static void orr_append_str(const char* line)
 const char** om_resume_reason()
 {
 	static char line[256];
-	const char* reason2 = NULL;
 
 	orr.buf_size = 0;
 	orr.arr_size = 0;
@@ -62,39 +62,63 @@ const char** om_resume_reason()
 		// Skip empty or inactive lines
 		if (line[0] != '*' || line[1] == 0) continue;
 
-		// Append resume reason from this line
-		orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
-		orr_append_str(line + 2);
-
-		// Do we have extra PMU reasons?
-		if (orr.buf_size < ORR_BUFSIZE && strcmp(orr.arr[orr.arr_size], "EINT09_PMU") == 0)
-		{
-			if (reason2 == NULL)
+                if (strcmp(line + 2, "EINT09_PMU\n") != 0)
+                {
+			orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+			orr_append_str(line + 2);
+			++orr.arr_size;
+                } else {
+			const char* reason2;
+			unsigned long long resume_reason_pmu;
+			
+			reason2 = om_sysfs_get("resume_reason2");
+			if (reason2 == NULL) return NULL;
+			if (strlen(reason2) < 10) return NULL;
+			resume_reason_pmu = strtoull(reason2, NULL, 16);
+			
+			while (resume_reason_pmu)
 			{
-				// Read them only once
-				reason2 = om_sysfs_get("resume_reason2");
-				if (reason2 == NULL) return NULL;
-				if (strlen(reason2) < 10) return NULL;
+				if (resume_reason_pmu & 0x0002000000ULL)
+				{
+					resume_reason_pmu &= ~0x0002000000ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("button");
+				} else if (resume_reason_pmu & 0x0400000000ULL) {
+					resume_reason_pmu &= ~0x0400000000ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("usb_connect");
+				} else if (resume_reason_pmu & 0x4000000000ULL) {
+					resume_reason_pmu &= ~0x4000000000ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("rtc_alarm");
+				} else if (resume_reason_pmu & 0x0800000000ULL) {
+					resume_reason_pmu &= ~0x0800000000ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("usb_disconnect");
+				} else if (resume_reason_pmu & 0x0000000200ULL) {
+					resume_reason_pmu &= ~0x0000000200ULL;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str("low_battery");
+				} else {
+					resume_reason_pmu = 0;
+					orr.arr[orr.arr_size] = orr.buf + orr.buf_size;
+					orr_append_str(line + 2);
+					orr.buf[orr.buf_size-1] = ':';
+					orr_append_str(reason2);
+				}
+				++orr.arr_size;
 			}
-
-			// Overwrite the ending 0 with a semicolon
-			orr.buf[orr.buf_size-1] = ':';
-
-			// Append the extra PMU reason
-			if (reason2[3] == '2')
-			{
-				orr_append_str("button");
-			} else if (reason2[1] == '4') {
-				orr_append_str("usb_connect");
-			} else if (reason2[0] == '4') {
-				orr_append_str("rtc_alarm");
-			} else if (reason2[1] == '8') {
-				orr_append_str("usb_disconnect");
-			} else {
-				orr_append_str(reason2);
-			}
-		}
-		++orr.arr_size;
+                }
 	}
 	fclose(in);
 	orr.arr[orr.arr_size] = NULL;

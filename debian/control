@@ -2,15 +2,15 @@ Source: omhacks
 Section: misc
 Priority: extra
 Maintainer: Enrico Zini <enrico@debian.org>
-Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>
+Uploaders: Timo Juhani Lindfors <timo.lindfors@iki.fi>, Timo Jyrinki <timo@debian.org>
 Build-Depends: debhelper (>= 7), cmake (>= 2.6), help2man, linux-libc-dev
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1.0
 Homepage: http://git.debian.org/?p=pkg-fso/omhacks.git;a=blob;f=README
 Vcs-Git: git://git.debian.org/git/pkg-fso/omhacks.git
 Vcs-Browser: http://git.debian.org/?p=pkg-fso/omhacks.git
 
 Package: omhacks
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: pm-utils-light
 Description: command line interface to OpenMoko hardware
@@ -23,7 +23,7 @@ Description: command line interface to OpenMoko hardware
 
 Package: libomhacks-dev
 Section: libdevel
-Architecture: any
+Architecture: linux-any
 Depends: libomhacks0 (= ${binary:Version}), ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
  This library is a collective collection of functions to control various
@@ -35,7 +35,7 @@ Description: library of useful functions to control OpenMoko hardware
 
 Package: libomhacks0
 Section: libs
-Architecture: any
+Architecture: linux-any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: library of useful functions to control OpenMoko hardware
  This library is a collective collection of functions to control various

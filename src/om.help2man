@@ -26,6 +26,36 @@ after that you turn the screen off with omhacks then touching the
 screen won't turn the screen on (Xorg thinks the screen is still on
 and does not bother to try to power it on).
 .TP
+\fBom screen resolution [normal|qvga-normal]\fR
+Reads or sets the screen resolution. This lowlevel interface should
+not be used when Xorg is running but is useful when using applications
+that can draw directly to the framebuffer (like mplayer -vo
+fbdev). The argument \fBnormal\fR means 480x640 and \fBqvga-normal\fR
+means 240x320. After you have changed the screen resolution you also
+need to change the framebuffer resolution with e.g. the fbset tool
+using for example the following /etc/fb.modes entries:
+.TS
+l.
+mode "480x640"
+  geometry 480 640 480 1280 16
+  timings 40816 8 16 2 16 8 2
+  rgba 5/11,6/5,5/0,0/0
+endmode
+mode "240x320"
+  geometry 240 420 240 320 16
+  timings 100000 8 88 2 2 8 2
+  accel false
+endmode
+.TE
+.TP
+\fBom screen glamo-bus-timings [4-4-4|2-4-2]\fR
+Reads or sets the timings of the memory bus between the CPU and the
+glamo graphics chip. Numbers are SRAM interface timings of the CPU.
+According to
+http://lists.openmoko.org/pipermail/community/2010-July/062495.html
+using 2-4-2 is more appropriate, view that article and following
+discussion for more details.
+.TP
 \fBom bt [\-\-swap] power [1/0]\fR
 Reads or sets the power state of bluetooth. Bluetooth is connected to
 USB bus so it might take a while for it to appear in lsusb and be
@@ -120,6 +150,7 @@ EINT09_PMU:button
 EINT09_PMU:usb_connect
 EINT09_PMU:usb_disconnect
 EINT09_PMU:rtc_alarm
+EINT09_PMU:low_battery
 .TE
 .TP
 \fBom resume\-reason contains <val>\fR
@@ -169,19 +200,7 @@ be too large if your charger can not handle it!
 .TP
 \fBom sysfs name [name...]\fR
 Shows the sysfs path associated with internal \fBom\fR path. This
-option is only useful for debugging \fBom\fR itself. Here are some
-examples:
-.TS
-l l.
-name	path as of 2010
-actual_brightness	/sys/class/backlight/gta02-bl/actual_brightness
-battery	/sys/class/power_supply/battery
-brightness	/sys/class/backlight/gta02-bl/brightness
-max_brightness	/sys/class/backlight/gta02-bl/max_brightness
-pm-bt	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.6/neo1973-pm-bt.0
-pm-gps	/sys/class/i2c-adapter/i2c-0/0-0073/pcf50633-regltr.7/neo1973-pm-gps.0
-pm-gsm	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-gsm.0
-pm-wlan	/sys/bus/platform/drivers/gta02-pm-wlan/gta02-pm-wlan.0
-resume_reason	/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason
-resume_reason2	/sys/class/i2c-adapter/i2c-0/0-0073/resume_reason
-.TE
+option is only useful for debugging \fBom\fR itself. Examples of valid
+arguments include actual_brightness, battery, brightness, chg_curlim,
+max_brightness, pm-bt, pm-gps, pm-gsm, pm-wlan, resume_reason,
+resume_reason2, screen_resolution, usb_charger_mode, usb_mode.

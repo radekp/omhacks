@@ -83,4 +83,43 @@ int om_screen_power_get();
  */
 int om_screen_power_set(int val);
 
+/*
+ * Read current screen resolution
+ *
+ * Possible values are "normal" for 640x480 and "qvga-normal" for
+ * 320x240. Return value is NULL on error.
+ */
+const char *om_screen_resolution_get();
+
+/*
+ * Set screen resolution
+ *
+ * Argument should be pointer to string describing the resolution. see
+ * om_screen_resolution_get() for list of options.
+ *
+ * If the result is negative, then an error happened.
+ */
+int om_screen_resolution_set(const char *val);
+
+/*
+ * Read timings of memory bus between the CPU and the glamo graphics
+ * chip. Read "man om" for more information.
+ *
+ * Return value is either "4-4-4" or "2-4-2" on success and NULL on
+ * failure.
+ */
+const char* om_screen_glamo_bus_timings_get();
+
+/*
+ * Set timings of the memory bus between the CPU and the glamo
+ * graphics chip. Read "man om" for more information.
+ *
+ * The argument must be a string listed in om_screen_glamo_timings_get
+ * above.
+ *
+ * If the result is negative, then an error happened.
+ */
+int om_screen_glamo_bus_timings_set(const char* val);
+
+
 #endif
