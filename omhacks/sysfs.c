@@ -101,6 +101,8 @@ static const char* scan_resume_reason()
 	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason";
+	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/neo1973-resume.0/resume_reason"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/neo1973-resume.0/resume_reason";
 	return NULL;
 }
 static const char* scan_resume_reason2()
