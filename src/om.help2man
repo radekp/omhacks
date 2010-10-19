@@ -1,15 +1,24 @@
 [OPTIONS]
 .TP
-\fBom backlight\fR
-Read backlight brightness. This is an integer between zero and what
-\fBom backlight get\-max\fR returns. Reports true brightness only if the screen
-has not been blanked with \fBom screen power 0\fR.
-.TP
-\fBom backlight get\-max\fR
-Get maximum value of brightness, usually 255.
+\fBom backlight brightness [0-100]\fR
+Reads or sets backlight brightness. Units are percentage of maximum
+brightness. Reports true brightness only if the screen has not been
+blanked with \fBom screen power 0\fR.
 .TP
 \fBom backlight <brightness>\fR
-Set backlight brightness.
+Set backlight brightness. Units are driver specific, maximum value can
+be queried with \fBom backlight get\-max\fR. This interface is not
+recommended but is kept for compatibility reasons.
+.TP
+\fBom backlight get\-max\fR
+Get maximum value of brightness. Typically the maximum value is 255
+under Linux 2.6.29 and 63 under Linux 2.6.34.
+.TP
+\fBom backlight\fR
+Read backlight brightness. This is an integer between zero and what
+\fBom backlight get\-max\fR returns. Reports true brightness only if
+the screen has not been blanked with \fBom screen power 0\fR. This
+interface is not recommended but is kept for compatibility reasons.
 .TP
 \fBom touchscreen lock\fR
 Locks touchscreen and waits for any signal to unlock it. This is

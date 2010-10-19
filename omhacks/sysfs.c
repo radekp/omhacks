@@ -101,6 +101,8 @@ static const char* scan_resume_reason()
 	// TODO return \"$(find /sys -wholename "*neo1973-resume.0/resume_reason")\"
 	if (exists("/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason"))
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-resume.0/resume_reason";
+	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/neo1973-resume.0/resume_reason"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/neo1973-resume.0/resume_reason";
 	return NULL;
 }
 static const char* scan_resume_reason2()
@@ -165,6 +167,8 @@ static const char* scan_usb_charger_mode()
 		return "/sys/class/i2c-adapter/i2c-0/0-0073/neo1973-pm-host.0/hostmode";
 	if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on"))
 		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on";
+        if (exists("/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio.0/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on"))
+		return "/sys/devices/platform/s3c2440-i2c/i2c-0/0-0073/pcf50633-gpio.0/reg-fixed-voltage.2/gta02-pm-usbhost.0/power_on";
 	return NULL;
 }
 
@@ -176,6 +180,15 @@ static const char* scan_usb_mode()
 		return "/sys/devices/platform/s3c-ohci/usb_mode";
 	if (exists("/sys/devices/platform/s3c2410-ohci/usb_mode"))
 		return "/sys/devices/platform/s3c2410-ohci/usb_mode";
+	return NULL;
+}
+
+static const char* scan_wifi_root()
+{
+	if (exists("/sys/bus/platform/drivers/s3c2440-sdi"))
+		return "/sys/bus/platform/drivers/s3c2440-sdi";
+	if (exists("/sys/bus/platform/drivers/s3c-sdi"))
+		return "/sys/bus/platform/drivers/s3c-sdi";
 	return NULL;
 }
 
@@ -196,6 +209,7 @@ static struct om_sysfs_name om_sysfs_names[] = {
 	{ "screen_resolution", scan_screen_resolution, NULL },
 	{ "usb_charger_mode", scan_usb_charger_mode, NULL },
 	{ "usb_mode", scan_usb_mode, NULL },
+	{ "wifi_root", scan_wifi_root, NULL },
 };
 static const int om_sysfs_names_size = sizeof(om_sysfs_names) / sizeof(om_sysfs_names[0]);
 

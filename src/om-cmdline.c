@@ -83,6 +83,7 @@ int do_sysfs(int argc, char *const *argv)
 
 void usage_backlight(FILE* out)
 {
+	fprintf(out, "%s %s backlight brightness [0-100]\n", usage_lead(), argv0);
 	fprintf(out, "%s %s backlight\n", usage_lead(), argv0);
 	fprintf(out, "%s %s backlight get-max\n", usage_lead(), argv0);
 	fprintf(out, "%s %s backlight <brightness>\n", usage_lead(), argv0);
@@ -111,6 +112,39 @@ int do_backlight(int argc, char *const *argv)
 				return 1;
 			}
 			printf("%d\n", val);
+		} else if (strcmp(argv[1], "brightness") == 0)
+		{
+			int max = om_screen_brightness_get_max();
+			if (max < 0)
+			{
+				perror("getting max brightness value");
+				return 1;
+			}
+			if (argc == 2)
+			{
+				int val = om_screen_brightness_get();
+				if (val < 0)
+				{
+					perror("getting brightness");
+					return 1;
+				}
+				printf("%d\n", (100 * val) / max);
+			} else if (opts.swap) {
+				int old_val = om_screen_brightness_swap((atoi(argv[2]) * max) / 100);
+				if (old_val < 0)
+				{
+					perror("getting/setting brightness");
+					return 1;
+				}
+				printf("%d\n", (100 * old_val) / max);
+			} else {
+				int res = om_screen_brightness_set((atoi(argv[2]) * max) / 100);
+				if (res < 0)
+				{
+					perror("setting brightness");
+					return 1;
+				}
+			}
 		} else if (opts.swap) {
 			int old_val = om_screen_brightness_swap(atoi(argv[1]));
 			if (old_val < 0)
