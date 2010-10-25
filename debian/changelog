@@ -1,3 +1,10 @@
+omhacks (0.11-2) unstable; urgency=low
+
+  * Avoid crash in omhacks.so when it is run under a kernel that does not
+    support resume_reason. Closes: #601321
+
+ -- Timo Juhani Lindfors <timo.lindfors@iki.fi>  Mon, 25 Oct 2010 13:31:13 +0300
+
 omhacks (0.11-1) unstable; urgency=low
 
   * New upstream release
