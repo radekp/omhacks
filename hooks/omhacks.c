@@ -26,7 +26,7 @@ static int hook_00_status_led(int argc, const char* argv[])
             perror("reading blue led status");
             status_led.brightness = -1;
         } else {
-            status_led.brightness = 255;
+            status_led.brightness = om_screen_brightness_get_max();
             om_led_set(&status_led);
         }
         return 0;
@@ -61,7 +61,7 @@ static int hook_99_status_led(int argc, const char* argv[])
         // Turn on blue led after resume
         if (status_led.brightness != -1)
         {
-            status_led.brightness = 255;
+            status_led.brightness = om_screen_brightness_get_max();
             om_led_set(&status_led);
         }
         return 0;
@@ -87,7 +87,7 @@ static int hook_screen(int argc, const char* argv[])
         // Save current backlight brightness and turn it off
         screen_brightness_saved = om_screen_brightness_swap(0);
         if (screen_brightness_saved < 0)
-            screen_brightness_saved = 255;
+            screen_brightness_saved = om_screen_brightness_get_max();
         return 0;
     }
     else if (strcmp(argv[1], "resume") == 0)
