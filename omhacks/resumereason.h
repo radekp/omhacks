@@ -22,7 +22,9 @@
  */
 
 /*
- * Return a NULL-terminated string array with the reasons for the last resume.
+ * Return a NULL-terminated string array with the reasons for the last
+ * resume or NULL if there was an error while trying to determine
+ * resume reason.
  *
  * Note that the strings are in a statically allocated buffer that is rewritten
  * at every invocation.

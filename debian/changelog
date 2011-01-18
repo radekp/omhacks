@@ -14,6 +14,21 @@ omhacks (0.12-0~fso1) unstable; urgency=low
 
  -- Timo Jyrinki <timo@debian.org>  Mon, 11 Oct 2010 18:33:45 +0300
 
+omhacks (0.11-2) unstable; urgency=low
+
+  [ Timo Juhani Lindfors ]
+  * Avoid crash in omhacks.so when it is run under a kernel that does not
+    support resume_reason. Closes: #601321
+
+  [ Enrico Zini ]
+  * Also check error code when reading led status. There was no known bug
+    about it, but it was an unchecked error code found during a code review
+    for other unchecked error codes after #601321
+  * Use detected maximum brightness value instead of an arbitrary hardcoded
+    one
+
+ -- Enrico Zini <enrico@debian.org>  Mon, 25 Oct 2010 22:53:13 +0200
+
 omhacks (0.11-1) unstable; urgency=low
 
   * New upstream release
